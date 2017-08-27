@@ -1,39 +1,41 @@
 using System;
 using System.ComponentModel;
+using System.Runtime.Serialization;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace Shipwreck.KokoroIO
 {
-    [Serializable]
+    [Serializable, DataContract]
     public class Profile
     {
         [DefaultValue(0)]
-        [JsonProperty("id")]
+        [DataMember, JsonProperty("id")]
         public int Id { get; set; }
 
         [DefaultValue(default(ProfileType))]
-        [JsonProperty("type")]
+        [DataMember, JsonProperty("type")]
         [JsonConverter(typeof(StringEnumConverter))]
         public ProfileType Type { get; set; }
 
         [DefaultValue(null)]
-        [JsonProperty("screen_name")]
+        [DataMember, JsonProperty("screen_name")]
         public string ScreenName { get; set; }
 
         [DefaultValue(null)]
-        [JsonProperty("display_name")]
+        [DataMember, JsonProperty("display_name")]
         public string DisplayName { get; set; }
 
         [DefaultValue(null)]
-        [JsonProperty("avatar")]
+        [DataMember, JsonProperty("avatar")]
         public string Avatar { get; set; }
 
         [DefaultValue(false)]
-        [JsonProperty("archived")]
+        [DataMember, JsonProperty("archived")]
         public bool IsArchived { get; set; }
 
         [DefaultValue(0)]
-        [JsonProperty("invited_room_count")]
+        [DataMember, JsonProperty("invited_room_count")]
         public int InvitedRoomCount { get; set; }
     }
 }

@@ -1,18 +1,19 @@
 using System;
 using System.ComponentModel;
+using System.Runtime.Serialization;
 using Newtonsoft.Json;
 
 namespace Shipwreck.KokoroIO
 {
-    [Serializable]
+    [Serializable, DataContract]
     public class EmbedContent
     {
         [DefaultValue(null)]
-        [JsonProperty("url")]
+        [DataMember, JsonProperty("url")]
         public string Url { get; set; }
 
         [DefaultValue(null)]
-        [JsonProperty("data")]
+        [DataMember, JsonProperty("data")]
         public string Data { get; set; }
     }
 }

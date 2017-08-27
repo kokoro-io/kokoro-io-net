@@ -1,42 +1,43 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Runtime.Serialization;
 using Newtonsoft.Json;
 
 namespace Shipwreck.KokoroIO
 {
-    [Serializable]
+    [Serializable, DataContract]
     public class Message
     {
         [DefaultValue(0)]
-        [JsonProperty("id")]
+        [DataMember, JsonProperty("id")]
         public int Id { get; set; }
 
         [DefaultValue(typeof(Guid), "00000000-0000-0000-0000-000000000000")]
-        [JsonProperty("idempotent_key")]
+        [DataMember, JsonProperty("idempotent_key")]
         public Guid IdempotentKey { get; set; }
 
         [DefaultValue(null)]
-        [JsonProperty("display_name")]
+        [DataMember, JsonProperty("display_name")]
         public string DisplayName { get; set; }
 
         [DefaultValue(null)]
-        [JsonProperty("avatar")]
+        [DataMember, JsonProperty("avatar")]
         public string Avatar { get; set; }
 
         [DefaultValue(null)]
-        [JsonProperty("content")]
+        [DataMember, JsonProperty("content")]
         public string Content { get; set; }
 
         [DefaultValue(null)]
-        [JsonProperty("raw_content")]
+        [DataMember, JsonProperty("raw_content")]
         public string RawContent { get; set; }
 
         #region EmbeddedUrls
 
         private List<string> _EmbeddedUrls;
 
-        [JsonProperty("embedded_urls")]
+        [DataMember, JsonProperty("embedded_urls")]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         public IList<string> EmbeddedUrls
         {
@@ -56,7 +57,7 @@ namespace Shipwreck.KokoroIO
 
         private List<EmbedContent> _EmbedContents;
 
-        [JsonProperty("embed_contents")]
+        [DataMember, JsonProperty("embed_contents")]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         public IList<EmbedContent> EmbedContents
         {
@@ -73,19 +74,19 @@ namespace Shipwreck.KokoroIO
         #endregion EmbedContents
 
         [DefaultValue(typeof(DateTime), "0001-01-01T00:00:00")]
-        [JsonProperty("published_at")]
+        [DataMember, JsonProperty("published_at")]
         public DateTime PublishedAt { get; set; }
 
         [DefaultValue(false)]
-        [JsonProperty("nsfw")]
+        [DataMember, JsonProperty("nsfw")]
         public bool IsNsfw { get; set; }
 
         [DefaultValue(null)]
-        [JsonProperty("room")]
+        [DataMember, JsonProperty("room")]
         public Room Room { get; set; }
 
         [DefaultValue(null)]
-        [JsonProperty("profile")]
+        [DataMember, JsonProperty("profile")]
         public Profile Profile { get; set; }
     }
 }

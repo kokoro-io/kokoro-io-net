@@ -6,28 +6,28 @@ using Newtonsoft.Json.Converters;
 
 namespace Shipwreck.KokoroIO
 {
-    [Serializable]
+    [Serializable, DataContract]
     public class Room
     {
         [DefaultValue(null)]
-        [JsonProperty("id")]
+        [DataMember, JsonProperty("id")]
         public string Id { get; set; }
 
         [DefaultValue(null)]
-        [JsonProperty("channel_name")]
+        [DataMember, JsonProperty("channel_name")]
         public string ChannelName { get; set; }
 
         [DefaultValue(default(RoomKind))]
-        [JsonProperty("kind")]
+        [DataMember, JsonProperty("kind")]
         [JsonConverter(typeof(StringEnumConverter))]
         public RoomKind Kind { get; set; }
 
         [DefaultValue(null)]
-        [JsonProperty("description")]
+        [DataMember, JsonProperty("description")]
         public string Description { get; set; }
 
         [DefaultValue(null)]
-        [JsonProperty("membership")]
+        [DataMember, JsonProperty("membership")]
         public Membership Membership { get; set; }
     }
 }

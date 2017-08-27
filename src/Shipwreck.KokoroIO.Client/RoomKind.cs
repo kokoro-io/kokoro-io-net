@@ -2,6 +2,7 @@ using System.Runtime.Serialization;
 
 namespace Shipwreck.KokoroIO
 {
+    [DataContract]
     public enum RoomKind
     {
         [EnumMember(Value = "public_channel")]
