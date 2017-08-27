@@ -12,9 +12,9 @@ namespace Shipwreck.KokoroIO
         [JsonProperty("id")]
         public int Id { get; set; }
 
-        [DefaultValue(null)]
+        [DefaultValue(typeof(Guid), "00000000-0000-0000-0000-000000000000")]
         [JsonProperty("idempotent_key")]
-        public string IdempotentKey { get; set; }
+        public Guid IdempotentKey { get; set; }
 
         [DefaultValue(null)]
         [JsonProperty("display_name")]
