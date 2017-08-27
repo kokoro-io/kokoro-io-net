@@ -11,10 +11,10 @@ namespace Shipwreck.KokoroIO
         [JsonProperty("id")]
         public int Id { get; set; }
 
-        // TODO: Enum?
-        [DefaultValue(null)]
+        [DefaultValue(default(ProfileType))]
         [JsonProperty("type")]
-        public string Type { get; set; }
+        [JsonConverter(typeof(StringEnumConverter))]
+        public ProfileType Type { get; set; }
 
         [DefaultValue(null)]
         [JsonProperty("screen_name")]

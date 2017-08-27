@@ -1,6 +1,8 @@
 using System;
 using System.ComponentModel;
+using System.Runtime.Serialization;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace Shipwreck.KokoroIO
 {
@@ -15,10 +17,10 @@ namespace Shipwreck.KokoroIO
         [JsonProperty("channel_name")]
         public string ChannelName { get; set; }
 
-        // TODO: Enum?
-        [DefaultValue(null)]
+        [DefaultValue(default(RoomKind))]
         [JsonProperty("kind")]
-        public string Kind { get; set; }
+        [JsonConverter(typeof(StringEnumConverter))]
+        public RoomKind Kind { get; set; }
 
         [DefaultValue(null)]
         [JsonProperty("description")]
