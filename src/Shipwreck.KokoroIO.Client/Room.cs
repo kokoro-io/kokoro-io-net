@@ -26,6 +26,6 @@ namespace Shipwreck.KokoroIO
 
         [DefaultValue(null)]
         [JsonProperty("membership")]
-        public RoomMembership Membership { get; set; }
+        public Membership Membership { get; set; }
     }
 }

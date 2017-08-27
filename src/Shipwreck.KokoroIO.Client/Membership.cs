@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 namespace Shipwreck.KokoroIO
 {
     [Serializable]
-    public class RoomMembership
+    public class Membership
     {
         // TODO: Enum?
         [DefaultValue(null)]
