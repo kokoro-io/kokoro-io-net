@@ -1,0 +1,4 @@
+﻿```
+dotnet restore
+dotnet user-secrets set UserAccessToken *******************
+```
