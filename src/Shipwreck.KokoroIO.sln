@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shipwreck.KokoroIO.SampleBo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shipwreck.KokoroIO.Bot.Core", "Shipwreck.KokoroIO.Bot.Core\Shipwreck.KokoroIO.Bot.Core.csproj", "{9D1861CD-F52F-48E3-9E86-A8FE7B2CFA20}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shipwreck.KokoroIO.Bot", "Shipwreck.KokoroIO.Bot\Shipwreck.KokoroIO.Bot.csproj", "{4E90D8B9-9439-46FE-8EA2-0C1906CF916B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{9D1861CD-F52F-48E3-9E86-A8FE7B2CFA20}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9D1861CD-F52F-48E3-9E86-A8FE7B2CFA20}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9D1861CD-F52F-48E3-9E86-A8FE7B2CFA20}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E90D8B9-9439-46FE-8EA2-0C1906CF916B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E90D8B9-9439-46FE-8EA2-0C1906CF916B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E90D8B9-9439-46FE-8EA2-0C1906CF916B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E90D8B9-9439-46FE-8EA2-0C1906CF916B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
