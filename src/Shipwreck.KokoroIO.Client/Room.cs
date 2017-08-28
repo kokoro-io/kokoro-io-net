@@ -29,5 +29,21 @@ namespace Shipwreck.KokoroIO
         [DefaultValue(null)]
         [DataMember, JsonProperty("membership")]
         public Membership Membership { get; set; }
+
+        public static bool IsValidId(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                return false;
+            }
+            foreach (var c in id)
+            {
+                if (!(('0' <= c && c <= '9') || 'A' <= c && c <= 'Z' || 'a' <= c && c <= 'z'))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
     }
 }
