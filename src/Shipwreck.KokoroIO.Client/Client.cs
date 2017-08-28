@@ -21,7 +21,21 @@ namespace Shipwreck.KokoroIO
         public Task<Room[]> GetRoomsAsync()
             => SendAsync<Room[]>(new HttpRequestMessage(HttpMethod.Get, EndPoint + "/v1/rooms"));
 
-        // TODO: POST /v1/rooms
+        public Task<Room> PostRoomAsync(string channelName, string description, RoomKind kind)
+        {
+            var r = new HttpRequestMessage(HttpMethod.Post, EndPoint + $"/v1/rooms");
+
+            var d = new List<KeyValuePair<string, string>>(3)
+            {
+                new KeyValuePair<string, string>("room[channel_name]", channelName),
+                new KeyValuePair<string, string>("room[description]", description),
+                new KeyValuePair<string, string>("room[kind]",kind.ToApiString())
+            };
+
+            r.Content = new FormUrlEncodedContent(d);
+
+            return SendAsync<Room>(r);
+        }
 
         public Task<Room[]> GetPublicRoomsAsync()
             => SendAsync<Room[]>(new HttpRequestMessage(HttpMethod.Get, EndPoint + "/v1/rooms/public"));
@@ -32,9 +46,44 @@ namespace Shipwreck.KokoroIO
         public Task<Room[]> GetDirectMessageRoomsAsync()
             => SendAsync<Room[]>(new HttpRequestMessage(HttpMethod.Get, EndPoint + "/v1/rooms/direct_message"));
 
-        // TODO: /v1/rooms/{room_id}
+        public Task<Room> PutRoomAsync(string roomId, string channelName, string description)
+        {
+            if (!Room.IsValidId(roomId))
+            {
+                return Task.FromException<Room>(new ArgumentException($"Invalid {nameof(roomId)}."));
+            }
 
-        // TODO: /v1/rooms/{room_id}/manage_members/{member_id}
+            var r = new HttpRequestMessage(HttpMethod.Put, EndPoint + $"/v1/rooms/" + roomId);
+
+            var d = new[]
+            {
+                new KeyValuePair<string, string>("room[channel_name]", channelName),
+                new KeyValuePair<string, string>("room[description]", description)
+            };
+
+            r.Content = new FormUrlEncodedContent(d);
+
+            return SendAsync<Room>(r);
+        }
+
+        public Task ManageMemberAsync(string roomId, int memberId, string authority)
+        {
+            if (!Room.IsValidId(roomId))
+            {
+                return Task.FromException<Room>(new ArgumentException($"Invalid {nameof(roomId)}."));
+            }
+
+            var r = new HttpRequestMessage(HttpMethod.Put, EndPoint + $"/v1/rooms" + roomId + "/manage_member/" + memberId);
+
+            var d = new[]
+            {
+                new KeyValuePair<string, string>("authority", authority)
+            };
+
+            r.Content = new FormUrlEncodedContent(d);
+
+            return SendAsync(r);
+        }
 
         public Task<Message[]> GetMessages(string roomId, int? limit = null, int? beforeId = null)
         {

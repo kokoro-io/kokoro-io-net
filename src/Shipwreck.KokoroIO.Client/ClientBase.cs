@@ -32,9 +32,7 @@ namespace Shipwreck.KokoroIO
 
         protected async Task<T> SendAsync<T>(HttpRequestMessage request, CancellationToken cancellationToken = default(CancellationToken))
         {
-            request.Headers.Add("X-Access-Token", AccessToken);
-
-            var res = await HttpClient.SendAsync(request, cancellationToken).ConfigureAwait(false);
+            var res = await SendAsync(request, cancellationToken).ConfigureAwait(false);
 
             res.EnsureSuccessStatusCode();
 
@@ -44,6 +42,13 @@ namespace Shipwreck.KokoroIO
             {
                 return new JsonSerializer().Deserialize<T>(jr);
             }
+        }
+
+        protected Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            request.Headers.Add("X-Access-Token", AccessToken);
+
+            return HttpClient.SendAsync(request, cancellationToken);
         }
 
         #region DiposableÉpÉ^Å[Éì
