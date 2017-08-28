@@ -1,4 +1,5 @@
 ﻿```
 dotnet restore
 dotnet user-secrets set UserAccessToken *******************
+dotnet user-secrets set BotAccessToken *******************
 ```

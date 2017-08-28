@@ -14,5 +14,10 @@ namespace Shipwreck.KokoroIO
             {
                 AccessToken = Configuration["UserAccessToken"]
             };
+        public static BotClient GetBotClient()
+            => new BotClient()
+            {
+                AccessToken = Configuration["BotAccessToken"]
+            };
     }
 }

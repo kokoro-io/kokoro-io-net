@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System.Linq;
 using Xunit;
 
 namespace Shipwreck.KokoroIO
@@ -60,5 +60,26 @@ namespace Shipwreck.KokoroIO
                 Assert.NotNull(rooms);
             }
         }
+
+        [Fact]
+        public void PostMessageAsyncTest()
+        {
+            using (var c = TestHelper.GetClient())
+            {
+                var rooms = c.GetPrivateRoomsAsync().GetAwaiter().GetResult();
+
+                var dev = rooms.FirstOrDefault(r => r.ChannelName == "private/dev");
+
+                if (dev == null)
+                {
+                    return;
+                }
+
+                var m = c.PostMessageAsync(dev.Id, "test", false).GetAwaiter().GetResult();
+
+                Assert.NotNull(m);
+            }
+        }
     }
+
 }

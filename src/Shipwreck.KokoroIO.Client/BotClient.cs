@@ -21,7 +21,7 @@ namespace Shipwreck.KokoroIO
                 return Task.FromException<Message>(new ArgumentException($"Invalid {nameof(roomId)}."));
             }
 
-            var r = new HttpRequestMessage(HttpMethod.Post, EndPoint + $"/v1/bot/rooms" + roomId + "/message");
+            var r = new HttpRequestMessage(HttpMethod.Post, EndPoint + $"/v1/bot/rooms/" + roomId + "/messages");
 
             r.Content = new FormUrlEncodedContent(new[]
             {

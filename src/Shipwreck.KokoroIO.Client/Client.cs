@@ -73,7 +73,7 @@ namespace Shipwreck.KokoroIO
                 return Task.FromException<Room>(new ArgumentException($"Invalid {nameof(roomId)}."));
             }
 
-            var r = new HttpRequestMessage(HttpMethod.Put, EndPoint + $"/v1/rooms" + roomId + "/manage_member/" + memberId);
+            var r = new HttpRequestMessage(HttpMethod.Put, EndPoint + $"/v1/rooms/" + roomId + "/manage_member/" + memberId);
 
             var d = new[]
             {
@@ -114,7 +114,7 @@ namespace Shipwreck.KokoroIO
                 return Task.FromException<Message>(new ArgumentException($"Invalid {nameof(roomId)}."));
             }
 
-            var r = new HttpRequestMessage(HttpMethod.Post, EndPoint + $"/v1/rooms" + roomId + "/message");
+            var r = new HttpRequestMessage(HttpMethod.Post, EndPoint + $"/v1/rooms/" + roomId + "/messages");
 
             var d = new List<KeyValuePair<string, string>>(3)
             {
