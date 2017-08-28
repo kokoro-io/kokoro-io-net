@@ -23,11 +23,12 @@ namespace Shipwreck.KokoroIO
 
             var r = new HttpRequestMessage(HttpMethod.Post, EndPoint + $"/v1/bot/rooms" + roomId + "/message");
 
-            var fc = new FormUrlEncodedContent(new[]
+            r.Content = new FormUrlEncodedContent(new[]
             {
                 new KeyValuePair<string,string>("message", message),
                 new KeyValuePair<string,string>("nsfw", isNsfw ? "true":"false")
             });
+
 
             return SendAsync<Message>(r);
         }

@@ -78,7 +78,7 @@ namespace Shipwreck.KokoroIO
                 d.Add(new KeyValuePair<string, string>("idempotent_key", idempotentKey.ToString()));
             }
 
-            var fc = new FormUrlEncodedContent(d);
+            r.Content = new FormUrlEncodedContent(d);
 
             return SendAsync<Message>(r);
         }
