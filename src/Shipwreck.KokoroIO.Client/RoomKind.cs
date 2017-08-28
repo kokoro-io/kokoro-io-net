@@ -5,13 +5,14 @@ namespace Shipwreck.KokoroIO
     [DataContract]
     public enum RoomKind
     {
-        [EnumMember(Value = "public_channel")]
+        [EnumMember(Value = RoomKindExtensions.PUBLIC_CHANNEL)]
         PublicChannel,
 
-        [EnumMember(Value = "private_channel")]
+        [EnumMember(Value = RoomKindExtensions.PRIVATE_CHANNEL)]
         PrivateChannel,
 
-        [EnumMember(Value = "direct_message")]
+        [EnumMember(Value = RoomKindExtensions.DIRECT_MESSAGE)]
         DirectMessage
     }
+
 }
