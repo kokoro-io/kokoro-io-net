@@ -14,7 +14,7 @@ namespace Shipwreck.KokoroIO
             AccessToken = DefaultAccessToken ?? ClientBase.DefaultAccessToken;
         }
 
-        public Task<Message> PostMessageAsync(string roomId, string message, bool isNsfw)
+        public Task<Message> PostMessageAsync(string roomId, string message, string displayName = null, bool? isNsfw = null)
         {
             if (!Room.IsValidId(roomId))
             {
@@ -23,12 +23,22 @@ namespace Shipwreck.KokoroIO
 
             var r = new HttpRequestMessage(HttpMethod.Post, EndPoint + $"/v1/bot/rooms/" + roomId + "/messages");
 
-            r.Content = new FormUrlEncodedContent(new[]
+            var d = new List<KeyValuePair<string, string>>(3)
             {
-                new KeyValuePair<string,string>("message", message),
-                new KeyValuePair<string,string>("nsfw", isNsfw ? "true":"false")
-            });
+                new KeyValuePair<string, string>("message", message),
+            };
 
+            if (displayName != null)
+            {
+                d.Add(new KeyValuePair<string, string>("display_name", displayName));
+            }
+
+            if (isNsfw != null)
+            {
+                d.Add(new KeyValuePair<string, string>("nsfw", isNsfw.Value ? "true" : "false"));
+            }
+
+            r.Content = new FormUrlEncodedContent(d);
 
             return SendAsync<Message>(r);
         }

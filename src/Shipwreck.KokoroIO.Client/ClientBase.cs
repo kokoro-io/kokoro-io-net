@@ -9,6 +9,17 @@ namespace Shipwreck.KokoroIO
 {
     public abstract class ClientBase : IDisposable
     {
+        private sealed class Reader : JsonTextReader
+        {
+            public Reader(TextReader reader)
+                : base(reader)
+            {
+            }
+
+            public override int? ReadAsInt32()
+                => (int?)base.ReadAsDouble();
+        }
+
         private HttpClient _HttpClient;
 
         private HttpClient HttpClient
@@ -38,7 +49,7 @@ namespace Shipwreck.KokoroIO
 
             using (var s = await res.Content.ReadAsStreamAsync().ConfigureAwait(false))
             using (var sr = new StreamReader(s))
-            using (var jr = new JsonTextReader(sr))
+            using (var jr = new Reader(sr))
             {
                 return new JsonSerializer().Deserialize<T>(jr);
             }

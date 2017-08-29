@@ -23,7 +23,7 @@ namespace Shipwreck.KokoroIO
 
             using (var c = GetBotClient())
             {
-                var m = c.PostMessageAsync(dev.Id, GetTestMessage(), false).GetAwaiter().GetResult();
+                var m = c.PostMessageAsync(dev.Id, GetTestMessage(), displayName: GetType().FullName).GetAwaiter().GetResult();
 
                 Assert.NotNull(m);
             }
