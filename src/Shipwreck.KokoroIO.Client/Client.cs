@@ -85,7 +85,7 @@ namespace Shipwreck.KokoroIO
             return SendAsync(r);
         }
 
-        public Task<Message[]> GetMessages(string roomId, int? limit = null, int? beforeId = null)
+        public Task<Message[]> GetMessagesAsync(string roomId, int? limit = null, int? beforeId = null)
         {
             if (!Room.IsValidId(roomId))
             {

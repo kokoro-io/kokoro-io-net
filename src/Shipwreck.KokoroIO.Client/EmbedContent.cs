@@ -12,8 +12,9 @@ namespace Shipwreck.KokoroIO
         [DataMember, JsonProperty("url")]
         public string Url { get; set; }
 
-        [DefaultValue(null)]
-        [DataMember, JsonProperty("data")]
-        public string Data { get; set; }
+        // TODO: temporary removed because apidoc error.
+        //[DefaultValue(null)]
+        //[DataMember, JsonProperty("data")]
+        //public string Data { get; set; }
     }
 }

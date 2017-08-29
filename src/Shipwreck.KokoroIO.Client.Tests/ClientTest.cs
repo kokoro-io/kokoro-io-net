@@ -3,12 +3,12 @@ using Xunit;
 
 namespace Shipwreck.KokoroIO
 {
-    public class ClientTest
+    public class ClientTest : TestBase
     {
         [Fact]
         public void GetProfileAsyncTest()
         {
-            using (var c = TestHelper.GetClient())
+            using (var c = GetClient())
             {
                 var p = c.GetProfieAsync().GetAwaiter().GetResult();
 
@@ -20,7 +20,7 @@ namespace Shipwreck.KokoroIO
         [Fact]
         public void GetRoomsAsyncTest()
         {
-            using (var c = TestHelper.GetClient())
+            using (var c = GetClient())
             {
                 var rooms = c.GetRoomsAsync().GetAwaiter().GetResult();
 
@@ -31,7 +31,7 @@ namespace Shipwreck.KokoroIO
         [Fact]
         public void GetPublicRoomsAsyncTest()
         {
-            using (var c = TestHelper.GetClient())
+            using (var c = GetClient())
             {
                 var rooms = c.GetPublicRoomsAsync().GetAwaiter().GetResult();
 
@@ -42,7 +42,7 @@ namespace Shipwreck.KokoroIO
         [Fact]
         public void GetPrivateRoomsAsyncTest()
         {
-            using (var c = TestHelper.GetClient())
+            using (var c = GetClient())
             {
                 var rooms = c.GetPrivateRoomsAsync().GetAwaiter().GetResult();
 
@@ -53,7 +53,7 @@ namespace Shipwreck.KokoroIO
         [Fact]
         public void GetDirectMessageRoomsAsyncTest()
         {
-            using (var c = TestHelper.GetClient())
+            using (var c = GetClient())
             {
                 var rooms = c.GetDirectMessageRoomsAsync().GetAwaiter().GetResult();
 
@@ -62,9 +62,9 @@ namespace Shipwreck.KokoroIO
         }
 
         [Fact]
-        public void PostMessageAsyncTest()
+        public void GetMessagesAsyncTest()
         {
-            using (var c = TestHelper.GetClient())
+            using (var c = GetClient())
             {
                 var rooms = c.GetPrivateRoomsAsync().GetAwaiter().GetResult();
 
@@ -75,7 +75,26 @@ namespace Shipwreck.KokoroIO
                     return;
                 }
 
-                var m = c.PostMessageAsync(dev.Id, "test", false).GetAwaiter().GetResult();
+                var m = c.GetMessagesAsync(dev.Id).GetAwaiter().GetResult();
+
+                Assert.NotNull(m);
+            }
+        }
+        [Fact]
+        public void PostMessageAsyncTest()
+        {
+            using (var c = GetClient())
+            {
+                var rooms = c.GetPrivateRoomsAsync().GetAwaiter().GetResult();
+
+                var dev = rooms.FirstOrDefault(r => r.ChannelName == "private/dev");
+
+                if (dev == null)
+                {
+                    return;
+                }
+
+                var m = c.PostMessageAsync(dev.Id, GetTestMessage(), false).GetAwaiter().GetResult();
 
                 Assert.NotNull(m);
             }

@@ -3,13 +3,13 @@ using Xunit;
 
 namespace Shipwreck.KokoroIO
 {
-    public class BotClientTest
+    public class BotClientTest : TestBase
     {
         [Fact]
         public void PostMessageAsyncTest()
         {
             Room dev;
-            using (var c = TestHelper.GetClient())
+            using (var c = GetClient())
             {
                 var rooms = c.GetPrivateRoomsAsync().GetAwaiter().GetResult();
 
@@ -21,9 +21,9 @@ namespace Shipwreck.KokoroIO
                 }
             }
 
-            using (var c = TestHelper.GetBotClient())
+            using (var c = GetBotClient())
             {
-                var m = c.PostMessageAsync(dev.Id, "test", false).GetAwaiter().GetResult();
+                var m = c.PostMessageAsync(dev.Id, GetTestMessage(), false).GetAwaiter().GetResult();
 
                 Assert.NotNull(m);
             }
