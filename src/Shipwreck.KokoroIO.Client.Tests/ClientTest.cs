@@ -1,10 +1,13 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Shipwreck.KokoroIO
 {
     public class ClientTest : TestBase
     {
+        #region Rest API
+
         [Fact]
         public void GetProfileAsyncTest()
         {
@@ -80,6 +83,7 @@ namespace Shipwreck.KokoroIO
                 Assert.NotNull(m);
             }
         }
+
         [Fact]
         public void PostMessageAsyncTest()
         {
@@ -99,6 +103,39 @@ namespace Shipwreck.KokoroIO
                 Assert.NotNull(m);
             }
         }
-    }
 
+        #endregion Rest API
+
+        #region WebSocket API
+
+        [Fact]
+        public async Task PingTest()
+        {
+            using (var c = GetClient())
+            {
+                var welcomed = false;
+                var ping = 0;
+
+                c.Connected += (s, e) =>
+                {
+                    Assert.False(welcomed);
+                    welcomed = true;
+                };
+                c.Ping += (s, e) =>
+                {
+                    Assert.True(welcomed);
+                    ping++;
+                };
+
+                await c.ConnectAsync().ConfigureAwait(false);
+
+                while (ping < 1)
+                {
+                    await Task.Delay(250).ConfigureAwait(false);
+                }
+            }
+        }
+
+        #endregion WebSocket API
+    }
 }
