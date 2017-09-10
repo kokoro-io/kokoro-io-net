@@ -113,26 +113,44 @@ namespace Shipwreck.KokoroIO
         {
             using (var c = GetClient())
             {
-                var welcomed = false;
-                var ping = 0;
+                await c.ConnectAsync().ConfigureAwait(false);
 
-                c.Connected += (s, e) =>
+                await c.CloseAsync().ConfigureAwait(false);
+            }
+        }
+
+        [Fact]
+        public async Task MessageCreatedTest()
+        {
+            using (var c = GetClient())
+            {
+                var rooms = await c.GetPrivateRoomsAsync().ConfigureAwait(false);
+                var dev = rooms.FirstOrDefault(r => r.ChannelName == "private/dev");
+                if (dev == null)
                 {
-                    Assert.False(welcomed);
-                    welcomed = true;
-                };
-                c.Ping += (s, e) =>
-                {
-                    Assert.True(welcomed);
-                    ping++;
-                };
+                    return;
+                }
 
                 await c.ConnectAsync().ConfigureAwait(false);
 
-                while (ping < 1)
+                await c.SubscribeAsync(dev).ConfigureAwait(false);
+
+                var msg = $"{nameof(MessageCreatedTest)}見てるぅ～？";
+
+                var received = false;
+                c.MessageCreated += (s2, e2) =>
+                {
+                    Assert.Equal(msg, e2.Data.RawContent);
+                    received = true;
+                };
+
+                do
                 {
                     await Task.Delay(250).ConfigureAwait(false);
+
+                    await c.PostMessageAsync(dev.Id, msg, false);
                 }
+                while (!received);
 
                 await c.CloseAsync().ConfigureAwait(false);
             }
