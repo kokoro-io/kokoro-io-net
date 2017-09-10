@@ -149,6 +149,8 @@ namespace Shipwreck.KokoroIO
 
         public event EventHandler Ping;
 
+        public event EventHandler Disconnected;
+
         private ClientWebSocket _WebSocket;
 
         private CancellationTokenSource _WebSocketCancellationTokenSource;
@@ -180,80 +182,112 @@ namespace Shipwreck.KokoroIO
             return r;
         }
 
-        private async void ReceiveCore()
+        public Task CloseAsync()
         {
             var ws = _WebSocket;
-            var ct = _WebSocketCancellationTokenSource?.Token ?? default(CancellationToken);
-
-            if (ws?.State == WebSocketState.Open)
+            _WebSocket = null;
+            _WebSocketCancellationTokenSource?.Cancel();
+            if (ws == null
+                || (ws.State != WebSocketState.Open
+                    || ws.State != WebSocketState.CloseReceived
+                    || ws.State != WebSocketState.CloseSent))
             {
-                using (var ms = new MemoryStream())
-                using (var sw = new StreamWriter(ms, Encoding.UTF8, 128, true))
-                using (var jtw = new JsonTextWriter(sw))
-                {
-                    jtw.WriteStartObject();
+                return Task.CompletedTask;
+            }
+            return ws.CloseAsync(WebSocketCloseStatus.NormalClosure, null, default(CancellationToken));
+        }
 
-                    jtw.WritePropertyName("command");
-                    jtw.WriteValue("subscribe");
+        private async void ReceiveCore()
+        {
+            try
+            {
+                var ws = _WebSocket;
+                var ct = _WebSocketCancellationTokenSource?.Token ?? default(CancellationToken);
 
-                    jtw.WritePropertyName("identifier");
-                    jtw.WriteValue("{\"channel\":\"ChatChannel\"}");
-
-                    jtw.WriteEndObject();
-
-                    jtw.Flush();
-                    sw.Flush();
-
-                    if (!ms.TryGetBuffer(out var b))
-                    {
-                        throw new Exception();
-                    }
-
-                    await ws.SendAsync(b, WebSocketMessageType.Text, true, ct).ConfigureAwait(false);
-                }
-
-                var buf = new byte[1024];
-                var js = new JsonSerializer();
-
-                while (ws?.State == WebSocketState.Open)
+                if (ws?.State == WebSocketState.Open)
                 {
                     using (var ms = new MemoryStream())
+                    using (var sw = new StreamWriter(ms, Encoding.UTF8, 128, true))
+                    using (var jtw = new JsonTextWriter(sw))
                     {
-                        while (ws?.State == WebSocketState.Open)
+                        jtw.WriteStartObject();
+
+                        jtw.WritePropertyName("command");
+                        jtw.WriteValue("subscribe");
+
+                        jtw.WritePropertyName("identifier");
+                        jtw.WriteValue("{\"channel\":\"ChatChannel\"}");
+
+                        jtw.WriteEndObject();
+
+                        jtw.Flush();
+                        sw.Flush();
+
+                        if (!ms.TryGetBuffer(out var b))
                         {
-                            ct.ThrowIfCancellationRequested();
-
-                            var res = await ws.ReceiveAsync(new ArraySegment<byte>(buf, 0, buf.Length), ct).ConfigureAwait(false);
-                            ms.Write(buf, 0, res.Count);
-
-                            if (ms.Length > 0 && res.EndOfMessage)
-                            {
-                                break;
-                            }
-                            await Task.Delay(1).ConfigureAwait(false);
+                            throw new Exception();
                         }
 
-                        ms.Position = 0;
+                        await ws.SendAsync(b, WebSocketMessageType.Text, true, ct).ConfigureAwait(false);
+                    }
 
-                        using (var sr = new StreamReader(ms, Encoding.UTF8))
-                        using (var jtr = new JsonTextReader(sr))
+                    var buf = new byte[1024];
+                    var js = new JsonSerializer();
+
+                    while (ws?.State == WebSocketState.Open)
+                    {
+                        using (var ms = new MemoryStream())
                         {
-                            var jo = js.Deserialize<JObject>(jtr);
-
-                            switch (jo?.Property("type")?.Value?.Value<string>())
+                            while (ws?.State == WebSocketState.Open)
                             {
-                                case "welcome":
-                                    Connected?.Invoke(this, EventArgs.Empty);
-                                    continue;
+                                ct.ThrowIfCancellationRequested();
 
-                                case "ping":
-                                    Ping?.Invoke(this, EventArgs.Empty);
-                                    continue;
+                                var res = await ws.ReceiveAsync(new ArraySegment<byte>(buf, 0, buf.Length), ct).ConfigureAwait(false);
+                                ms.Write(buf, 0, res.Count);
+
+                                if (ms.Length > 0 && res.EndOfMessage)
+                                {
+                                    break;
+                                }
+                                await Task.Delay(1).ConfigureAwait(false);
+                            }
+
+                            ms.Position = 0;
+
+                            using (var sr = new StreamReader(ms, Encoding.UTF8))
+                            using (var jtr = new JsonTextReader(sr))
+                            {
+                                var jo = js.Deserialize<JObject>(jtr);
+
+                                switch (jo?.Property("type")?.Value?.Value<string>())
+                                {
+                                    case "welcome":
+                                        Connected?.Invoke(this, EventArgs.Empty);
+                                        continue;
+
+                                    case "ping":
+                                        Ping?.Invoke(this, EventArgs.Empty);
+                                        continue;
+                                }
                             }
                         }
                     }
                 }
             }
+            catch
+            {
+                var ws = _WebSocket;
+                var cts = _WebSocketCancellationTokenSource;
+                _WebSocket = null;
+                _WebSocketCancellationTokenSource = null;
+                try
+                {
+                    ws?.Dispose();
+                    cts?.Dispose();
+                }
+                catch { }
+            }
+            Disconnected?.Invoke(this, EventArgs.Empty);
         }
 
         #endregion WebSocket API

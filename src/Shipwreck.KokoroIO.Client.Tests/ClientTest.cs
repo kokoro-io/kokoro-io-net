@@ -133,6 +133,8 @@ namespace Shipwreck.KokoroIO
                 {
                     await Task.Delay(250).ConfigureAwait(false);
                 }
+
+                await c.CloseAsync().ConfigureAwait(false);
             }
         }
 
