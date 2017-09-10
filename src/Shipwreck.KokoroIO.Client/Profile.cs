@@ -9,9 +9,9 @@ namespace Shipwreck.KokoroIO
     [Serializable, DataContract]
     public class Profile
     {
-        [DefaultValue(0)]
+        [DefaultValue(null)]
         [DataMember, JsonProperty("id")]
-        public int Id { get; set; }
+        public string Id { get; set; }
 
         [DefaultValue(default(ProfileType))]
         [DataMember, JsonProperty("type")]
