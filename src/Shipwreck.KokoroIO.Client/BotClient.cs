@@ -18,7 +18,7 @@ namespace Shipwreck.KokoroIO
         {
             if (!Room.IsValidId(roomId))
             {
-                return Task.FromException<Message>(new ArgumentException($"Invalid {nameof(roomId)}."));
+                return new ArgumentException($"Invalid {nameof(roomId)}.").ToTask<Message>();
             }
 
             var r = new HttpRequestMessage(HttpMethod.Post, EndPoint + $"/v1/bot/rooms/" + roomId + "/messages");

@@ -58,7 +58,7 @@ namespace Shipwreck.KokoroIO
         {
             if (!Room.IsValidId(roomId))
             {
-                return Task.FromException<Room>(new ArgumentException($"Invalid {nameof(roomId)}."));
+                return new ArgumentException($"Invalid {nameof(roomId)}.").ToTask<Room>();
             }
 
             var r = new HttpRequestMessage(HttpMethod.Put, EndPoint + $"/v1/rooms/" + roomId);
@@ -78,7 +78,7 @@ namespace Shipwreck.KokoroIO
         {
             if (!Room.IsValidId(roomId))
             {
-                return Task.FromException<Room>(new ArgumentException($"Invalid {nameof(roomId)}."));
+                return new ArgumentException($"Invalid {nameof(roomId)}.").ToTask<object>();
             }
 
             var r = new HttpRequestMessage(HttpMethod.Put, EndPoint + $"/v1/rooms/" + roomId + "/manage_member/" + memberId);
@@ -97,7 +97,7 @@ namespace Shipwreck.KokoroIO
         {
             if (!Room.IsValidId(roomId))
             {
-                return Task.FromException<Message[]>(new ArgumentException($"Invalid {nameof(roomId)}."));
+                return new ArgumentException($"Invalid {nameof(roomId)}.").ToTask<Message[]>();
             }
 
             var u = new StringBuilder(EndPoint).Append("/v1/rooms/").Append(roomId).Append("/messages");
@@ -119,7 +119,7 @@ namespace Shipwreck.KokoroIO
         {
             if (!Room.IsValidId(roomId))
             {
-                return Task.FromException<Message>(new ArgumentException($"Invalid {nameof(roomId)}."));
+                return new ArgumentException($"Invalid {nameof(roomId)}.").ToTask<Message>();
             }
 
             var r = new HttpRequestMessage(HttpMethod.Post, EndPoint + $"/v1/rooms/" + roomId + "/messages");
@@ -169,7 +169,7 @@ namespace Shipwreck.KokoroIO
                 {
                     case WebSocketState.Connecting:
                     case WebSocketState.Open:
-                        return Task.CompletedTask;
+                        return Polyfills.CompletedTask;
                 }
             }
             if (_Connected?.Task != null)
@@ -209,7 +209,7 @@ namespace Shipwreck.KokoroIO
 
             if (ws == null)
             {
-                return Task.FromException(new InvalidOperationException());
+                return new InvalidOperationException().ToTask<object>();
             }
 
             ArraySegment<byte> b;
@@ -260,7 +260,7 @@ namespace Shipwreck.KokoroIO
 
                 if (!ms.TryGetBuffer(out b))
                 {
-                    return Task.FromException(new InvalidOperationException());
+                    return new InvalidOperationException().ToTask<object>();
                 }
             }
 
@@ -277,7 +277,7 @@ namespace Shipwreck.KokoroIO
                     || ws.State != WebSocketState.CloseReceived
                     || ws.State != WebSocketState.CloseSent))
             {
-                return Task.CompletedTask;
+                return Polyfills.CompletedTask;
             }
             return ws.CloseAsync(WebSocketCloseStatus.NormalClosure, null, default(CancellationToken));
         }
@@ -413,7 +413,7 @@ namespace Shipwreck.KokoroIO
 
                 if (!ms.TryGetBuffer(out b))
                 {
-                    return Task.FromException(new InvalidOperationException());
+                    return new InvalidOperationException().ToTask<object>();
                 }
             }
             return ws.SendAsync(b, WebSocketMessageType.Text, true, ct);
