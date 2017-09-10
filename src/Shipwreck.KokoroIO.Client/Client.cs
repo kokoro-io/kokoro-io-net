@@ -12,16 +12,6 @@ using Newtonsoft.Json.Linq;
 
 namespace Shipwreck.KokoroIO
 {
-    public sealed class EventArgs<T> : EventArgs
-    {
-        public EventArgs(T data)
-        {
-            Data = data;
-        }
-
-        public T Data { get; }
-    }
-
     public sealed class Client : ClientBase
     {
         public static new string DefaultAccessToken { get; set; }
