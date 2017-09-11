@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace Shipwreck.KokoroIO.SampleApp.ViewModels
 {
@@ -39,7 +40,7 @@ namespace Shipwreck.KokoroIO.SampleApp.ViewModels
             try
             {
                 var messages = await Main.Client.GetMessagesAsync(_Model.Id, 60);
-                foreach (var m in messages)
+                foreach (var m in messages.OrderBy(e => e.Id))
                 {
                     _Messages.Add(new MessageViewModel(this, m));
                 }
