@@ -1,0 +1,67 @@
+﻿<Window
+    x:Class="Shipwreck.KokoroIO.SampleApp.Views.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="clr-namespace:Shipwreck.KokoroIO.SampleApp.Views"
+    mc:Ignorable="d"
+    Title="MainWindow"
+    Height="350"
+    Width="525">
+    <Window.Resources>
+        <DataTemplate
+            x:Key="roomTemplate">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition
+                        Width="Auto" />
+                    <ColumnDefinition />
+                    <ColumnDefinition
+                        Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock>#</TextBlock>
+                <TextBlock
+                    Grid.Column="1"
+                    Text="{Binding ChannelName}" />
+            </Grid>
+        </DataTemplate>
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition
+                Width="300" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <ScrollViewer>
+            <StackPanel>
+                <StackPanel.Resources>
+                    <Style
+                        TargetType="Expander">
+                        <Setter
+                            Property="IsExpanded"
+                            Value="True" />
+                    </Style>
+                </StackPanel.Resources>
+                <Expander
+                    Header="Public Channels">
+                    <ItemsControl
+                        ItemsSource="{Binding PublicRooms}"
+                        ItemTemplate="{StaticResource roomTemplate}" />
+                </Expander>
+                <Expander
+                    Header="Private Channels">
+                    <ItemsControl
+                        ItemsSource="{Binding PrivateRooms}"
+                        ItemTemplate="{StaticResource roomTemplate}" />
+                </Expander>
+                <Expander
+                    Header="Direct Messages">
+                    <ItemsControl
+                        ItemsSource="{Binding DirectMessages}"
+                        ItemTemplate="{StaticResource roomTemplate}" />
+                </Expander>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Window>
