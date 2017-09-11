@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Net.WebSockets;
 using System.Text;
@@ -84,7 +85,7 @@ namespace Shipwreck.KokoroIO
         {
             if (!Room.IsValidId(roomId))
             {
-                return Task.FromException<Room>(new ArgumentException($"Invalid {nameof(roomId)}."));
+                return new ArgumentException($"Invalid {nameof(roomId)}.").ToTask<Room>();
             }
 
             var r = new HttpRequestMessage(HttpMethod.Put, EndPoint + $"/v1/rooms/" + roomId);
@@ -104,7 +105,7 @@ namespace Shipwreck.KokoroIO
         {
             if (!Room.IsValidId(roomId))
             {
-                return Task.FromException<Room>(new ArgumentException($"Invalid {nameof(roomId)}."));
+                return new ArgumentException($"Invalid {nameof(roomId)}.").ToTask<object>();
             }
 
             var r = new HttpRequestMessage(HttpMethod.Put, EndPoint + $"/v1/rooms/" + roomId + "/manage_member/" + memberId);
@@ -123,7 +124,7 @@ namespace Shipwreck.KokoroIO
         {
             if (!Room.IsValidId(roomId))
             {
-                return Task.FromException<Message[]>(new ArgumentException($"Invalid {nameof(roomId)}."));
+                return new ArgumentException($"Invalid {nameof(roomId)}.").ToTask<Message[]>();
             }
 
             var u = new StringBuilder(EndPoint).Append("/v1/rooms/").Append(roomId).Append("/messages");
@@ -145,7 +146,7 @@ namespace Shipwreck.KokoroIO
         {
             if (!Room.IsValidId(roomId))
             {
-                return Task.FromException<Message>(new ArgumentException($"Invalid {nameof(roomId)}."));
+                return new ArgumentException($"Invalid {nameof(roomId)}.").ToTask<Message>();
             }
 
             var r = new HttpRequestMessage(HttpMethod.Post, EndPoint + $"/v1/rooms/" + roomId + "/messages");
@@ -172,9 +173,15 @@ namespace Shipwreck.KokoroIO
 
         public string WebSocketEndPoint { get; set; } = "wss://kokoro.io/cable";
 
-        public event EventHandler Connected;
+        private TaskCompletionSource<int> _Connected;
 
-        public event EventHandler Ping;
+        public event EventHandler<EventArgs<Message>> MessageCreated;
+
+        public event EventHandler<EventArgs<Message>> MessageUpdated;
+
+        public event EventHandler<EventArgs<Profile>> ProfileUpdated;
+
+        public event EventHandler Disconnected;
 
         private ClientWebSocket _WebSocket;
 
@@ -189,14 +196,23 @@ namespace Shipwreck.KokoroIO
                 {
                     case WebSocketState.Connecting:
                     case WebSocketState.Open:
-                        return Task.CompletedTask;
+                        return Polyfills.CompletedTask;
                 }
             }
+            if (_Connected?.Task != null)
+            {
+                return _Connected.Task;
+            }
+
             _WebSocket = new ClientWebSocket();
             _WebSocketCancellationTokenSource = new CancellationTokenSource();
             _WebSocket.Options.SetRequestHeader("X-Access-Token", AccessToken);
+            _Connected = new TaskCompletionSource<int>();
 
             var r = _WebSocket.ConnectAsync(new Uri(WebSocketEndPoint), _WebSocketCancellationTokenSource.Token);
+
+            var tcs = new TaskCompletionSource<int>();
+
             r.ContinueWith(t =>
             {
                 if (t.Status == TaskStatus.RanToCompletion)
@@ -204,98 +220,251 @@ namespace Shipwreck.KokoroIO
                     ReceiveCore();
                 }
             });
-            return r;
+            return _Connected.Task;
+        }
+
+        public Task SubscribeAsync(params Room[] rooms)
+            => SubscribeAsync((IEnumerable<Room>)rooms);
+
+        public Task SubscribeAsync(IEnumerable<Room> rooms)
+            => SubscribeAsync(rooms.Select(r => r.Id));
+
+        public Task SubscribeAsync(IEnumerable<string> roomIds)
+        {
+            var ws = _WebSocket;
+            var ct = _WebSocketCancellationTokenSource?.Token;
+
+            if (ws == null)
+            {
+                return new InvalidOperationException().ToTask<object>();
+            }
+
+            ArraySegment<byte> b;
+
+            using (var ms = new MemoryStream())
+            using (var sw = new StreamWriter(ms, new UTF8Encoding(false), 128, true))
+            using (var jtw = new JsonTextWriter(sw))
+            {
+                jtw.WriteStartObject();
+
+                jtw.WritePropertyName("command");
+                jtw.WriteValue("message");
+
+                jtw.WritePropertyName("identifier");
+                jtw.WriteValue("{\"channel\":\"ChatChannel\"}");
+
+                using (var sw2 = new StringWriter())
+                using (var jtw2 = new JsonTextWriter(sw2))
+                {
+                    jtw2.WriteStartObject();
+
+                    jtw2.WritePropertyName("access_token");
+                    jtw2.WriteValue(AccessToken);
+
+                    jtw2.WritePropertyName("rooms");
+                    jtw2.WriteStartArray();
+                    foreach (var id in roomIds)
+                    {
+                        jtw2.WriteValue(id);
+                    }
+                    jtw2.WriteEndArray();
+
+                    jtw2.WritePropertyName("action");
+                    jtw2.WriteValue("subscribe");
+
+                    jtw2.WriteEndObject();
+
+                    jtw2.Flush();
+
+                    jtw.WritePropertyName("data");
+                    jtw.WriteValue(sw2.ToString());
+                }
+
+                jtw.WriteEndObject();
+
+                jtw.Flush();
+                sw.Flush();
+
+                if (!ms.TryGetBuffer(out b))
+                {
+                    return new InvalidOperationException().ToTask<object>();
+                }
+            }
+
+            return ws.SendAsync(b, WebSocketMessageType.Text, true, ct ?? default(CancellationToken));
+        }
+
+        public Task CloseAsync()
+        {
+            var ws = _WebSocket;
+            _WebSocket = null;
+            _WebSocketCancellationTokenSource?.Cancel();
+            if (ws == null
+                || (ws.State != WebSocketState.Open
+                    || ws.State != WebSocketState.CloseReceived
+                    || ws.State != WebSocketState.CloseSent))
+            {
+                return Polyfills.CompletedTask;
+            }
+            return ws.CloseAsync(WebSocketCloseStatus.NormalClosure, null, default(CancellationToken));
         }
 
         private async void ReceiveCore()
         {
-            var ws = _WebSocket;
-            var ct = _WebSocketCancellationTokenSource?.Token ?? default(CancellationToken);
-
-            if (ws?.State == WebSocketState.Open)
+            try
             {
-                using (var ms = new MemoryStream())
-                using (var sw = new StreamWriter(ms, Encoding.UTF8, 128, true))
-                using (var jtw = new JsonTextWriter(sw))
+                var ws = _WebSocket;
+                var ct = _WebSocketCancellationTokenSource?.Token ?? default(CancellationToken);
+
+                if (ws?.State == WebSocketState.Open)
                 {
-                    jtw.WriteStartObject();
+                    var buf = new byte[1024];
+                    var js = new JsonSerializer();
 
-                    jtw.WritePropertyName("command");
-                    jtw.WriteValue("subscribe");
-
-                    jtw.WritePropertyName("identifier");
-                    jtw.WriteValue("{\"channel\":\"ChatChannel\"}");
-
-                    jtw.WriteEndObject();
-
-                    jtw.Flush();
-                    sw.Flush();
-
-                    if (!ms.TryGetBuffer(out var b))
+                    while (ws?.State == WebSocketState.Open)
                     {
-                        throw new Exception();
-                    }
-
-                    await ws.SendAsync(b, WebSocketMessageType.Text, true, ct).ConfigureAwait(false);
-                }
-
-                var buf = new byte[1024];
-                var js = new JsonSerializer();
-
-                while (ws?.State == WebSocketState.Open)
-                {
-                    using (var ms = new MemoryStream())
-                    {
-                        while (ws?.State == WebSocketState.Open)
+                        using (var ms = new MemoryStream())
                         {
-                            ct.ThrowIfCancellationRequested();
-
-                            var res = await ws.ReceiveAsync(new ArraySegment<byte>(buf, 0, buf.Length), ct).ConfigureAwait(false);
-                            ms.Write(buf, 0, res.Count);
-
-                            if (ms.Length > 0 && res.EndOfMessage)
+                            while (ws?.State == WebSocketState.Open)
                             {
-                                break;
+                                ct.ThrowIfCancellationRequested();
+
+                                var res = await ws.ReceiveAsync(new ArraySegment<byte>(buf, 0, buf.Length), ct).ConfigureAwait(false);
+                                ms.Write(buf, 0, res.Count);
+
+                                if (ms.Length > 0 && res.EndOfMessage)
+                                {
+                                    break;
+                                }
+                                await Task.Delay(1).ConfigureAwait(false);
                             }
-                            await Task.Delay(1).ConfigureAwait(false);
-                        }
 
-                        ms.Position = 0;
+                            ms.Position = 0;
 
-                        using (var sr = new StreamReader(ms, Encoding.UTF8))
-                        using (var jtr = new JsonTextReader(sr))
-                        {
-                            var jo = js.Deserialize<JObject>(jtr);
-
-                            switch (jo?.Property("type")?.Value?.Value<string>())
+                            using (var sr = new StreamReader(ms, Encoding.UTF8))
+                            using (var jtr = new JsonTextReader(sr))
                             {
-                                case "welcome":
-                                    Connected?.Invoke(this, EventArgs.Empty);
-                                    continue;
+                                var jo = js.Deserialize<JObject>(jtr);
 
-                                case "ping":
-                                    Ping?.Invoke(this, EventArgs.Empty);
-                                    continue;
+                                switch (jo?.Property("type")?.Value?.Value<string>())
+                                {
+                                    case "welcome":
+                                        await SendSubscribeAsync(ws, ct).ConfigureAwait(false);
+                                        continue;
+
+                                    case "ping":
+                                        continue;
+
+                                    case "confirm_subscription":
+                                        _Connected?.TrySetResult(0);
+                                        _Connected = null;
+                                        continue;
+                                }
+
+                                var msg = jo?.Property("message")?.Value?.Value<JObject>();
+                                switch (msg?.Property("event")?.Value?.Value<string>())
+                                {
+                                    case "message_created":
+                                        {
+                                            var h = MessageCreated;
+                                            if (h != null)
+                                            {
+                                                var mo = msg.Property("data")?.Value?.ToObject<Message>();
+                                                if (mo != null)
+                                                {
+                                                    h(this, new EventArgs<Message>(mo));
+                                                }
+                                            }
+                                        }
+                                        break;
+
+                                    case "message_updated":
+                                        {
+                                            var h = MessageUpdated;
+                                            if (h != null)
+                                            {
+                                                var mo = msg.Property("data")?.Value?.ToObject<Message>();
+                                                if (mo != null)
+                                                {
+                                                    h(this, new EventArgs<Message>(mo));
+                                                }
+                                            }
+                                        }
+                                        break;
+
+                                    case "profile_updated":
+                                        {
+                                            var h = ProfileUpdated;
+                                            if (h != null)
+                                            {
+                                                var mo = msg.Property("data")?.Value?.ToObject<Profile>();
+                                                if (mo != null)
+                                                {
+                                                    h(this, new EventArgs<Profile>(mo));
+                                                }
+                                            }
+                                        }
+                                        break;
+                                }
                             }
                         }
                     }
                 }
             }
+            catch
+            {
+                DisposeWebSocket();
+            }
+            Disconnected?.Invoke(this, EventArgs.Empty);
+        }
+
+        private Task SendSubscribeAsync(ClientWebSocket ws, CancellationToken ct)
+        {
+            ArraySegment<byte> b;
+            using (var ms = new MemoryStream())
+            using (var sw = new StreamWriter(ms, new UTF8Encoding(false), 128, true))
+            using (var jtw = new JsonTextWriter(sw))
+            {
+                jtw.WriteStartObject();
+
+                jtw.WritePropertyName("command");
+                jtw.WriteValue("subscribe");
+
+                jtw.WritePropertyName("identifier");
+                jtw.WriteValue("{\"channel\":\"ChatChannel\"}");
+
+                jtw.WriteEndObject();
+
+                jtw.Flush();
+                sw.Flush();
+
+                if (!ms.TryGetBuffer(out b))
+                {
+                    return new InvalidOperationException().ToTask<object>();
+                }
+            }
+            return ws.SendAsync(b, WebSocketMessageType.Text, true, ct);
         }
 
         #endregion WebSocket API
 
         protected override void Dispose(bool disposing)
         {
+            DisposeWebSocket();
+            base.Dispose(disposing);
+        }
+
+        private void DisposeWebSocket()
+        {
             try
             {
+                _Connected?.TrySetCanceled();
                 _WebSocket?.Dispose();
                 _WebSocket = null;
                 _WebSocketCancellationTokenSource?.Cancel();
                 _WebSocketCancellationTokenSource = null;
             }
             catch { }
-            base.Dispose(disposing);
         }
     }
 }
