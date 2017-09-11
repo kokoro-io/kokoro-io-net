@@ -22,6 +22,33 @@ namespace Shipwreck.KokoroIO
 
         #region Rest API
 
+        #region Token
+
+        public Task<AccessToken[]> GetAccessTokensAsync(string email, string password)
+        {
+            var req = new HttpRequestMessage(HttpMethod.Get, EndPoint + "/v1/access_tokens");
+            req.Headers.Add("X-Access-Token", Convert.ToBase64String(new UTF8Encoding(false).GetBytes(email + ":" + password)));
+
+            return SendAsync<AccessToken[]>(req);
+        }
+
+        public Task<AccessToken> PostAccessTokenAsync(string email, string password, string name)
+        {
+            var req = new HttpRequestMessage(HttpMethod.Post, EndPoint + "/v1/access_tokens");
+            req.Headers.Add("X-Access-Token", Convert.ToBase64String(new UTF8Encoding(false).GetBytes(email + ":" + password)));
+
+            var d = new List<KeyValuePair<string, string>>(1)
+            {
+                new KeyValuePair<string, string>("name", name)
+            };
+
+            req.Content = new FormUrlEncodedContent(d);
+
+            return SendAsync<AccessToken>(req);
+        }
+
+        #endregion Token
+
         public Task<Profile> GetProfieAsync()
             => SendAsync<Profile>(new HttpRequestMessage(HttpMethod.Get, EndPoint + "/v1/profiles/me"));
 

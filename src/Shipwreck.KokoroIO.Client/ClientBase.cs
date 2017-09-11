@@ -57,7 +57,10 @@ namespace Shipwreck.KokoroIO
 
         protected Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken = default(CancellationToken))
         {
-            request.Headers.Add("X-Access-Token", AccessToken);
+            if (!request.Headers.Contains("X-Access-Token"))
+            {
+                request.Headers.Add("X-Access-Token", AccessToken);
+            }
 
             return HttpClient.SendAsync(request, cancellationToken);
         }
