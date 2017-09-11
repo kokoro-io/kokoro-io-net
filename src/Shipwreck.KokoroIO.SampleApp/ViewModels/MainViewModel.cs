@@ -4,12 +4,14 @@ namespace Shipwreck.KokoroIO.SampleApp.ViewModels
 {
     public sealed class MainViewModel : ViewModelBase
     {
-        private readonly Client _Client;
-
         internal MainViewModel(Client client)
         {
-            _Client = client;
+            Client = client;
         }
+
+        internal Client Client { get; }
+
+        #region Room
 
         private ObservableCollection<RoomViewModel> _PublicRooms;
         private ObservableCollection<RoomViewModel> _PrivateRooms;
@@ -41,10 +43,10 @@ namespace Shipwreck.KokoroIO.SampleApp.ViewModels
         {
             try
             {
-                var rs = await _Client.GetRoomsAsync();
+                var rs = await Client.GetRoomsAsync();
                 foreach (var r in rs)
                 {
-                    var vm = new RoomViewModel(r);
+                    var vm = new RoomViewModel(this, r);
                     if (r.Kind == RoomKind.PublicChannel)
                     {
                         _PublicRooms.Add(vm);
@@ -59,10 +61,53 @@ namespace Shipwreck.KokoroIO.SampleApp.ViewModels
                     }
                 }
 
-                await _Client.ConnectAsync();
+                await Client.ConnectAsync();
             }
             catch
             {
+            }
+        }
+
+        private void UpdateCurrentRoom()
+        {
+            if (_PublicRooms == null)
+            {
+                return;
+            }
+            var cp = _CurrentPage as RoomPageViewModel;
+
+            foreach (var r in _PublicRooms)
+            {
+                r.IsOpen = r.Id == cp?.Id;
+            }
+            foreach (var r in _PrivateRooms)
+            {
+                r.IsOpen = r.Id == cp?.Id;
+            }
+            foreach (var r in _DirectMessages)
+            {
+                r.IsOpen = r.Id == cp?.Id;
+            }
+        }
+
+        #endregion Room
+
+        private PageViewModelBase _CurrentPage;
+
+        public PageViewModelBase CurrentPage
+        {
+            get
+            {
+                return _CurrentPage;
+            }
+            internal set
+            {
+                if (value != _CurrentPage)
+                {
+                    _CurrentPage = value;
+                    SendPropertyChanged(nameof(CurrentPage));
+                    UpdateCurrentRoom();
+                }
             }
         }
     }

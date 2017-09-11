@@ -9,31 +9,14 @@
     Title="MainWindow"
     Height="350"
     Width="525">
-    <Window.Resources>
-        <DataTemplate
-            x:Key="roomTemplate">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition
-                        Width="Auto" />
-                    <ColumnDefinition />
-                    <ColumnDefinition
-                        Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <TextBlock>#</TextBlock>
-                <TextBlock
-                    Grid.Column="1"
-                    Text="{Binding ChannelName}" />
-            </Grid>
-        </DataTemplate>
-    </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition
                 Width="300" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
-        <ScrollViewer>
+        <ScrollViewer
+            Background="DarkOliveGreen">
             <StackPanel>
                 <StackPanel.Resources>
                     <Style
@@ -42,6 +25,39 @@
                             Property="IsExpanded"
                             Value="True" />
                     </Style>
+                    <DataTemplate
+                        x:Key="roomTemplate">
+                        <Grid>
+                            <Grid.Style>
+                                <Style
+                                    TargetType="Grid">
+                                    <Style.Triggers>
+                                        <DataTrigger
+                                            Binding="{Binding IsOpen}"
+                                            Value="True">
+                                            <Setter
+                                                Property="Background"
+                                                Value="Indigo" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Grid.Style>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition
+                                    Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock>
+                                <Hyperlink
+                                    Command="{Binding OpenCommand}"
+                                    Foreground="White">
+                                    <Run>#</Run>
+                                    <Run
+                                        Text="{Binding ChannelName, Mode=OneWay}" />
+                                </Hyperlink>
+                            </TextBlock>
+                        </Grid>
+                    </DataTemplate>
                 </StackPanel.Resources>
                 <Expander
                     Header="Public Channels">
@@ -63,5 +79,28 @@
                 </Expander>
             </StackPanel>
         </ScrollViewer>
+        <ContentPresenter
+            Grid.Column="1"
+            Content="{Binding CurrentPage}">
+            <ContentPresenter.Style>
+                <Style
+                    TargetType="ContentPresenter">
+                    <Style.Triggers>
+                        <DataTrigger
+                            Binding="{Binding TypeName}"
+                            Value="RoomPageViewModel">
+                            <Setter
+                                Property="ContentTemplate">
+                                <Setter.Value>
+                                    <DataTemplate>
+                                        <local:RoomPage />
+                                    </DataTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ContentPresenter.Style>
+        </ContentPresenter>
     </Grid>
 </Window>
