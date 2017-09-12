@@ -6,9 +6,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:Shipwreck.KokoroIO.SampleApp.ViewModels"
     mc:Ignorable="d"
-    Title="ログイン"
+    Title="kokoro.io ログイン"
     SizeToContent="WidthAndHeight"
-    ShowInTaskbar="False"
     ResizeMode="NoResize">
     <Window.DataContext>
         <vm:LoginViewModel />
@@ -46,6 +45,8 @@
             Orientation="Horizontal"
             HorizontalAlignment="Right">
             <Button
+                Style="{StaticResource DialogFooterButtonStyle}"
+                IsDefault="True"
                 Click="Button_Click">ログイン</Button>
         </StackPanel>
     </Grid>

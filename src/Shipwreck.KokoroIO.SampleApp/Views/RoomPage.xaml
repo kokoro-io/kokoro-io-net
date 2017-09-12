@@ -39,8 +39,8 @@
                                 <Image
                                     Width="40"
                                     Height="40"
-                                    HorizontalAlignment="Stretch"
-                                    VerticalAlignment="Stretch"
+                                    Margin="6"
+                                    VerticalAlignment="Top"
                                     Source="{Binding Avatar}">
                                     <Image.OpacityMask>
                                         <VisualBrush>
@@ -71,7 +71,8 @@
                                 <StackPanel
                                     Grid.Column="1">
                                     <StackPanel
-                                        Orientation="Horizontal">
+                                        Orientation="Horizontal"
+                                        Margin="2">
                                         <StackPanel.Style>
                                             <Style
                                                 TargetType="StackPanel">
@@ -87,9 +88,16 @@
                                             </Style>
                                         </StackPanel.Style>
                                         <TextBlock
+                                            FontSize="13.5"
+                                            Foreground="#2C3E50"
+                                            FontWeight="Bold"
+                                            Padding="2,0"
                                             Text="{Binding DisplayName}" />
                                         <TextBlock
-                                            Text="{Binding PublishedAt}" />
+                                            Foreground="#b4bcc2"
+                                            FontSize="12"
+                                            Padding="5,0"
+                                            Text="{Binding PublishedAt, StringFormat=yyyy/MM/dd HH:mm}" />
                                     </StackPanel>
                                     <ItemsControl
                                         ItemsSource="{Binding Blocks}">

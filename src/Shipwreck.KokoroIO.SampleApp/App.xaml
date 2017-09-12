@@ -6,6 +6,15 @@
     StartupUri="Views/LoginWindow.xaml"
     ShutdownMode="OnLastWindowClose">
     <Application.Resources>
-
+        <Style
+            x:Key="DialogFooterButtonStyle"
+            TargetType="Button">
+            <Setter
+                Property="MinWidth"
+                Value="60" />
+            <Setter
+                Property="Margin"
+                Value="8,4" />
+        </Style>
     </Application.Resources>
 </Application>

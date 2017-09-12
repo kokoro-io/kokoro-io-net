@@ -50,6 +50,9 @@
     <Style
         TargetType="{x:Type views:MessageSpanControl}">
         <Setter
+            Property="FontSize"
+            Value="13.5" />
+        <Setter
             Property="TextWrapping"
             Value="Wrap" />
         <Setter
