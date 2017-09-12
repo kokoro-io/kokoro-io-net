@@ -59,33 +59,35 @@
                                         Width="Auto" />
                                 </Grid.ColumnDefinitions>
                                 <TextBlock>
-                                <Hyperlink
+                                    <Hyperlink
                                         Command="{Binding OpenCommand}">
-                                    <Hyperlink.Style>
-                                        <Style
+                                        <Hyperlink.Style>
+                                            <Style
                                                 TargetType="Hyperlink">
-                                            <Setter
+                                                <Setter
                                                     Property="FontSize"
                                                     Value="15" />
-                                            <Setter
+                                                <Setter
                                                     Property="Foreground"
                                                     Value="#aaa" />
-                                            <Style.Triggers>
-                                                <DataTrigger
+                                                <Style.Triggers>
+                                                    <DataTrigger
                                                         Binding="{Binding IsOpen}"
                                                         Value="True">
-                                                    <Setter
+                                                        <Setter
                                                             Property="Foreground"
-                                                            Value="#18bc9c" /> 
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                        
-                                    </Hyperlink.Style>
-                                    <Run>#</Run>
-                                    <Run
+                                                            Value="#18bc9c" />
+                                                        <Setter
+                                                            Property="FontWeight"
+                                                            Value="Bold" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Hyperlink.Style>
+                                        <Run>#</Run>
+                                        <Run
                                             Text="{Binding ChannelName, Mode=OneWay}" />
-                                </Hyperlink>
+                                    </Hyperlink>
                                 </TextBlock>
                             </Grid>
                         </DataTemplate>
