@@ -120,7 +120,7 @@ namespace Shipwreck.KokoroIO
             return SendAsync(r);
         }
 
-        public Task<Message[]> GetMessagesAsync(string roomId, int? limit = null, int? beforeId = null)
+        public Task<Message[]> GetMessagesAsync(string roomId, int? limit = null, int? beforeId = null, int? afterId = null)
         {
             if (!Room.IsValidId(roomId))
             {
@@ -137,6 +137,10 @@ namespace Shipwreck.KokoroIO
             if (beforeId != null)
             {
                 u.Append(limit > 0 ? '&' : '?').Append("before_id=").Append(beforeId.Value);
+            }
+            if (afterId != null)
+            {
+                u.Append(limit > 0 ? '&' : '?').Append("after_id=").Append(afterId.Value);
             }
 
             return SendAsync<Message[]>(new HttpRequestMessage(HttpMethod.Get, u.ToString()));

@@ -22,14 +22,33 @@
                 Text="{Binding ChannelName, Mode=OneWay}" />
         </TextBlock>
         <ScrollViewer
-            Grid.Row="1">
-            <StackPanel>
+            Name="messageViewer"
+            Grid.Row="1"
+            ScrollChanged="messageViewer_ScrollChanged">
+            <StackPanel
+                x:Name="messagesPanel">
+                <Border
+                    Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    IsVisibleChanged="Border_IsVisibleChanged">
+                    <TextBlock
+                        Margin="16"
+                        HorizontalAlignment="Center"
+                        FontSize="18">読み込み中です。。。</TextBlock>
+                </Border>
+                <TextBlock
+                    Name="header"
+                    HorizontalAlignment="Stretch"
+                    Visibility="{Binding HasPrevious, Converter={StaticResource BooleanToVisibilityConverter}}">
+                </TextBlock>
                 <ItemsControl
+                    Name="messagesControl"
                     Grid.IsSharedSizeScope="True"
                     ItemsSource="{Binding Messages}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Grid>
+                            <Grid
+                                Name="messageRoot"
+                                Background="Transparent">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition
                                         Width="Auto"
@@ -112,6 +131,10 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
+                <TextBlock
+                    Name="footer"
+                    HorizontalAlignment="Stretch">
+                </TextBlock>
             </StackPanel>
         </ScrollViewer>
         <TextBox

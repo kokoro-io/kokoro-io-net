@@ -6,6 +6,8 @@
     StartupUri="Views/LoginWindow.xaml"
     ShutdownMode="OnLastWindowClose">
     <Application.Resources>
+        <BooleanToVisibilityConverter
+            x:Key="BooleanToVisibilityConverter" />
         <Style
             x:Key="DialogFooterButtonStyle"
             TargetType="Button">

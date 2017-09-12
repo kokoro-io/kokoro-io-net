@@ -19,6 +19,7 @@ namespace Shipwreck.KokoroIO.SampleApp.ViewModels
             _Model = model;
         }
 
+        public int Id => _Model.Id;
         public string Avatar => _Model.Avatar;
 
         public string DisplayName => _Model.DisplayName;
@@ -27,7 +28,30 @@ namespace Shipwreck.KokoroIO.SampleApp.ViewModels
 
         public string Content => _Model.Content;
 
-        public bool IsMerged { get; internal set; }
+        private bool _IsMerged;
+
+        public bool IsMerged
+        {
+            get
+            {
+                return _IsMerged;
+            }
+            private set
+            {
+                if (value != _IsMerged)
+                {
+                    _IsMerged = value;
+                    SendPropertyChanged(nameof(IsMerged));
+                }
+            }
+        }
+
+        internal void SetIsMerged(MessageViewModel prev)
+        {
+            IsMerged = prev?.Avatar == Avatar
+                        && prev.DisplayName == DisplayName
+                        && PublishedAt < prev.PublishedAt.AddMinutes(3);
+        }
 
         #region Blocks
 

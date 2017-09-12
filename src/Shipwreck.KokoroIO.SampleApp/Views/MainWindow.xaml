@@ -89,6 +89,33 @@
                                             Text="{Binding ChannelName, Mode=OneWay}" />
                                     </Hyperlink>
                                 </TextBlock>
+                                <Border
+                                    Grid.Column="1"
+                                    CornerRadius="8"
+                                    Margin="4,0"
+                                    Background="#2C3E50">
+                                    <Border.Style>
+                                        <Style
+                                            TargetType="Border">
+                                            <Style.Triggers>
+                                                <DataTrigger
+                                                    Binding="{Binding NewMessageCount}"
+                                                    Value="0">
+                                                    <Setter
+                                                        Property="Visibility"
+                                                        Value="Collapsed" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+                                    <TextBlock
+                                        Foreground="#fff"
+                                        MinWidth="16"
+                                        FontSize="13"
+                                        FontWeight="Bold"
+                                        TextAlignment="Center"
+                                        Text="{Binding NewMessageCount}" />
+                                </Border>
                             </Grid>
                         </DataTemplate>
                     </StackPanel.Resources>

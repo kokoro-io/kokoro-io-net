@@ -37,6 +37,24 @@ namespace Shipwreck.KokoroIO.SampleApp.ViewModels
             }
         }
 
+        private int _NewMessageCount;
+
+        public int NewMessageCount
+        {
+            get
+            {
+                return _NewMessageCount;
+            }
+            set
+            {
+                if (value != _NewMessageCount)
+                {
+                    _NewMessageCount = value;
+                    SendPropertyChanged(nameof(NewMessageCount));
+                }
+            }
+        }
+
         private Command _OpenCommand;
 
         public ICommand OpenCommand
@@ -48,6 +66,7 @@ namespace Shipwreck.KokoroIO.SampleApp.ViewModels
                 }
                 rp = new RoomPageViewModel(_Main, _Model);
                 _Main.CurrentPage = rp;
+                NewMessageCount = 0;
             }));
     }
 }

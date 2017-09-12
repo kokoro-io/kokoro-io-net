@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.Collections.ObjectModel;
+using System.IO;
+using System.Linq;
+using System.Windows.Media;
 
 namespace Shipwreck.KokoroIO.SampleApp.ViewModels
 {
@@ -8,6 +11,39 @@ namespace Shipwreck.KokoroIO.SampleApp.ViewModels
         internal MainViewModel(Client client)
         {
             Client = client;
+
+            Client.MessageCreated += Client_MessageCreated;
+        }
+
+        private void Client_MessageCreated(object sender, EventArgs<Message> e)
+        {
+            try
+            {
+                var rid = e.Data.Room.Id; ;
+                for (var i = 0; i < 3; i++)
+                {
+                    var r = i == 0 ? _PublicRooms : i == 1 ? _PrivateRooms : _DirectMessages;
+
+                    if (r != null)
+                    {
+                        var rvm = r.FirstOrDefault(rm => rm.Id == rid);
+
+                        if (rvm != null)
+                        {
+                            rvm.NewMessageCount++;
+
+                            App.Current.Dispatcher.BeginInvoke((Action)(() =>
+                            {
+                                var mp = new MediaPlayer();
+                                mp.Open(new Uri(Path.Combine(Path.GetDirectoryName(GetType().Assembly.Location), "Resources", "notify.mp3")));
+                                mp.Play();
+                            }));
+                            return;
+                        }
+                    }
+                }
+            }
+            catch { }
         }
 
         internal Client Client { get; }
@@ -62,7 +98,12 @@ namespace Shipwreck.KokoroIO.SampleApp.ViewModels
                     }
                 }
 
-                await Client.ConnectAsync();
+                if (rs.Any())
+                {
+                    await Client.ConnectAsync();
+
+                    await Client.SubscribeAsync(rs);
+                }
             }
             catch
             {

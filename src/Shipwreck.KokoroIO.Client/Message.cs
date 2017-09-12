@@ -13,9 +13,9 @@ namespace Shipwreck.KokoroIO
         [DataMember, JsonProperty("id")]
         public int Id { get; set; }
 
-        [DefaultValue(typeof(Guid), "00000000-0000-0000-0000-000000000000")]
+        [DefaultValue(null)]
         [DataMember, JsonProperty("idempotent_key")]
-        public Guid IdempotentKey { get; set; }
+        public Guid? IdempotentKey { get; set; }
 
         [DefaultValue(null)]
         [DataMember, JsonProperty("display_name")]
