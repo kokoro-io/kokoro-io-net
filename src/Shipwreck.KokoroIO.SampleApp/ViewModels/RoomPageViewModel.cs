@@ -19,7 +19,6 @@ namespace Shipwreck.KokoroIO.SampleApp.ViewModels
 
         public RoomKind Kind => _Model.Kind;
 
-
         private ObservableCollection<MessageViewModel> _Messages;
 
         public ObservableCollection<MessageViewModel> Messages
@@ -42,11 +41,17 @@ namespace Shipwreck.KokoroIO.SampleApp.ViewModels
                 var messages = await Main.Client.GetMessagesAsync(_Model.Id, 60);
                 foreach (var m in messages.OrderBy(e => e.Id))
                 {
-                    _Messages.Add(new MessageViewModel(this, m));
+                    var prev = _Messages.LastOrDefault();
+                    var vm = new MessageViewModel(this, m);
+
+                    vm.IsMerged = prev?.Avatar == vm.Avatar
+                                && prev.DisplayName == vm.DisplayName
+                                && vm.PublishedAt < prev.PublishedAt.AddMinutes(3);
+
+                    _Messages.Add(vm);
                 }
             }
             catch { }
         }
     }
-
 }

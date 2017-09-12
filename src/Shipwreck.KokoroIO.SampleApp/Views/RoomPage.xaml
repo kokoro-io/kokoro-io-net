@@ -25,40 +25,81 @@
             Grid.Row="1">
             <StackPanel>
                 <ItemsControl
+                    Grid.IsSharedSizeScope="True"
                     ItemsSource="{Binding Messages}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition
-                                        Width="Auto" />
-                                    <ColumnDefinition
-                                        Width="Auto" />
+                                        Width="Auto"
+                                        SharedSizeGroup="avatar" />
                                     <ColumnDefinition />
                                 </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition
-                                        Height="Auto" />
-                                    <RowDefinition
-                                        Height="Auto" />
-                                    <RowDefinition
-                                        Height="Auto" />
-                                </Grid.RowDefinitions>
                                 <Image
-                                    Grid.RowSpan="1"
-                                    MaxWidth="40"
-                                    MaxHeight="40"
-                                    Source="{Binding Avatar}" />
-                                <TextBlock
-                                    Grid.Column="1"
-                                    Text="{Binding DisplayName}" />
-                                <TextBlock
-                                    Grid.Column="2"
-                                    Text="{Binding PublishedAt}" />
-                                <TextBlock
-                                    Grid.Row="1"
-                                    Grid.ColumnSpan="2"
-                                    Text="{Binding Content}" />
+                                    Width="40"
+                                    Height="40"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch"
+                                    Source="{Binding Avatar}">
+                                    <Image.OpacityMask>
+                                        <VisualBrush>
+                                            <VisualBrush.Visual>
+                                                <Border
+                                                    CornerRadius="6"
+                                                    Width="40"
+                                                    Height="40"
+                                                    Background="White" />
+                                            </VisualBrush.Visual>
+                                        </VisualBrush>
+                                    </Image.OpacityMask>
+                                    <Image.Style>
+                                        <Style
+                                            TargetType="Image">
+                                            <Style.Triggers>
+                                                <DataTrigger
+                                                    Binding="{Binding IsMerged}"
+                                                    Value="True">
+                                                    <Setter
+                                                        Property="Visibility"
+                                                        Value="Collapsed" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Image.Style>
+                                </Image>
+                                <StackPanel
+                                    Grid.Column="1">
+                                    <StackPanel
+                                        Orientation="Horizontal">
+                                        <StackPanel.Style>
+                                            <Style
+                                                TargetType="StackPanel">
+                                                <Style.Triggers>
+                                                    <DataTrigger
+                                                        Binding="{Binding IsMerged}"
+                                                        Value="True">
+                                                        <Setter
+                                                            Property="Visibility"
+                                                            Value="Collapsed" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </StackPanel.Style>
+                                        <TextBlock
+                                            Text="{Binding DisplayName}" />
+                                        <TextBlock
+                                            Text="{Binding PublishedAt}" />
+                                    </StackPanel>
+                                    <ItemsControl
+                                        ItemsSource="{Binding Blocks}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <local:MessageBlockControl />
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
                             </Grid>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>

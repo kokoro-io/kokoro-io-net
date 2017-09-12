@@ -54,10 +54,21 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ViewModels\MessageBlock.cs" />
+    <Compile Include="ViewModels\MessageList.cs" />
+    <Compile Include="ViewModels\MessageListItem.cs" />
+    <Compile Include="ViewModels\MessageParagraph.cs" />
+    <Compile Include="ViewModels\MessageSpan.cs" />
     <Compile Include="ViewModels\MessageViewModel.cs" />
+    <Compile Include="Views\MessageBlockControl.cs" />
+    <Compile Include="Views\MessageSpanControl.cs" />
     <Compile Include="Views\RoomPage.xaml.cs">
       <DependentUpon>RoomPage.xaml</DependentUpon>
     </Compile>
+    <Page Include="Themes\Generic.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\LoginWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
