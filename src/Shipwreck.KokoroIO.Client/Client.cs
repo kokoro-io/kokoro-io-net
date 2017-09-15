@@ -25,18 +25,16 @@ namespace Shipwreck.KokoroIO
 
         #region Token
 
-        public Task<AccessToken[]> GetAccessTokensAsync(string email, string password)
+        public Task<AccessToken[]> GetAccessTokensAsync()
         {
             var req = new HttpRequestMessage(HttpMethod.Get, EndPoint + "/v1/access_tokens");
-            req.Headers.Add("X-Access-Token", Convert.ToBase64String(new UTF8Encoding(false).GetBytes(email + ":" + password)));
 
             return SendAsync<AccessToken[]>(req);
         }
 
-        public Task<AccessToken> PostAccessTokenAsync(string email, string password, string name)
+        public Task<AccessToken> PostAccessTokenAsync(string name)
         {
             var req = new HttpRequestMessage(HttpMethod.Post, EndPoint + "/v1/access_tokens");
-            req.Headers.Add("X-Access-Token", Convert.ToBase64String(new UTF8Encoding(false).GetBytes(email + ":" + password)));
 
             var d = new List<KeyValuePair<string, string>>(1)
             {
@@ -50,17 +48,121 @@ namespace Shipwreck.KokoroIO
 
         #endregion Token
 
-        public Task<Profile> GetProfieAsync()
+        #region Device
+
+        public Task<Device[]> GetDevicesAsync(string email, string password)
+        {
+            var req = new HttpRequestMessage(HttpMethod.Get, EndPoint + "/v1/devices");
+            req.Headers.Add("X-Account-Token", Convert.ToBase64String(new UTF8Encoding(false).GetBytes(email + ":" + password)));
+
+            return SendAsync<Device[]>(req);
+        }
+
+        public Task<Device> PostDeviceAsync(string email, string password, string name, DeviceKind kind, string deviceIdentifier, string notificationIdentifier = null, bool subscribeNotification = false)
+        {
+            var req = new HttpRequestMessage(HttpMethod.Post, EndPoint + "/v1/devices");
+            req.Headers.Add("X-Account-Token", Convert.ToBase64String(new UTF8Encoding(false).GetBytes(email + ":" + password)));
+
+            var d = new List<KeyValuePair<string, string>>(5)
+            {
+                new KeyValuePair<string, string>("name", name),
+                new KeyValuePair<string, string>("kind", kind.ToApiString()),
+                new KeyValuePair<string, string>("device_identifier", deviceIdentifier)
+            };
+
+            if (notificationIdentifier != null)
+            {
+                d.Add(new KeyValuePair<string, string>("notification_identifier", notificationIdentifier));
+                d.Add(new KeyValuePair<string, string>("subscribe_notification", subscribeNotification ? "true" : "false"));
+            }
+
+            req.Content = new FormUrlEncodedContent(d);
+
+            return SendAsync<Device>(req);
+        }
+
+        #endregion Device
+
+        #region Membership
+
+        public Task<Membership[]> GetMembershipsAsync(bool? archived = null, Authority? authority = null)
+        {
+            var u = new StringBuilder(EndPoint).Append("/v1/memberships");
+
+            if (archived != null)
+            {
+                u.Append("?archived=").Append(archived.Value ? "true" : "false");
+            }
+
+            if (authority != null)
+            {
+                u.Append(archived.HasValue ? '&' : '?').Append("authority=").Append(authority.Value.ToApiString());
+            }
+
+            return SendAsync<Membership[]>(new HttpRequestMessage(HttpMethod.Get, u.ToString()));
+        }
+
+        public Task<Membership> PostMembershipAsync(string roomId, bool? disableNotification = null)
+        {
+            var r = new HttpRequestMessage(HttpMethod.Post, EndPoint + $"/v1/memberships");
+
+            var d = new List<KeyValuePair<string, string>>(2)
+            {
+                new KeyValuePair<string, string>("room_id", roomId),
+            };
+
+            if (disableNotification != null)
+            {
+                d.Add(new KeyValuePair<string, string>("disable_notification", disableNotification.Value ? "true" : "false"));
+            }
+
+            r.Content = new FormUrlEncodedContent(d);
+
+            return SendAsync<Membership>(r);
+        }
+
+        public Task DeleteMembershipAsync(string membershipId)
+        {
+            var r = new HttpRequestMessage(HttpMethod.Delete, EndPoint + $"/v1/memberships/" + membershipId);
+
+            return SendAsync(r).ContinueWith(t => t.Result.EnsureSuccessStatusCode());
+        }
+
+        public Task<Membership> PutMembershipAsync(string membershipId, bool? disableNotification = null)
+        {
+            var r = new HttpRequestMessage(HttpMethod.Put, EndPoint + $"/v1/memberships/" + membershipId);
+
+            var d = new List<KeyValuePair<string, string>>(1);
+
+            if (disableNotification != null)
+            {
+                d.Add(new KeyValuePair<string, string>("disable_notification", disableNotification.Value ? "true" : "false"));
+            }
+
+            r.Content = new FormUrlEncodedContent(d);
+
+            return SendAsync<Membership>(r);
+        }
+
+        #endregion Membership
+
+        #region Profile
+
+        public Task<Profile[]> GetProfilesAsync()
+            => SendAsync<Profile[]>(new HttpRequestMessage(HttpMethod.Get, EndPoint + "/v1/profiles"));
+
+        public Task<Profile> GetProfileAsync()
             => SendAsync<Profile>(new HttpRequestMessage(HttpMethod.Get, EndPoint + "/v1/profiles/me"));
 
-        public Task<Room[]> GetRoomsAsync()
-            => SendAsync<Room[]>(new HttpRequestMessage(HttpMethod.Get, EndPoint + "/v1/rooms"));
+        #endregion Profile
+
+        #region Room
 
         public Task<Room> PostRoomAsync(string channelName, string description, RoomKind kind)
         {
             var r = new HttpRequestMessage(HttpMethod.Post, EndPoint + $"/v1/rooms");
 
-            var d = new List<KeyValuePair<string, string>>(3)
+            var d = new[]
             {
                 new KeyValuePair<string, string>("room[channel_name]", channelName),
                 new KeyValuePair<string, string>("room[description]", description),
@@ -72,14 +174,38 @@ namespace Shipwreck.KokoroIO
             return SendAsync<Room>(r);
         }
 
-        public Task<Room[]> GetPublicRoomsAsync()
-            => SendAsync<Room[]>(new HttpRequestMessage(HttpMethod.Get, EndPoint + "/v1/rooms/public"));
+        public Task<Room[]> GetRoomsAsync(bool? archived = null)
+            => SendAsync<Room[]>(
+                    new HttpRequestMessage(
+                            HttpMethod.Get,
+                            EndPoint + "/v1/rooms"
+                            + GetArchivedQuery(archived)));
 
-        public Task<Room[]> GetPrivateRoomsAsync()
-            => SendAsync<Room[]>(new HttpRequestMessage(HttpMethod.Get, EndPoint + "/v1/rooms/private"));
+        private static string GetArchivedQuery(bool? archived)
+            => (archived == null ? null : archived.Value ? "?archived=true" : "?archived=false");
 
-        public Task<Room[]> GetDirectMessageRoomsAsync()
-            => SendAsync<Room[]>(new HttpRequestMessage(HttpMethod.Get, EndPoint + "/v1/rooms/direct_message"));
+        public Task<Room[]> GetPublicRoomsAsync(bool? archived = null)
+            => SendAsync<Room[]>(new HttpRequestMessage(HttpMethod.Get, EndPoint + "/v1/rooms/public" + GetArchivedQuery(archived)));
+
+        public Task<Room[]> GetPrivateRoomsAsync(bool? archived = null)
+            => SendAsync<Room[]>(new HttpRequestMessage(HttpMethod.Get, EndPoint + "/v1/rooms/private" + GetArchivedQuery(archived)));
+
+        public Task<Room[]> GetDirectMessageRoomsAsync(bool? archived = null)
+            => SendAsync<Room[]>(new HttpRequestMessage(HttpMethod.Get, EndPoint + "/v1/rooms/direct_message" + GetArchivedQuery(archived)));
+
+        public Task<Room> PostDirectMessageRoomAsync(string targetUserProfileId)
+        {
+            var r = new HttpRequestMessage(HttpMethod.Post, EndPoint + $"/v1/rooms/direct_message");
+
+            var d = new[]
+            {
+                new KeyValuePair<string, string>("target_user_profile_id", targetUserProfileId)
+            };
+
+            r.Content = new FormUrlEncodedContent(d);
+
+            return SendAsync<Room>(r);
+        }
 
         public Task<Room> PutRoomAsync(string roomId, string channelName, string description)
         {
@@ -101,24 +227,52 @@ namespace Shipwreck.KokoroIO
             return SendAsync<Room>(r);
         }
 
-        public Task ManageMemberAsync(string roomId, int memberId, string authority)
+        public Task<Room> ArchiveRoomAsync(string roomId)
         {
             if (!Room.IsValidId(roomId))
             {
-                return new ArgumentException($"Invalid {nameof(roomId)}.").ToTask<object>();
+                return new ArgumentException($"Invalid {nameof(roomId)}.").ToTask<Room>();
             }
 
-            var r = new HttpRequestMessage(HttpMethod.Put, EndPoint + $"/v1/rooms/" + roomId + "/manage_member/" + memberId);
+            var r = new HttpRequestMessage(HttpMethod.Delete, EndPoint + $"/v1/rooms/" + roomId + "/archive");
+
+            return SendAsync<Room>(r);
+        }
+
+        public Task<Room> UnarchiveRoomAsync(string roomId)
+        {
+            if (!Room.IsValidId(roomId))
+            {
+                return new ArgumentException($"Invalid {nameof(roomId)}.").ToTask<Room>();
+            }
+
+            var r = new HttpRequestMessage(HttpMethod.Put, EndPoint + $"/v1/rooms/" + roomId + "/unarchive");
+
+            return SendAsync<Room>(r);
+        }
+
+        public Task ManageMemberAsync(string roomId, int memberId, Authority authority)
+        {
+            if (!Room.IsValidId(roomId))
+            {
+                return new ArgumentException($"Invalid {nameof(roomId)}.").ToTask<Room>();
+            }
+
+            var r = new HttpRequestMessage(HttpMethod.Put, EndPoint + $"/v1/rooms/" + roomId + "/manage_members/" + memberId);
 
             var d = new[]
             {
-                new KeyValuePair<string, string>("authority", authority)
+                new KeyValuePair<string, string>("authority", authority.ToApiString())
             };
 
             r.Content = new FormUrlEncodedContent(d);
 
-            return SendAsync(r);
+            return SendAsync(r).ContinueWith(t => t.Result.EnsureSuccessStatusCode());
         }
+
+        #endregion Room
+
+        #region Message
 
         public Task<Message[]> GetMessagesAsync(string roomId, int? limit = null, int? beforeId = null, int? afterId = null)
         {
@@ -129,6 +283,8 @@ namespace Shipwreck.KokoroIO
 
             var u = new StringBuilder(EndPoint).Append("/v1/rooms/").Append(roomId).Append("/messages");
 
+            var ol = u.Length;
+
             if (limit > 0)
             {
                 u.Append("?limit=").Append(limit.Value);
@@ -136,11 +292,11 @@ namespace Shipwreck.KokoroIO
 
             if (beforeId != null)
             {
-                u.Append(limit > 0 ? '&' : '?').Append("before_id=").Append(beforeId.Value);
+                u.Append(u.Length > ol ? '&' : '?').Append("before_id=").Append(beforeId.Value);
             }
             if (afterId != null)
             {
-                u.Append(limit > 0 ? '&' : '?').Append("after_id=").Append(afterId.Value);
+                u.Append(u.Length > ol ? '&' : '?').Append("after_id=").Append(afterId.Value);
             }
 
             return SendAsync<Message[]>(new HttpRequestMessage(HttpMethod.Get, u.ToString()));
@@ -170,6 +326,8 @@ namespace Shipwreck.KokoroIO
 
             return SendAsync<Message>(r);
         }
+
+        #endregion Message
 
         #endregion Rest API
 

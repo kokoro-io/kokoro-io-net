@@ -1,7 +1,10 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Net.NetworkInformation;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 using Shipwreck.KokoroIO.SampleApp.Properties;
-using Shipwreck.KokoroIO.SampleApp.Views;
 
 namespace Shipwreck.KokoroIO.SampleApp.ViewModels
 {
@@ -34,25 +37,16 @@ namespace Shipwreck.KokoroIO.SampleApp.ViewModels
             {
                 var ns = GetType().Assembly.GetName().Name;
 
-                var tokens = await c.GetAccessTokensAsync(_MailAddress, password);
-                var tk = tokens.FirstOrDefault(t => t.Name == ns) ?? tokens.FirstOrDefault();
+                var hash = Encoding.Default.GetBytes(ns).Concat(NetworkInterface.GetAllNetworkInterfaces().Where(ni => ni.OperationalStatus == OperationalStatus.Up).OrderBy(ni => ni.Name).SelectMany(ni => ni.GetPhysicalAddress().GetAddressBytes())).ToArray();
 
-                if (tk == null)
-                {
-                    tk = await c.PostAccessTokenAsync(_MailAddress, password, ns);
-                }
+                hash = HashAlgorithm.Create().ComputeHash(hash);
 
-                c.AccessToken = tk.Token;
+                var di = Convert.ToBase64String(hash);
+                var dev = await c.PostDeviceAsync(_MailAddress, password, $"{Environment.MachineName} ({ns})", DeviceKind.Unknown, di);
+
+                c.AccessToken = dev.AccessToken.Token;
                 preseve = true;
                 return c;
-
-
-                //var lw = App.Current.MainWindow;
-
-                //var mw = new MainWindow();
-                //mw.Show();
-
-                //lw.Close();
             }
             finally
             {

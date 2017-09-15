@@ -8,46 +8,120 @@ namespace Shipwreck.KokoroIO
     {
         #region Rest API
 
+        #region AccessToken
+
         [Fact]
-        public void GetProfileAsyncTest()
+        public async Task GetAccessTokensAsyncTest()
         {
             using (var c = GetClient())
             {
-                var p = c.GetProfieAsync().GetAwaiter().GetResult();
+                var p = await c.GetAccessTokensAsync();
+
+                Assert.NotNull(p);
+            }
+        }
+
+        // TODO: PostAccessTokenAsync
+
+        #endregion AccessToken
+
+        #region Device
+
+        // TODO: GetDevicesAsync
+        // TODO: PostAccessTokenAsync
+
+        #endregion Device
+
+        #region Membership
+
+        [Fact]
+        public async Task GetMembershipsAsync()
+        {
+            using (var c = GetClient())
+            {
+                var p = await c.GetMembershipsAsync();
+
+                Assert.NotNull(p);
+            }
+        }
+
+        // TODO: PostMembershipAsync
+        // TODO: DeleteMembershipAsync
+        [Fact]
+        public async Task PutMembershipAsync()
+        {
+            using (var c = GetClient())
+            {
+                var p = await c.GetMembershipsAsync();
+
+                Assert.NotNull(p);
+
+                var ms = p.Single(m => m.Room.ChannelName == "private/dev");
+
+                await c.PutMembershipAsync(ms.Id, true);
+                await c.PutMembershipAsync(ms.Id, false);
+            }
+        }
+
+        #endregion Membership
+
+        #region MyRegion
+
+        [Fact]
+        public async Task GetProfilesAsyncTest()
+        {
+            using (var c = GetClient())
+            {
+                var p = await c.GetProfilesAsync();
+
+                Assert.NotNull(p);
+            }
+        }
+
+        [Fact]
+        public async Task GetProfileAsyncTest()
+        {
+            using (var c = GetClient())
+            {
+                var p = await c.GetProfileAsync();
 
                 Assert.NotNull(p);
                 Assert.Equal(ProfileType.User, p.Type);
             }
         }
 
+        #endregion MyRegion
+
+        #region Room
+
         [Fact]
-        public void GetRoomsAsyncTest()
+        public async Task GetRoomsAsyncTest()
         {
             using (var c = GetClient())
             {
-                var rooms = c.GetRoomsAsync().GetAwaiter().GetResult();
+                var rooms = await c.GetRoomsAsync();
 
                 Assert.NotNull(rooms);
             }
         }
 
         [Fact]
-        public void GetPublicRoomsAsyncTest()
+        public async Task GetPublicRoomsAsyncTest()
         {
             using (var c = GetClient())
             {
-                var rooms = c.GetPublicRoomsAsync().GetAwaiter().GetResult();
+                var rooms = await c.GetPublicRoomsAsync();
 
                 Assert.NotNull(rooms);
             }
         }
 
         [Fact]
-        public void GetPrivateRoomsAsyncTest()
+        public async Task GetPrivateRoomsAsyncTest()
         {
             using (var c = GetClient())
             {
-                var rooms = c.GetPrivateRoomsAsync().GetAwaiter().GetResult();
+                var rooms = await c.GetPrivateRoomsAsync();
 
                 Assert.NotNull(rooms);
             }
@@ -58,18 +132,22 @@ namespace Shipwreck.KokoroIO
         {
             using (var c = GetClient())
             {
-                var rooms = c.GetDirectMessageRoomsAsync().GetAwaiter().GetResult();
+                var rooms = c.GetDirectMessageRoomsAsync();
 
                 Assert.NotNull(rooms);
             }
         }
 
+        #endregion Room
+
+        #region Message
+
         [Fact]
-        public void GetMessagesAsyncTest()
+        public async Task GetMessagesAsyncTest()
         {
             using (var c = GetClient())
             {
-                var rooms = c.GetPrivateRoomsAsync().GetAwaiter().GetResult();
+                var rooms = await c.GetPrivateRoomsAsync();
 
                 var dev = rooms.FirstOrDefault(r => r.ChannelName == "private/dev");
 
@@ -78,18 +156,18 @@ namespace Shipwreck.KokoroIO
                     return;
                 }
 
-                var m = c.GetMessagesAsync(dev.Id).GetAwaiter().GetResult();
+                var m = await c.GetMessagesAsync(dev.Id);
 
                 Assert.NotNull(m);
             }
         }
 
         [Fact]
-        public void PostMessageAsyncTest()
+        public async Task PostMessageAsyncTest()
         {
             using (var c = GetClient())
             {
-                var rooms = c.GetPrivateRoomsAsync().GetAwaiter().GetResult();
+                var rooms = await c.GetPrivateRoomsAsync();
 
                 var dev = rooms.FirstOrDefault(r => r.ChannelName == "private/dev");
 
@@ -98,11 +176,13 @@ namespace Shipwreck.KokoroIO
                     return;
                 }
 
-                var m = c.PostMessageAsync(dev.Id, GetTestMessage(), false).GetAwaiter().GetResult();
+                var m = await c.PostMessageAsync(dev.Id, GetTestMessage(), false);
 
                 Assert.NotNull(m);
             }
         }
+
+        #endregion Message
 
         #endregion Rest API
 

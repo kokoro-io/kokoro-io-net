@@ -22,6 +22,10 @@ namespace Shipwreck.KokoroIO
         [JsonConverter(typeof(StringEnumConverter))]
         public RoomKind Kind { get; set; }
 
+        [DefaultValue(false)]
+        [DataMember, JsonProperty("archived")]
+        public bool IsArchived { get; set; }
+
         [DefaultValue(null)]
         [DataMember, JsonProperty("description")]
         public string Description { get; set; }

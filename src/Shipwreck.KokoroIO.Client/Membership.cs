@@ -8,10 +8,17 @@ namespace Shipwreck.KokoroIO
     [Serializable, DataContract]
     public class Membership
     {
-        // TODO: Enum?
         [DefaultValue(null)]
+        [DataMember, JsonProperty("id")]
+        public string Id { get; set; }
+
+        [DefaultValue(null)]
+        [DataMember, JsonProperty("room")]
+        public Room Room { get; set; }
+
+        [DefaultValue(default(Authority))]
         [DataMember, JsonProperty("authority")]
-        public string Authority { get; set; }
+        public Authority Authority { get; set; }
 
         [DefaultValue(0)]
         [DataMember, JsonProperty("unread_count")]
@@ -20,5 +27,9 @@ namespace Shipwreck.KokoroIO
         [DefaultValue(false)]
         [DataMember, JsonProperty("disable_notification")]
         public bool DisableNotification { get; set; }
+
+        [DefaultValue(null)]
+        [DataMember, JsonProperty("profile")]
+        public Profile Profile { get; set; }
     }
 }
