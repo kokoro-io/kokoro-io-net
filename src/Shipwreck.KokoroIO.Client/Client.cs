@@ -343,11 +343,32 @@ namespace Shipwreck.KokoroIO
 
         public event EventHandler<EventArgs<Profile>> ProfileUpdated;
 
+        public event EventHandler<EventArgs<Exception>> SocketError;
+
         public event EventHandler Disconnected;
 
         private ClientWebSocket _WebSocket;
 
         private CancellationTokenSource _WebSocketCancellationTokenSource;
+
+        public ClientState State
+        {
+            get
+            {
+                if (_WebSocket != null)
+                {
+                    switch (_WebSocket.State)
+                    {
+                        case WebSocketState.Connecting:
+                            return ClientState.Connecting;
+
+                        case WebSocketState.Open:
+                            return ClientState.Connected;
+                    }
+                }
+                return ClientState.Disconnected;
+            }
+        }
 
         public Task ConnectAsync()
         {
@@ -523,58 +544,75 @@ namespace Shipwreck.KokoroIO
                                         continue;
                                 }
 
-                                var msg = jo?.Property("message")?.Value?.Value<JObject>();
-                                switch (msg?.Property("event")?.Value?.Value<string>())
+                                try
                                 {
-                                    case "message_created":
-                                        {
-                                            var h = MessageCreated;
-                                            if (h != null)
+                                    var msg = jo?.Property("message")?.Value?.Value<JObject>();
+                                    switch (msg?.Property("event")?.Value?.Value<string>())
+                                    {
+                                        case "message_created":
                                             {
-                                                var mo = msg.Property("data")?.Value?.ToObject<Message>();
-                                                if (mo != null)
+                                                var h = MessageCreated;
+                                                if (h != null)
                                                 {
-                                                    h(this, new EventArgs<Message>(mo));
+                                                    var mo = msg.Property("data")?.Value?.ToObject<Message>();
+                                                    if (mo != null)
+                                                    {
+                                                        h(this, new EventArgs<Message>(mo));
+                                                    }
                                                 }
                                             }
-                                        }
-                                        break;
+                                            break;
 
-                                    case "message_updated":
-                                        {
-                                            var h = MessageUpdated;
-                                            if (h != null)
+                                        case "message_updated":
                                             {
-                                                var mo = msg.Property("data")?.Value?.ToObject<Message>();
-                                                if (mo != null)
+                                                var h = MessageUpdated;
+                                                if (h != null)
                                                 {
-                                                    h(this, new EventArgs<Message>(mo));
+                                                    var mo = msg.Property("data")?.Value?.ToObject<Message>();
+                                                    if (mo != null)
+                                                    {
+                                                        h(this, new EventArgs<Message>(mo));
+                                                    }
                                                 }
                                             }
-                                        }
-                                        break;
+                                            break;
 
-                                    case "profile_updated":
-                                        {
-                                            var h = ProfileUpdated;
-                                            if (h != null)
+                                        case "profile_updated":
                                             {
-                                                var mo = msg.Property("data")?.Value?.ToObject<Profile>();
-                                                if (mo != null)
+                                                var h = ProfileUpdated;
+                                                if (h != null)
                                                 {
-                                                    h(this, new EventArgs<Profile>(mo));
+                                                    var mo = msg.Property("data")?.Value?.ToObject<Profile>();
+                                                    if (mo != null)
+                                                    {
+                                                        h(this, new EventArgs<Profile>(mo));
+                                                    }
                                                 }
                                             }
-                                        }
-                                        break;
+                                            break;
+                                    }
+                                }
+                                catch (Exception ex2)
+                                {
+                                    try
+                                    {
+                                        SocketError?.Invoke(this, new EventArgs<Exception>(ex2));
+                                    }
+                                    catch { }
                                 }
                             }
                         }
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                try
+                {
+                    SocketError?.Invoke(this, new EventArgs<Exception>(ex));
+                }
+                catch { }
+
                 DisposeWebSocket();
             }
             Disconnected?.Invoke(this, EventArgs.Empty);
