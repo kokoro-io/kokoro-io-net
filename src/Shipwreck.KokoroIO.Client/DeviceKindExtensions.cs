@@ -3,6 +3,7 @@ namespace Shipwreck.KokoroIO
     public static class DeviceKindExtensions
     {
         internal const string UNKNOWN = "unknown";
+        internal const string OFFICIAL_WEB = "official_web";
         internal const string IOS = "ios";
         internal const string ANDROID = "android";
         internal const string UWP = "uwp";
@@ -15,6 +16,9 @@ namespace Shipwreck.KokoroIO
             {
                 case DeviceKind.Unknown:
                     return UNKNOWN;
+
+                case DeviceKind.OfficialWeb:
+                    return OFFICIAL_WEB;
 
                 case DeviceKind.Ios:
                     return IOS;

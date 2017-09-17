@@ -10,6 +10,9 @@ namespace Shipwreck.KokoroIO
         [EnumMember(Value = UNKNOWN)]
         Unknown,
 
+        [EnumMember(Value = OFFICIAL_WEB)]
+        OfficialWeb,
+
         [EnumMember(Value = IOS)]
         Ios,
 
