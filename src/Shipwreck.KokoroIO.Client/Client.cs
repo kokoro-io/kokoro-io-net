@@ -441,9 +441,6 @@ namespace Shipwreck.KokoroIO
                 {
                     jtw2.WriteStartObject();
 
-                    jtw2.WritePropertyName("access_token");
-                    jtw2.WriteValue(AccessToken);
-
                     jtw2.WritePropertyName("rooms");
                     jtw2.WriteStartArray();
                     foreach (var id in roomIds)
