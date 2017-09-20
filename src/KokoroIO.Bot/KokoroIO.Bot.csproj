@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net46</TargetFramework>
+    <RootNamespace>KokoroIO</RootNamespace>
+    <Version>0.0.1-pre</Version>
+    <Authors>kokoro.io</Authors>
+    <Company>kokoro.io</Company>
+    <Description>kokoro.io Bot utilities based on System.Web.dll</Description>
+    <AssemblyVersion>0.0.1.0</AssemblyVersion>
+    <FileVersion>0.0.1.0</FileVersion>
+    <PackageProjectUrl>https://github.com/kokoro-io/kokoro-io-net</PackageProjectUrl>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\KokoroIO.Client\KokoroIO.Client.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="System.Web" />
+  </ItemGroup>
+
+</Project>
