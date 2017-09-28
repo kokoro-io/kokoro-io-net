@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
@@ -153,6 +154,59 @@ namespace KokoroIO
 
         public Task<Profile> GetProfileAsync()
             => SendAsync<Profile>(new HttpRequestMessage(HttpMethod.Get, EndPoint + "/v1/profiles/me"));
+
+        public Task<Profile> PutProfileAsync(string screenName = null, string displayName = null, Stream avatar = null)
+        {
+            var r = new HttpRequestMessage(HttpMethod.Put, EndPoint + $"/v1/profiles/me");
+
+            var mp = new MultipartFormDataContent();
+            if (screenName != null)
+            {
+                mp.Add(new StringContent(screenName), "screen_name");
+            }
+            if (displayName != null)
+            {
+                mp.Add(new StringContent(displayName), "display_name");
+            }
+            if (avatar != null)
+            {
+                var sc = new StreamContent(avatar);
+                sc.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data")
+                {
+                    Name = "avatar",
+                    FileName = "avatar.jpg"
+                };
+
+                string mimeType = "image/jpeg";
+                if (avatar.CanSeek)
+                {
+                    var p = avatar.Position;
+
+                    switch (avatar.ReadByte())
+                    {
+                        case 0x89:
+                            mimeType = "image/png";
+                            sc.Headers.ContentDisposition.FileName = "avatar.png";
+                            break;
+
+                        case 'G':
+                            mimeType = "image/gif";
+                            sc.Headers.ContentDisposition.FileName = "avatar.gif";
+                            break;
+                    }
+
+                    avatar.Position = p;
+                }
+
+                sc.Headers.ContentType = new MediaTypeHeaderValue(mimeType);
+
+                mp.Add(sc, "avatar");
+            }
+
+            r.Content = mp;
+
+            return SendAsync<Profile>(r);
+        }
 
         #endregion Profile
 
