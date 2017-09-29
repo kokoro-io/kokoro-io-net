@@ -46,6 +46,13 @@ namespace KokoroIO
             return SendAsync<AccessToken>(req);
         }
 
+        public Task DeleteAccessTokenAsync(string accessTokenId)
+        {
+            var r = new HttpRequestMessage(HttpMethod.Delete, EndPoint + $"/v1/access_tokens/" + accessTokenId);
+
+            return SendAsync(r).ContinueWith(t => t.Result.EnsureSuccessStatusCode());
+        }
+
         #endregion Token
 
         #region Device

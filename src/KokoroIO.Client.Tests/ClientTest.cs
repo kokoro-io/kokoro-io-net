@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -21,7 +22,16 @@ namespace KokoroIO
             }
         }
 
-        // TODO: PostAccessTokenAsync
+        [Fact]
+        public async Task PostAccessTokenAsyncTest()
+        {
+            using (var c = GetClient())
+            {
+                var n = nameof(GetAccessTokensAsyncTest) + DateTime.Now.Ticks;
+                var p = await c.PostAccessTokenAsync(n);
+                await c.DeleteAccessTokenAsync(p.Id);
+            }
+        }
 
         #endregion AccessToken
 
