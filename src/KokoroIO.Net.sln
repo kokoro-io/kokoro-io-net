@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.12
+VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KokoroIO.Client", "KokoroIO.Client\KokoroIO.Client.csproj", "{A3FE5AF7-C066-47E7-A8F7-20B7DCD860AC}"
 EndProject
@@ -14,6 +14,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KokoroIO.SampleApp", "KokoroIO.SampleApp\KokoroIO.SampleApp.csproj", "{E671A43A-1FC2-4B3A-9765-FAE1E24089E0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KokoroIO.SampleBot", "KokoroIO.SampleBot\KokoroIO.SampleBot.csproj", "{B2A3CE4B-5D0E-467F-8B54-1B02A910E867}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "documents", "documents", "{F7478C1C-AAA8-4AC2-AB3F-34239EC4D08E}"
+	ProjectSection(SolutionItems) = preProject
+		..\swagger_doc.json = ..\swagger_doc.json
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

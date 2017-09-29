@@ -1,0 +1,1100 @@
+{
+  "info": {
+    "title": "kokoro.io API document",
+    "description": "X-Access-Token ヘッダーにあなたのアカウントのAPIトークンを含めることでAPIへのアクセスを行うことが出来ます。APIトークンはウェブ管理画面の右上メニュー「アカウント情報 \u003e API情報」から確認可能です。\n\nただし、 POST /api/v1/devices/ APIへのリクエスト時のみ、APIトークンではなくあなたのアカウント情報を用いて認証を行うことが出来ます。この場合、X-Access-TokenではなくX-Account-Token ヘッダーを使用し、その値にはアカウントのメールアドレスとパスワードをコロンで連結した文字列 \"[email]:[password]\" を Base64 エンコードしたものを指定してください。\n\nまた、このページ右上の「Your API token here」の欄にAPIトークンを入力し「Explore」ボタンをクリックすることで、このページの各API説明部分にある「Try it out!」ボタンから実際にAPIを呼び出すことが可能になります。この時、通常のAPI呼び出しと同様、アカウントへの操作が実際に行われますのでご注意ください。\n",
+    "version": "1.0.0"
+  },
+  "swagger": "2.0",
+  "produces": [ "application/json" ],
+  "host": "kokoro.io",
+  "basePath": "/api",
+  "tags": [
+    {
+      "name": "rooms",
+      "description": "Operations about rooms"
+    },
+    {
+      "name": "profiles",
+      "description": "Operations about profiles"
+    },
+    {
+      "name": "bot",
+      "description": "Operations about bots"
+    },
+    {
+      "name": "access_tokens",
+      "description": "Operations about access_tokens"
+    },
+    {
+      "name": "memberships",
+      "description": "Operations about memberships"
+    },
+    {
+      "name": "devices",
+      "description": "Operations about devices"
+    }
+  ],
+  "paths": {
+    "/v1/rooms": {
+      "get": {
+        "summary": "Returns public rooms.",
+        "description": "Returns public rooms.",
+        "produces": [ "application/json" ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "archived",
+            "type": "boolean",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns public rooms.",
+            "schema": { "$ref": "#/definitions/RoomEntity" }
+          }
+        },
+        "tags": [ "rooms" ],
+        "operationId": "getV1Rooms"
+      },
+      "post": {
+        "summary": "Creates a new room.",
+        "description": "Creates a new room.",
+        "produces": [ "application/json" ],
+        "consumes": [ "application/json" ],
+        "parameters": [
+          {
+            "in": "formData",
+            "name": "room[channel_name]",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "formData",
+            "name": "room[description]",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "formData",
+            "name": "room[kind]",
+            "type": "string",
+            "default": "public_channel",
+            "enum": [ "public_channel", "private_channel" ],
+            "required": false
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Creates a new room.",
+            "schema": { "$ref": "#/definitions/RoomEntity" }
+          }
+        },
+        "tags": [ "rooms" ],
+        "operationId": "postV1Rooms"
+      }
+    },
+    "/v1/rooms/direct_message": {
+      "post": {
+        "summary": "Creates a new direct message.",
+        "description": "Creates a new direct message.",
+        "produces": [ "application/json" ],
+        "consumes": [ "application/json" ],
+        "parameters": [
+          {
+            "in": "formData",
+            "name": "target_user_profile_id",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Creates a new direct message.",
+            "schema": { "$ref": "#/definitions/RoomEntity" }
+          }
+        },
+        "tags": [ "rooms" ],
+        "operationId": "postV1RoomsDirectMessage"
+      }
+    },
+    "/v1/rooms/{room_id}": {
+      "put": {
+        "summary": "Updates a room.",
+        "description": "Updates a room.",
+        "produces": [ "application/json" ],
+        "consumes": [ "application/json" ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "room_id",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "formData",
+            "name": "room[channel_name]",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "room[description]",
+            "type": "string",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Updates a room.",
+            "schema": { "$ref": "#/definitions/RoomEntity" }
+          }
+        },
+        "tags": [ "rooms" ],
+        "operationId": "putV1RoomsRoomId"
+      }
+    },
+    "/v1/rooms/{room_id}/archive": {
+      "delete": {
+        "summary": "Archive a room.",
+        "description": "Archive a room.",
+        "produces": [ "application/json" ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "room_id",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Archive a room.",
+            "schema": { "$ref": "#/definitions/RoomEntity" }
+          }
+        },
+        "tags": [ "rooms" ],
+        "operationId": "deleteV1RoomsRoomIdArchive"
+      }
+    },
+    "/v1/rooms/{room_id}/unarchive": {
+      "put": {
+        "summary": "Unarchive a room.",
+        "description": "Unarchive a room.",
+        "produces": [ "application/json" ],
+        "consumes": [ "application/json" ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "room_id",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Unarchive a room.",
+            "schema": { "$ref": "#/definitions/RoomEntity" }
+          }
+        },
+        "tags": [ "rooms" ],
+        "operationId": "putV1RoomsRoomIdUnarchive"
+      }
+    },
+    "/v1/rooms/{room_id}/memberships": {
+      "get": {
+        "summary": "Returns all of members in this room",
+        "description": "Returns all of members in this room",
+        "produces": [ "application/json" ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "room_id",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns all of members in this room",
+            "schema": { "$ref": "#/definitions/RoomWithMembershipsEntity" }
+          }
+        },
+        "tags": [ "rooms" ],
+        "operationId": "getV1RoomsRoomIdMemberships"
+      }
+    },
+    "/v1/rooms/{room_id}/manage_members/{member_id}": {
+      "put": {
+        "summary": "Changes the authority of member",
+        "description": "Changes the authority of member",
+        "produces": [ "application/json" ],
+        "consumes": [ "application/json" ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "room_id",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "member_id",
+            "type": "integer",
+            "format": "int32",
+            "required": true
+          },
+          {
+            "in": "formData",
+            "name": "authority",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": { "200": { "description": "Changes the authority of member" } },
+        "tags": [ "rooms" ],
+        "operationId": "putV1RoomsRoomIdManageMembersMemberId"
+      }
+    },
+    "/v1/rooms/{room_id}/messages": {
+      "get": {
+        "summary": "Returns recent messages in the room.",
+        "description": "Returns recent messages in the room.",
+        "produces": [ "application/json" ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "room_id",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "type": "integer",
+            "format": "int32",
+            "default": 30,
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "before_id",
+            "type": "integer",
+            "format": "int32",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "after_id",
+            "type": "integer",
+            "format": "int32",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns recent messages in the room.",
+            "schema": { "$ref": "#/definitions/MessageEntity" }
+          }
+        },
+        "tags": [ "rooms" ],
+        "operationId": "getV1RoomsRoomIdMessages"
+      },
+      "post": {
+        "summary": "Creates a new message.",
+        "description": "Creates a new message.",
+        "produces": [ "application/json" ],
+        "consumes": [ "application/json" ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "room_id",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "formData",
+            "name": "message",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "formData",
+            "name": "nsfw",
+            "type": "boolean",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "idempotent_key",
+            "type": "string",
+            "required": false
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Creates a new message.",
+            "schema": { "$ref": "#/definitions/MessageEntity" }
+          }
+        },
+        "tags": [ "rooms" ],
+        "operationId": "postV1RoomsRoomIdMessages"
+      }
+    },
+    "/v1/profiles": {
+      "get": {
+        "summary": "Returns all user's profile except yours",
+        "description": "Returns all user's profile except yours",
+        "produces": [ "application/json" ],
+        "responses": {
+          "200": {
+            "description": "Returns all user's profile except yours",
+            "schema": { "$ref": "#/definitions/ProfileEntity" }
+          }
+        },
+        "tags": [ "profiles" ],
+        "operationId": "getV1Profiles"
+      }
+    },
+    "/v1/profiles/me": {
+      "get": {
+        "summary": "Returns current logged-in user's profile",
+        "description": "Returns current logged-in user's profile",
+        "produces": [ "application/json" ],
+        "responses": {
+          "200": {
+            "description": "Returns current logged-in user's profile",
+            "schema": { "$ref": "#/definitions/ProfileEntity" }
+          }
+        },
+        "tags": [ "profiles" ],
+        "operationId": "getV1ProfilesMe"
+      },
+      "put": {
+        "summary": "Updates your profile.",
+        "description": "Updates your profile.",
+        "produces": [ "application/json" ],
+        "consumes": [ "application/json" ],
+        "parameters": [
+          {
+            "in": "formData",
+            "name": "screen_name",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "display_name",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "avatar",
+            "type": "file",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Updates your profile.",
+            "schema": { "$ref": "#/definitions/ProfileEntity" }
+          }
+        },
+        "tags": [ "profiles" ],
+        "operationId": "putV1ProfilesMe"
+      }
+    },
+    "/v1/bot/rooms/{room_id}/messages": {
+      "post": {
+        "summary": "Creates a new message.",
+        "description": "Creates a new message.",
+        "produces": [ "application/json" ],
+        "consumes": [ "application/json" ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "room_id",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "formData",
+            "name": "message",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "formData",
+            "name": "display_name",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "nsfw",
+            "type": "boolean",
+            "required": false
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Creates a new message.",
+            "schema": { "$ref": "#/definitions/MessageEntity" }
+          }
+        },
+        "tags": [ "bot" ],
+        "operationId": "postV1BotRoomsRoomIdMessages"
+      }
+    },
+    "/v1/access_tokens": {
+      "get": {
+        "summary": "Returns user's access tokens",
+        "description": "Returns user's access tokens",
+        "produces": [ "application/json" ],
+        "responses": {
+          "200": {
+            "description": "Returns user's access tokens",
+            "schema": { "$ref": "#/definitions/AccessTokenEntity" }
+          }
+        },
+        "tags": [ "access_tokens" ],
+        "operationId": "getV1AccessTokens"
+      },
+      "post": {
+        "summary": "Creates new access token",
+        "description": "Creates new access token",
+        "produces": [ "application/json" ],
+        "consumes": [ "application/json" ],
+        "parameters": [
+          {
+            "in": "formData",
+            "name": "name",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Creates new access token",
+            "schema": { "$ref": "#/definitions/AccessTokenEntity" }
+          }
+        },
+        "tags": [ "access_tokens" ],
+        "operationId": "postV1AccessTokens"
+      }
+    },
+    "/v1/access_tokens/{access_token_id}": {
+      "delete": {
+        "summary": "Delete a access_token",
+        "description": "Delete a access_token",
+        "produces": [ "application/json" ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "access_token_id",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Delete a access_token",
+            "schema": { "$ref": "#/definitions/AccessTokenEntity" }
+          }
+        },
+        "tags": [ "access_tokens" ],
+        "operationId": "deleteV1AccessTokensAccessTokenId"
+      }
+    },
+    "/v1/memberships": {
+      "get": {
+        "summary": "Returns user's memberships.",
+        "description": "Returns user's memberships.",
+        "produces": [ "application/json" ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "archived",
+            "type": "boolean",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "authority",
+            "type": "string",
+            "enum": [ "administrator", "maintainer", "member", "invited" ],
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns user's memberships.",
+            "schema": { "$ref": "#/definitions/MembershipEntity" }
+          }
+        },
+        "tags": [ "memberships" ],
+        "operationId": "getV1Memberships"
+      },
+      "post": {
+        "summary": "Creates a new membership.",
+        "description": "Creates a new membership.",
+        "produces": [ "application/json" ],
+        "consumes": [ "application/json" ],
+        "parameters": [
+          {
+            "in": "formData",
+            "name": "room_id",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "formData",
+            "name": "disable_notification",
+            "type": "boolean",
+            "required": false
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Creates a new membership.",
+            "schema": { "$ref": "#/definitions/MembershipEntity" }
+          }
+        },
+        "tags": [ "memberships" ],
+        "operationId": "postV1Memberships"
+      }
+    },
+    "/v1/memberships/{membership_id}": {
+      "put": {
+        "summary": "Updates a membership.",
+        "description": "Updates a membership.",
+        "produces": [ "application/json" ],
+        "consumes": [ "application/json" ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "membership_id",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "formData",
+            "name": "disable_notification",
+            "type": "boolean",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Updates a membership.",
+            "schema": { "$ref": "#/definitions/MembershipEntity" }
+          }
+        },
+        "tags": [ "memberships" ],
+        "operationId": "putV1MembershipsMembershipId"
+      },
+      "delete": {
+        "summary": "Delete a membership.",
+        "description": "Delete a membership.",
+        "produces": [ "application/json" ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "membership_id",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Delete a membership.",
+            "schema": { "$ref": "#/definitions/MembershipEntity" }
+          }
+        },
+        "tags": [ "memberships" ],
+        "operationId": "deleteV1MembershipsMembershipId"
+      }
+    },
+    "/v1/devices": {
+      "get": {
+        "summary": "Returns user's devices",
+        "description": "Returns user's devices",
+        "produces": [ "application/json" ],
+        "responses": {
+          "200": {
+            "description": "Returns user's devices",
+            "schema": { "$ref": "#/definitions/DeviceEntity" }
+          }
+        },
+        "tags": [ "devices" ],
+        "operationId": "getV1Devices"
+      },
+      "post": {
+        "summary": "Creates new device",
+        "description": "Creates new device",
+        "produces": [ "application/json" ],
+        "consumes": [ "application/json" ],
+        "parameters": [
+          {
+            "in": "formData",
+            "name": "name",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "formData",
+            "name": "kind",
+            "type": "string",
+            "default": "chrome",
+            "enum": [ "unknown", "ios", "android", "uwp", "chrome", "firefox", "official_web" ],
+            "required": true
+          },
+          {
+            "in": "formData",
+            "name": "device_identifier",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "formData",
+            "name": "notification_identifier",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "subscribe_notification",
+            "type": "boolean",
+            "required": false
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Creates new device",
+            "schema": { "$ref": "#/definitions/DeviceEntity" }
+          }
+        },
+        "tags": [ "devices" ],
+        "operationId": "postV1Devices"
+      }
+    },
+    "/v1/devices/{device_identifier}": {
+      "delete": {
+        "summary": "Delete a device",
+        "description": "Delete a device",
+        "produces": [ "application/json" ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "device_identifier",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Delete a device",
+            "schema": { "$ref": "#/definitions/DeviceEntity" }
+          }
+        },
+        "tags": [ "devices" ],
+        "operationId": "deleteV1DevicesDeviceIdentifier"
+      }
+    }
+  },
+  "definitions": {
+    "RoomEntity": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "ルームID"
+        },
+        "channel_name": {
+          "type": "string",
+          "description": "チャンネル名"
+        },
+        "kind": {
+          "type": "string",
+          "enum": [ "public_channel", "private_channel", "direct_message" ],
+          "description": "チャンネルタイプ"
+        },
+        "archived": {
+          "type": "boolean",
+          "description": "アーカイブ済か"
+        },
+        "description": {
+          "type": "string",
+          "description": "ルーム説明"
+        },
+        "membership": {
+          "$ref": "#/definitions/MembershipEntity",
+          "description": "メンバーシップ情報"
+        }
+      },
+      "description": "Unarchive a room."
+    },
+    "MembershipEntity": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "メンバーシップID"
+        },
+        "room": {
+          "$ref": "#/definitions/RoomWithoutMembershipEntity",
+          "description": "チャンネル情報"
+        },
+        "authority": {
+          "type": "string",
+          "enum": [ "administrator", "maintainer", "member", "invited" ],
+          "description": "権限"
+        },
+        "disable_notification": {
+          "type": "boolean",
+          "description": "通知をオフにしているか"
+        },
+        "unread_count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "未読数（WIP）"
+        },
+        "profile": {
+          "$ref": "#/definitions/ProfileEntity",
+          "description": "プロフィール情報"
+        }
+      },
+      "description": "Delete a membership."
+    },
+    "RoomWithoutMembershipEntity": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "ルームID"
+        },
+        "channel_name": {
+          "type": "string",
+          "description": "チャンネル名"
+        },
+        "kind": {
+          "type": "string",
+          "enum": [ "public_channel", "private_channel", "direct_message" ],
+          "description": "チャンネルタイプ"
+        },
+        "archived": {
+          "type": "boolean",
+          "description": "アーカイブ済か"
+        },
+        "description": {
+          "type": "string",
+          "description": "ルーム説明"
+        }
+      }
+    },
+    "ProfileEntity": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "プロフィールID"
+        },
+        "type": {
+          "type": "string",
+          "description": "種類（user|bot）"
+        },
+        "screen_name": {
+          "type": "string",
+          "description": "スクリーンネーム"
+        },
+        "display_name": {
+          "type": "string",
+          "description": "ディスプレイネーム"
+        },
+        "avatar": {
+          "type": "string",
+          "description": "アバターURL"
+        },
+        "archived": {
+          "type": "boolean",
+          "description": "アーカイブ済か"
+        },
+        "invited_rooms_count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "招待されている部屋の数"
+        }
+      },
+      "description": "Updates your profile."
+    },
+    "RoomWithMembershipsEntity": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "ルームID"
+        },
+        "channel_name": {
+          "type": "string",
+          "description": "チャンネル名"
+        },
+        "kind": {
+          "type": "string",
+          "enum": [ "public_channel", "private_channel", "direct_message" ],
+          "description": "チャンネルタイプ"
+        },
+        "archived": {
+          "type": "boolean",
+          "description": "アーカイブ済か"
+        },
+        "description": {
+          "type": "string",
+          "description": "ルーム説明"
+        },
+        "membership": {
+          "$ref": "#/definitions/MembershipEntity",
+          "description": "メンバーシップ情報"
+        },
+        "memberships": { "$ref": "#/definitions/MembershipWithoutRoomEntity" }
+      },
+      "description": "Returns all of members in this room"
+    },
+    "MembershipWithoutRoomEntity": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "メンバーシップID"
+        },
+        "authority": {
+          "type": "string",
+          "enum": [ "administrator", "maintainer", "member", "invited" ],
+          "description": "権限"
+        },
+        "disable_notification": {
+          "type": "boolean",
+          "description": "通知をオフにしているか"
+        },
+        "unread_count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "未読数（WIP）"
+        },
+        "profile": {
+          "$ref": "#/definitions/ProfileEntity",
+          "description": "プロフィール情報"
+        }
+      }
+    },
+    "MessageEntity": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32",
+          "description": "メッセージID"
+        },
+        "idempotent_key": {
+          "type": "string",
+          "description": "冪等性ID(Version 4 UUID)"
+        },
+        "display_name": {
+          "type": "string",
+          "description": "発言時の表示名"
+        },
+        "avatar": {
+          "type": "string",
+          "description": "発言時のアバターURL"
+        },
+        "content": {
+          "type": "string",
+          "description": "発言内容"
+        },
+        "raw_content": {
+          "type": "string",
+          "description": "発言内容（プレインテキスト）"
+        },
+        "embedded_urls": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "埋め込みURL"
+        },
+        "embed_contents": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/EmbedContentEntity" },
+          "description": "埋め込みコンテンツ"
+        },
+        "published_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "発言日時"
+        },
+        "nsfw": {
+          "type": "boolean",
+          "description": "NSFW(Not suitable for work)かどうか"
+        },
+        "room": {
+          "$ref": "#/definitions/RoomEntity",
+          "description": "発言があったルーム"
+        },
+        "profile": {
+          "$ref": "#/definitions/ProfileEntity",
+          "description": "発言者情報"
+        }
+      },
+      "description": "Creates a new message."
+    },
+    "EmbedContentEntity": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string",
+          "description": "対象のURL"
+        },
+        "data": {
+          "$ref": "#/definitions/EmbedDataEntity",
+          "description": "メタデータ"
+        }
+      }
+    },
+    "EmbedDataEntity": {
+      "type": "object",
+      "properties": {
+        "cache_age": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Cache age (in seconds)"
+        },
+        "medias": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/EmbedDataMediaEntity" },
+          "description": ""
+        },
+        "metadata_image": {
+          "$ref": "#/definitions/EmbedDataMediaEntity",
+          "description": "A media which describes the resource"
+        },
+        "restriction_policy": {
+          "type": "string",
+          "enum": [ "Unknown", "Safe", "NotSafe" ],
+          "description": "Restriction policy"
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of resource"
+        },
+        "type": {
+          "type": "string",
+          "enum": [ "MixedContent", "SingleImage", "SingleVideo", "SingleAudio" ],
+          "description": "Resource type"
+        },
+        "url": {
+          "type": "string",
+          "description": "URL of resource"
+        }
+      }
+    },
+    "EmbedDataMediaEntity": {
+      "type": "object",
+      "properties": {
+        "raw_url": {
+          "type": "string",
+          "description": "Raw resource URL of media."
+        },
+        "restriction_policy": {
+          "type": "string",
+          "enum": [ "Unknown", "Safe", "NotSafe" ],
+          "description": "Restriction policy"
+        },
+        "type": {
+          "type": "string",
+          "enum": [ "Image", "Video", "Audio" ],
+          "description": "Media type"
+        },
+        "thumbnail": {
+          "$ref": "#/definitions/EmbedDataImageInfoEntity",
+          "description": "Thumbnail image"
+        }
+      }
+    },
+    "EmbedDataImageInfoEntity": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string",
+          "description": "Image URL"
+        },
+        "width": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Image Width"
+        },
+        "height": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Image Height"
+        }
+      }
+    },
+    "AccessTokenEntity": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "アクセストークンID"
+        },
+        "name": {
+          "type": "string",
+          "description": "アクセストークン名"
+        },
+        "token": {
+          "type": "string",
+          "description": "アクセストークン"
+        },
+        "kind": {
+          "type": "string",
+          "enum": [ "user", "device", "essential" ],
+          "description": "アクセストークン種別"
+        }
+      },
+      "description": "Delete a access_token"
+    },
+    "DeviceEntity": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "デバイス名"
+        },
+        "kind": {
+          "type": "string",
+          "enum": [ "unknown", "ios", "android", "uwp", "chrome", "firefox", "official_web" ],
+          "description": "デバイス種別"
+        },
+        "device_identifier": {
+          "type": "string",
+          "description": "デバイスを特定するための任意の一意の文字列"
+        },
+        "notification_identifier": {
+          "type": "string",
+          "description": "プッシュ通知を送るためのidentifier"
+        },
+        "subscribe_notification": {
+          "type": "boolean",
+          "description": "プッシュ通知を受け取りたいか"
+        },
+        "last_activity_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "最後にデバイスを使用した日時"
+        },
+        "access_token": {
+          "$ref": "#/definitions/AccessTokenEntity",
+          "description": "デバイス用アクセストークン"
+        }
+      },
+      "description": "Delete a device"
+    }
+  }
+}
