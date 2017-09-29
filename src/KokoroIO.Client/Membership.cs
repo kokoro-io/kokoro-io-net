@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace KokoroIO
 {
@@ -18,6 +19,7 @@ namespace KokoroIO
 
         [DefaultValue(default(Authority))]
         [DataMember, JsonProperty("authority")]
+        [JsonConverter(typeof(StringEnumConverter))]
         public Authority Authority { get; set; }
 
         [DefaultValue(0)]
