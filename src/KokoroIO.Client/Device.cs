@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace KokoroIO
 {
@@ -14,6 +15,7 @@ namespace KokoroIO
 
         [DefaultValue(default(DeviceKind))]
         [DataMember, JsonProperty("kind")]
+        [JsonConverter(typeof(StringEnumConverter))]
         public DeviceKind Kind { get; set; }
 
         [DefaultValue(null)]

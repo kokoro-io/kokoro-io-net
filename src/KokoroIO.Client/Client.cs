@@ -57,6 +57,12 @@ namespace KokoroIO
 
         #region Device
 
+        public Task<Device[]> GetDevicesAsync()
+        {
+            var req = new HttpRequestMessage(HttpMethod.Get, EndPoint + "/v1/devices");
+            return SendAsync<Device[]>(req);
+        }
+
         public Task<Device[]> GetDevicesAsync(string email, string password)
         {
             var req = new HttpRequestMessage(HttpMethod.Get, EndPoint + "/v1/devices");
@@ -65,11 +71,23 @@ namespace KokoroIO
             return SendAsync<Device[]>(req);
         }
 
+        public Task<Device> PostDeviceAsync(string name, DeviceKind kind, string deviceIdentifier, string notificationIdentifier = null, bool subscribeNotification = false)
+        {
+            var req = new HttpRequestMessage(HttpMethod.Post, EndPoint + "/v1/devices");
+
+            return PostDeviceAsyncCore(name, kind, deviceIdentifier, notificationIdentifier, subscribeNotification, req);
+        }
+
         public Task<Device> PostDeviceAsync(string email, string password, string name, DeviceKind kind, string deviceIdentifier, string notificationIdentifier = null, bool subscribeNotification = false)
         {
             var req = new HttpRequestMessage(HttpMethod.Post, EndPoint + "/v1/devices");
             req.Headers.Add("X-Account-Token", Convert.ToBase64String(new UTF8Encoding(false).GetBytes(email + ":" + password)));
 
+            return PostDeviceAsyncCore(name, kind, deviceIdentifier, notificationIdentifier, subscribeNotification, req);
+        }
+
+        private Task<Device> PostDeviceAsyncCore(string name, DeviceKind kind, string deviceIdentifier, string notificationIdentifier, bool subscribeNotification, HttpRequestMessage req)
+        {
             var d = new List<KeyValuePair<string, string>>(5)
             {
                 new KeyValuePair<string, string>("name", name),
@@ -86,6 +104,13 @@ namespace KokoroIO
             req.Content = new FormUrlEncodedContent(d);
 
             return SendAsync<Device>(req);
+        }
+
+        public Task DeleteDeviceAsync(string deviceIdentifier)
+        {
+            var r = new HttpRequestMessage(HttpMethod.Delete, EndPoint + $"/v1/devices/" + deviceIdentifier);
+
+            return SendAsync(r).ContinueWith(t => t.Result.EnsureSuccessStatusCode());
         }
 
         #endregion Device

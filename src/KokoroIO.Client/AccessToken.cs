@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace KokoroIO
 {
@@ -22,6 +23,7 @@ namespace KokoroIO
 
         [DefaultValue(default(AccessTokenKind))]
         [DataMember, JsonProperty("kind")]
+        [JsonConverter(typeof(StringEnumConverter))]
         public AccessTokenKind Kind { get; set; }
     }
 }

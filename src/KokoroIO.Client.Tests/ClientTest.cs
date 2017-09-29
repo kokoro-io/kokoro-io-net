@@ -37,8 +37,30 @@ namespace KokoroIO
 
         #region Device
 
-        // TODO: GetDevicesAsync
-        // TODO: PostAccessTokenAsync
+        // TODO: GetDevicesAsync(X-Account-Token)
+        // TODO: PostAccessTokenAsync(X-Account-Token)
+
+        [Fact]
+        public async Task PostDeviceAsyncTest()
+        {
+            using (var c = GetClient())
+            {
+                var n = nameof(PostDeviceAsyncTest) + DateTime.Now.Ticks;
+
+                var devs = await c.GetDevicesAsync();
+                Assert.False(devs.Any(d => d.DeviceIdentifier == n));
+
+                var p = await c.PostDeviceAsync(n, DeviceKind.Unknown, n);
+
+                devs = await c.GetDevicesAsync();
+                Assert.True(devs.Any(d => d.DeviceIdentifier == n));
+
+                await c.DeleteDeviceAsync(p.DeviceIdentifier);
+
+                devs = await c.GetDevicesAsync();
+                Assert.False(devs.Any(d => d.DeviceIdentifier == n));
+            }
+        }
 
         #endregion Device
 
