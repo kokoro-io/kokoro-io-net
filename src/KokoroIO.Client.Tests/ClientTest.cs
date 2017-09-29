@@ -1,5 +1,7 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -97,7 +99,7 @@ namespace KokoroIO
 
         #endregion Membership
 
-        #region MyRegion
+        #region Profile
 
         [Fact]
         public async Task GetProfilesAsyncTest()
@@ -122,7 +124,48 @@ namespace KokoroIO
             }
         }
 
-        #endregion MyRegion
+        [Fact]
+        public async Task PutProfileAsyncTest()
+        {
+            using (var c = GetClient())
+            {
+                var memberships = await c.GetMembershipsAsync();
+
+                var dev = memberships
+                                .Select(ms => ms.Room)
+                                .FirstOrDefault(r => r.Kind == RoomKind.PrivateChannel
+                                                    && !r.IsArchived
+                                                    && r.ChannelName == "private/dev");
+
+                if (dev == null)
+                {
+                    return;
+                }
+
+                var p = await c.GetProfileAsync();
+
+                byte[] originalAvatar;
+                using (var hc = new HttpClient())
+                {
+                    originalAvatar = await hc.GetByteArrayAsync(p.Avatar);
+                }
+
+                var rd = new Random();
+                using (var fs = new FileStream("testimage.jpg", FileMode.Open))
+                {
+                    await c.PutProfileAsync("test" + rd.Next(), "自動テストに乗っ取られ太郎", fs);
+                }
+
+                await c.PostMessageAsync(dev.Id, GetTestMessage(), false);
+
+                using (var ms = new MemoryStream(originalAvatar))
+                {
+                    await c.PutProfileAsync(p.ScreenName, p.DisplayName, ms);
+                }
+            }
+        }
+
+        #endregion Profile
 
         #region Room
 
