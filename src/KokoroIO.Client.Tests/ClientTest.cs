@@ -138,35 +138,16 @@ namespace KokoroIO
         }
 
         [Fact]
-        public async Task GetPublicRoomsAsyncTest()
+        public async Task GetRoomMembershipsAsyncTest()
         {
             using (var c = GetClient())
             {
-                var rooms = await c.GetPublicRoomsAsync();
+                var mss = await c.GetMembershipsAsync();
+                var ms = mss.First();
 
-                Assert.NotNull(rooms);
-            }
-        }
+                var rmss = await c.GetRoomMembershipsAsync(ms.Room.Id);
 
-        [Fact]
-        public async Task GetPrivateRoomsAsyncTest()
-        {
-            using (var c = GetClient())
-            {
-                var rooms = await c.GetPrivateRoomsAsync();
-
-                Assert.NotNull(rooms);
-            }
-        }
-
-        [Fact]
-        public void GetDirectMessageRoomsAsyncTest()
-        {
-            using (var c = GetClient())
-            {
-                var rooms = c.GetDirectMessageRoomsAsync();
-
-                Assert.NotNull(rooms);
+                Assert.True(rmss.Memberships.Any(m => m.Profile.Id == ms.Profile.Id));
             }
         }
 
@@ -179,9 +160,13 @@ namespace KokoroIO
         {
             using (var c = GetClient())
             {
-                var rooms = await c.GetPrivateRoomsAsync();
+                var memberships = await c.GetMembershipsAsync();
 
-                var dev = rooms.FirstOrDefault(r => r.ChannelName == "private/dev");
+                var dev = memberships
+                                .Select(ms => ms.Room)
+                                .FirstOrDefault(r => r.Kind == RoomKind.PrivateChannel
+                                                    && !r.IsArchived
+                                                    && r.ChannelName == "private/dev");
 
                 if (dev == null)
                 {
@@ -199,10 +184,13 @@ namespace KokoroIO
         {
             using (var c = GetClient())
             {
-                var rooms = await c.GetPrivateRoomsAsync();
+                var memberships = await c.GetMembershipsAsync();
 
-                var dev = rooms.FirstOrDefault(r => r.ChannelName == "private/dev");
-
+                var dev = memberships
+                                .Select(ms => ms.Room)
+                                .FirstOrDefault(r => r.Kind == RoomKind.PrivateChannel
+                                                    && !r.IsArchived
+                                                    && r.ChannelName == "private/dev");
                 if (dev == null)
                 {
                     return;
@@ -236,8 +224,13 @@ namespace KokoroIO
         {
             using (var c = GetClient())
             {
-                var rooms = await c.GetPrivateRoomsAsync().ConfigureAwait(false);
-                var dev = rooms.FirstOrDefault(r => r.ChannelName == "private/dev");
+                var memberships = await c.GetMembershipsAsync();
+
+                var dev = memberships
+                                .Select(ms => ms.Room)
+                                .FirstOrDefault(r => r.Kind == RoomKind.PrivateChannel
+                                                    && !r.IsArchived
+                                                    && r.ChannelName == "private/dev");
                 if (dev == null)
                 {
                     return;

@@ -34,6 +34,10 @@ namespace KokoroIO
         [DataMember, JsonProperty("membership")]
         public Membership Membership { get; set; }
 
+        [DefaultValue(null)]
+        [DataMember, JsonProperty("memberships")]
+        public Membership[] Memberships { get; set; }
+
         public static bool IsValidId(string id)
         {
             if (string.IsNullOrEmpty(id))

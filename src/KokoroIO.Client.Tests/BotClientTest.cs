@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace KokoroIO
@@ -6,14 +7,18 @@ namespace KokoroIO
     public class BotClientTest : TestBase
     {
         [Fact]
-        public void PostMessageAsyncTest()
+        public async Task PostMessageAsyncTest()
         {
             Room dev;
             using (var c = GetClient())
             {
-                var rooms = c.GetPrivateRoomsAsync().GetAwaiter().GetResult();
+                var memberships = await c.GetMembershipsAsync();
 
-                dev = rooms.FirstOrDefault(r => r.ChannelName == "private/dev");
+                dev = memberships
+                            .Select(ms => ms.Room)
+                            .FirstOrDefault(r => r.Kind == RoomKind.PrivateChannel
+                                                && !r.IsArchived
+                                                && r.ChannelName == "private/dev");
 
                 if (dev == null)
                 {
@@ -23,7 +28,7 @@ namespace KokoroIO
 
             using (var c = GetBotClient())
             {
-                var m = c.PostMessageAsync(dev.Id, GetTestMessage(), displayName: GetType().FullName).GetAwaiter().GetResult();
+                var m = await c.PostMessageAsync(dev.Id, GetTestMessage(), displayName: GetType().FullName);
 
                 Assert.NotNull(m);
             }

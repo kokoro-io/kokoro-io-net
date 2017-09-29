@@ -190,6 +190,13 @@ namespace KokoroIO
 
         #region Room
 
+        public Task<Room[]> GetRoomsAsync(bool? archived = null)
+            => SendAsync<Room[]>(
+                    new HttpRequestMessage(
+                            HttpMethod.Get,
+                            EndPoint + "/v1/rooms"
+                            + (archived == null ? null : archived.Value ? "?archived=true" : "?archived=false")));
+
         public Task<Room> PostRoomAsync(string channelName, string description, RoomKind kind)
         {
             var r = new HttpRequestMessage(HttpMethod.Post, EndPoint + $"/v1/rooms");
@@ -205,25 +212,6 @@ namespace KokoroIO
 
             return SendAsync<Room>(r);
         }
-
-        public Task<Room[]> GetRoomsAsync(bool? archived = null)
-            => SendAsync<Room[]>(
-                    new HttpRequestMessage(
-                            HttpMethod.Get,
-                            EndPoint + "/v1/rooms"
-                            + GetArchivedQuery(archived)));
-
-        private static string GetArchivedQuery(bool? archived)
-            => (archived == null ? null : archived.Value ? "?archived=true" : "?archived=false");
-
-        public Task<Room[]> GetPublicRoomsAsync(bool? archived = null)
-            => SendAsync<Room[]>(new HttpRequestMessage(HttpMethod.Get, EndPoint + "/v1/rooms/public" + GetArchivedQuery(archived)));
-
-        public Task<Room[]> GetPrivateRoomsAsync(bool? archived = null)
-            => SendAsync<Room[]>(new HttpRequestMessage(HttpMethod.Get, EndPoint + "/v1/rooms/private" + GetArchivedQuery(archived)));
-
-        public Task<Room[]> GetDirectMessageRoomsAsync(bool? archived = null)
-            => SendAsync<Room[]>(new HttpRequestMessage(HttpMethod.Get, EndPoint + "/v1/rooms/direct_message" + GetArchivedQuery(archived)));
 
         public Task<Room> PostDirectMessageRoomAsync(string targetUserProfileId)
         {
@@ -279,6 +267,18 @@ namespace KokoroIO
             }
 
             var r = new HttpRequestMessage(HttpMethod.Put, EndPoint + $"/v1/rooms/" + roomId + "/unarchive");
+
+            return SendAsync<Room>(r);
+        }
+
+        public Task<Room> GetRoomMembershipsAsync(string roomId)
+        {
+            if (!Room.IsValidId(roomId))
+            {
+                return new ArgumentException($"Invalid {nameof(roomId)}.").ToTask<Room>();
+            }
+
+            var r = new HttpRequestMessage(HttpMethod.Get, EndPoint + $"/v1/rooms/" + roomId + "/memberships");
 
             return SendAsync<Room>(r);
         }
