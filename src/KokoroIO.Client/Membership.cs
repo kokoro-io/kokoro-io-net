@@ -14,8 +14,8 @@ namespace KokoroIO
         public string Id { get; set; }
 
         [DefaultValue(null)]
-        [DataMember, JsonProperty("room")]
-        public Room Room { get; set; }
+        [DataMember, JsonProperty("channel")]
+        public Channel Channel { get; set; }
 
         [DefaultValue(default(Authority))]
         [DataMember, JsonProperty("authority")]

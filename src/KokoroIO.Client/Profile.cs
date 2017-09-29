@@ -35,7 +35,7 @@ namespace KokoroIO
         public bool IsArchived { get; set; }
 
         [DefaultValue(0)]
-        [DataMember, JsonProperty("invited_room_count")]
-        public int InvitedRoomCount { get; set; }
+        [DataMember, JsonProperty("invited_channel_count")]
+        public int InvitedChannelCount { get; set; }
     }
 }

@@ -1,22 +1,22 @@
 namespace KokoroIO
 {
-    public static class RoomKindExtensions
+    public static class ChannelKindExtensions
     {
         internal const string PUBLIC_CHANNEL = "public_channel";
         internal const string PRIVATE_CHANNEL = "private_channel";
         internal const string DIRECT_MESSAGE = "direct_message";
 
-        public static string ToApiString(this RoomKind value)
+        public static string ToApiString(this ChannelKind value)
         {
             switch (value)
             {
-                case RoomKind.PublicChannel:
+                case ChannelKind.PublicChannel:
                     return PUBLIC_CHANNEL;
 
-                case RoomKind.PrivateChannel:
+                case ChannelKind.PrivateChannel:
                     return PRIVATE_CHANNEL;
 
-                case RoomKind.DirectMessage:
+                case ChannelKind.DirectMessage:
                     return DIRECT_MESSAGE;
             }
 

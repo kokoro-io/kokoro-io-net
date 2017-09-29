@@ -62,8 +62,8 @@
     <Compile Include="ViewModels\MessageViewModel.cs" />
     <Compile Include="Views\MessageBlockControl.cs" />
     <Compile Include="Views\MessageSpanControl.cs" />
-    <Compile Include="Views\RoomPage.xaml.cs">
-      <DependentUpon>RoomPage.xaml</DependentUpon>
+    <Compile Include="Views\ChannelPage.xaml.cs">
+      <DependentUpon>ChannelPage.xaml</DependentUpon>
     </Compile>
     <Page Include="Themes\Generic.xaml">
       <SubType>Designer</SubType>
@@ -85,8 +85,8 @@
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\PageViewModelBase.cs" />
-    <Compile Include="ViewModels\RoomPageViewModel.cs" />
-    <Compile Include="ViewModels\RoomViewModel.cs" />
+    <Compile Include="ViewModels\ChannelPageViewModel.cs" />
+    <Compile Include="ViewModels\ChannelViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="Views\LoginWindow.xaml.cs">
       <DependentUpon>LoginWindow.xaml</DependentUpon>
@@ -95,7 +95,7 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Views\RoomPage.xaml">
+    <Page Include="Views\ChannelPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

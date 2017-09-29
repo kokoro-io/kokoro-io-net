@@ -9,14 +9,14 @@ namespace KokoroIO
         [Fact]
         public async Task PostMessageAsyncTest()
         {
-            Room dev;
+            Channel dev;
             using (var c = GetClient())
             {
                 var memberships = await c.GetMembershipsAsync();
 
                 dev = memberships
-                            .Select(ms => ms.Room)
-                            .FirstOrDefault(r => r.Kind == RoomKind.PrivateChannel
+                            .Select(ms => ms.Channel)
+                            .FirstOrDefault(r => r.Kind == ChannelKind.PrivateChannel
                                                 && !r.IsArchived
                                                 && r.ChannelName == "private/dev");
 

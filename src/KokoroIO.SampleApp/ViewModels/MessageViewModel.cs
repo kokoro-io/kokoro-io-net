@@ -10,10 +10,10 @@ namespace KokoroIO.SampleApp.ViewModels
 {
     public sealed class MessageViewModel : ViewModelBase
     {
-        private readonly RoomPageViewModel _Page;
+        private readonly ChannelPageViewModel _Page;
         private readonly Message _Model;
 
-        internal MessageViewModel(RoomPageViewModel page, Message model)
+        internal MessageViewModel(ChannelPageViewModel page, Message model)
         {
             _Page = page;
             _Model = model;

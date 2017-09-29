@@ -7,7 +7,7 @@ using Newtonsoft.Json.Converters;
 namespace KokoroIO
 {
     [Serializable, DataContract]
-    public class Room
+    public class Channel
     {
         [DefaultValue(null)]
         [DataMember, JsonProperty("id")]
@@ -17,10 +17,10 @@ namespace KokoroIO
         [DataMember, JsonProperty("channel_name")]
         public string ChannelName { get; set; }
 
-        [DefaultValue(default(RoomKind))]
+        [DefaultValue(default(ChannelKind))]
         [DataMember, JsonProperty("kind")]
         [JsonConverter(typeof(StringEnumConverter))]
-        public RoomKind Kind { get; set; }
+        public ChannelKind Kind { get; set; }
 
         [DefaultValue(false)]
         [DataMember, JsonProperty("archived")]

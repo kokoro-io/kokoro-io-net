@@ -3,11 +3,11 @@ using System.Linq;
 
 namespace KokoroIO.SampleApp.ViewModels
 {
-    public sealed class RoomPageViewModel : PageViewModelBase
+    public sealed class ChannelPageViewModel : PageViewModelBase
     {
-        private readonly Room _Model;
+        private readonly Channel _Model;
 
-        internal RoomPageViewModel(MainViewModel main, Room model)
+        internal ChannelPageViewModel(MainViewModel main, Channel model)
             : base(main)
         {
             _Model = model;
@@ -17,7 +17,7 @@ namespace KokoroIO.SampleApp.ViewModels
 
         public string ChannelName => _Model.ChannelName;
 
-        public RoomKind Kind => _Model.Kind;
+        public ChannelKind Kind => _Model.Kind;
 
         private ObservableCollection<MessageViewModel> _Messages;
 

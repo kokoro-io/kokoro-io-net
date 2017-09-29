@@ -37,7 +37,7 @@
                                 Value="True" />
                         </Style>
                         <DataTemplate
-                            x:Key="roomTemplate">
+                            x:Key="channelTemplate">
                             <Grid>
                                 <Grid.Style>
                                     <Style
@@ -122,20 +122,20 @@
                     <Expander
                         Header="Public Channels">
                         <ItemsControl
-                            ItemsSource="{Binding PublicRooms}"
-                            ItemTemplate="{StaticResource roomTemplate}" />
+                            ItemsSource="{Binding PublicChannels}"
+                            ItemTemplate="{StaticResource channelTemplate}" />
                     </Expander>
                     <Expander
                         Header="Private Channels">
                         <ItemsControl
-                            ItemsSource="{Binding PrivateRooms}"
-                            ItemTemplate="{StaticResource roomTemplate}" />
+                            ItemsSource="{Binding PrivateChannels}"
+                            ItemTemplate="{StaticResource channelTemplate}" />
                     </Expander>
                     <Expander
                         Header="Direct Messages">
                         <ItemsControl
                             ItemsSource="{Binding DirectMessages}"
-                            ItemTemplate="{StaticResource roomTemplate}" />
+                            ItemTemplate="{StaticResource channelTemplate}" />
                     </Expander>
                 </StackPanel>
             </ScrollViewer>
@@ -149,12 +149,12 @@
                     <Style.Triggers>
                         <DataTrigger
                             Binding="{Binding TypeName}"
-                            Value="RoomPageViewModel">
+                            Value="ChannelPageViewModel">
                             <Setter
                                 Property="ContentTemplate">
                                 <Setter.Value>
                                     <DataTemplate>
-                                        <local:RoomPage />
+                                        <local:ChannelPage />
                                     </DataTemplate>
                                 </Setter.Value>
                             </Setter>

@@ -7,18 +7,18 @@ using KokoroIO.SampleApp.ViewModels;
 namespace KokoroIO.SampleApp.Views
 {
     /// <summary>
-    /// RoomPage.xaml の相互作用ロジック
+    /// ChannelPage.xaml の相互作用ロジック
     /// </summary>
-    public partial class RoomPage : UserControl
+    public partial class ChannelPage : UserControl
     {
-        public RoomPage()
+        public ChannelPage()
         {
             InitializeComponent();
         }
 
         private void messageViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {
-            var vm = DataContext as RoomPageViewModel;
+            var vm = DataContext as ChannelPageViewModel;
 
             if (vm?.IsLoading != false)
             {

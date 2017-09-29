@@ -14,14 +14,14 @@ namespace KokoroIO
             AccessToken = DefaultAccessToken ?? ClientBase.DefaultAccessToken;
         }
 
-        public Task<Message> PostMessageAsync(string roomId, string message, string displayName = null, bool? isNsfw = null)
+        public Task<Message> PostMessageAsync(string channelId, string message, string displayName = null, bool? isNsfw = null)
         {
-            if (!Room.IsValidId(roomId))
+            if (!Channel.IsValidId(channelId))
             {
-                return new ArgumentException($"Invalid {nameof(roomId)}.").ToTask<Message>();
+                return new ArgumentException($"Invalid {nameof(channelId)}.").ToTask<Message>();
             }
 
-            var r = new HttpRequestMessage(HttpMethod.Post, EndPoint + $"/v1/bot/rooms/" + roomId + "/messages");
+            var r = new HttpRequestMessage(HttpMethod.Post, EndPoint + $"/v1/bot/channels/" + channelId + "/messages");
 
             var d = new List<KeyValuePair<string, string>>(3)
             {

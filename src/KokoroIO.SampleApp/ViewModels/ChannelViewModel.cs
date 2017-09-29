@@ -2,12 +2,12 @@ using System.Windows.Input;
 
 namespace KokoroIO.SampleApp.ViewModels
 {
-    public sealed class RoomViewModel : ViewModelBase
+    public sealed class ChannelViewModel : ViewModelBase
     {
         private readonly MainViewModel _Main;
-        private readonly Room _Model;
+        private readonly Channel _Model;
 
-        public RoomViewModel(MainViewModel main, Room model)
+        public ChannelViewModel(MainViewModel main, Channel model)
         {
             _Main = main;
             _Model = model;
@@ -17,7 +17,7 @@ namespace KokoroIO.SampleApp.ViewModels
 
         public string ChannelName => _Model.ChannelName;
 
-        public RoomKind Kind => _Model.Kind;
+        public ChannelKind Kind => _Model.Kind;
 
         private bool _IsOpen;
 
@@ -60,11 +60,11 @@ namespace KokoroIO.SampleApp.ViewModels
         public ICommand OpenCommand
             => _OpenCommand ?? (_OpenCommand = new Command(() =>
             {
-                if (_Main.CurrentPage is RoomPageViewModel rp && rp.Id == Id)
+                if (_Main.CurrentPage is ChannelPageViewModel rp && rp.Id == Id)
                 {
                     return;
                 }
-                rp = new RoomPageViewModel(_Main, _Model);
+                rp = new ChannelPageViewModel(_Main, _Model);
                 _Main.CurrentPage = rp;
                 NewMessageCount = 0;
             }));

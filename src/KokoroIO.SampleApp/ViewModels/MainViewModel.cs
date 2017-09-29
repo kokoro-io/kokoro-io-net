@@ -19,10 +19,10 @@ namespace KokoroIO.SampleApp.ViewModels
         {
             try
             {
-                var rid = e.Data.Room.Id; ;
+                var rid = e.Data.Channel.Id; ;
                 for (var i = 0; i < 3; i++)
                 {
-                    var r = i == 0 ? _PublicRooms : i == 1 ? _PrivateRooms : _DirectMessages;
+                    var r = i == 0 ? _PublicChannels : i == 1 ? _PrivateChannels : _DirectMessages;
 
                     if (r != null)
                     {
@@ -48,51 +48,52 @@ namespace KokoroIO.SampleApp.ViewModels
 
         internal Client Client { get; }
 
-        #region Room
+        #region Channel
 
-        private ObservableCollection<RoomViewModel> _PublicRooms;
-        private ObservableCollection<RoomViewModel> _PrivateRooms;
-        private ObservableCollection<RoomViewModel> _DirectMessages;
+        private ObservableCollection<ChannelViewModel> _PublicChannels;
+        private ObservableCollection<ChannelViewModel> _PrivateChannels;
+        private ObservableCollection<ChannelViewModel> _DirectMessages;
 
-        public ObservableCollection<RoomViewModel> PublicRooms
-            => InitRooms()._PublicRooms;
+        public ObservableCollection<ChannelViewModel> PublicChannels
+            => InitChannels()._PublicChannels;
 
-        public ObservableCollection<RoomViewModel> PrivateRooms
-            => InitRooms()._PrivateRooms;
+        public ObservableCollection<ChannelViewModel> PrivateChannels
+            => InitChannels()._PrivateChannels;
 
-        public ObservableCollection<RoomViewModel> DirectMessages
-            => InitRooms()._DirectMessages;
+        public ObservableCollection<ChannelViewModel> DirectMessages
+            => InitChannels()._DirectMessages;
 
-        private MainViewModel InitRooms()
+        private MainViewModel InitChannels()
         {
-            if (_PublicRooms == null)
+            if (_PublicChannels == null)
             {
-                _PublicRooms = new ObservableCollection<RoomViewModel>();
-                _PrivateRooms = new ObservableCollection<RoomViewModel>();
-                _DirectMessages = new ObservableCollection<RoomViewModel>();
+                _PublicChannels = new ObservableCollection<ChannelViewModel>();
+                _PrivateChannels = new ObservableCollection<ChannelViewModel>();
+                _DirectMessages = new ObservableCollection<ChannelViewModel>();
 
-                LoadRooms();
+                LoadChannels();
             }
             return this;
         }
 
-        private async void LoadRooms()
+        private async void LoadChannels()
         {
             try
             {
-                var rs = await Client.GetRoomsAsync();
-                foreach (var r in rs)
+                var rs = await Client.GetMembershipsAsync();
+                foreach (var ms in rs)
                 {
-                    var vm = new RoomViewModel(this, r);
-                    if (r.Kind == RoomKind.PublicChannel)
+                    var c = ms.Channel;
+                    var vm = new ChannelViewModel(this, c);
+                    if (c.Kind == ChannelKind.PublicChannel)
                     {
-                        _PublicRooms.Add(vm);
+                        _PublicChannels.Add(vm);
                     }
-                    if (r.Kind == RoomKind.PrivateChannel)
+                    if (c.Kind == ChannelKind.PrivateChannel)
                     {
-                        _PrivateRooms.Add(vm);
+                        _PrivateChannels.Add(vm);
                     }
-                    if (r.Kind == RoomKind.DirectMessage)
+                    if (c.Kind == ChannelKind.DirectMessage)
                     {
                         _DirectMessages.Add(vm);
                     }
@@ -102,7 +103,7 @@ namespace KokoroIO.SampleApp.ViewModels
                 {
                     await Client.ConnectAsync();
 
-                    await Client.SubscribeAsync(rs);
+                    await Client.SubscribeAsync(rs.Select(r => r.Channel));
                 }
             }
             catch
@@ -110,19 +111,19 @@ namespace KokoroIO.SampleApp.ViewModels
             }
         }
 
-        private void UpdateCurrentRoom()
+        private void UpdateCurrentChannel()
         {
-            if (_PublicRooms == null)
+            if (_PublicChannels == null)
             {
                 return;
             }
-            var cp = _CurrentPage as RoomPageViewModel;
+            var cp = _CurrentPage as ChannelPageViewModel;
 
-            foreach (var r in _PublicRooms)
+            foreach (var r in _PublicChannels)
             {
                 r.IsOpen = r.Id == cp?.Id;
             }
-            foreach (var r in _PrivateRooms)
+            foreach (var r in _PrivateChannels)
             {
                 r.IsOpen = r.Id == cp?.Id;
             }
@@ -132,7 +133,7 @@ namespace KokoroIO.SampleApp.ViewModels
             }
         }
 
-        #endregion Room
+        #endregion Channel
 
         private PageViewModelBase _CurrentPage;
 
@@ -148,7 +149,7 @@ namespace KokoroIO.SampleApp.ViewModels
                 {
                     _CurrentPage = value;
                     SendPropertyChanged(nameof(CurrentPage));
-                    UpdateCurrentRoom();
+                    UpdateCurrentChannel();
                 }
             }
         }

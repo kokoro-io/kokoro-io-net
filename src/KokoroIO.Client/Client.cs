@@ -135,13 +135,13 @@ namespace KokoroIO
             return SendAsync<Membership[]>(new HttpRequestMessage(HttpMethod.Get, u.ToString()));
         }
 
-        public Task<Membership> PostMembershipAsync(string roomId, bool? disableNotification = null)
+        public Task<Membership> PostMembershipAsync(string channelId, bool? disableNotification = null)
         {
             var r = new HttpRequestMessage(HttpMethod.Post, EndPoint + $"/v1/memberships");
 
             var d = new List<KeyValuePair<string, string>>(2)
             {
-                new KeyValuePair<string, string>("room_id", roomId),
+                new KeyValuePair<string, string>("channel_id", channelId),
             };
 
             if (disableNotification != null)
@@ -242,34 +242,34 @@ namespace KokoroIO
 
         #endregion Profile
 
-        #region Room
+        #region Channel
 
-        public Task<Room[]> GetRoomsAsync(bool? archived = null)
-            => SendAsync<Room[]>(
+        public Task<Channel[]> GetChannelsAsync(bool? archived = null)
+            => SendAsync<Channel[]>(
                     new HttpRequestMessage(
                             HttpMethod.Get,
-                            EndPoint + "/v1/rooms"
+                            EndPoint + "/v1/channels"
                             + (archived == null ? null : archived.Value ? "?archived=true" : "?archived=false")));
 
-        public Task<Room> PostRoomAsync(string channelName, string description, RoomKind kind)
+        public Task<Channel> PostChannelAsync(string channelName, string description, ChannelKind kind)
         {
-            var r = new HttpRequestMessage(HttpMethod.Post, EndPoint + $"/v1/rooms");
+            var r = new HttpRequestMessage(HttpMethod.Post, EndPoint + $"/v1/channels");
 
             var d = new[]
             {
-                new KeyValuePair<string, string>("room[channel_name]", channelName),
-                new KeyValuePair<string, string>("room[description]", description),
-                new KeyValuePair<string, string>("room[kind]",kind.ToApiString())
+                new KeyValuePair<string, string>("channel[channel_name]", channelName),
+                new KeyValuePair<string, string>("channel[description]", description),
+                new KeyValuePair<string, string>("channel[kind]",kind.ToApiString())
             };
 
             r.Content = new FormUrlEncodedContent(d);
 
-            return SendAsync<Room>(r);
+            return SendAsync<Channel>(r);
         }
 
-        public Task<Room> PostDirectMessageRoomAsync(string targetUserProfileId)
+        public Task<Channel> PostDirectMessageChannelAsync(string targetUserProfileId)
         {
-            var r = new HttpRequestMessage(HttpMethod.Post, EndPoint + $"/v1/rooms/direct_message");
+            var r = new HttpRequestMessage(HttpMethod.Post, EndPoint + $"/v1/channels/direct_message");
 
             var d = new[]
             {
@@ -278,73 +278,73 @@ namespace KokoroIO
 
             r.Content = new FormUrlEncodedContent(d);
 
-            return SendAsync<Room>(r);
+            return SendAsync<Channel>(r);
         }
 
-        public Task<Room> PutRoomAsync(string roomId, string channelName, string description)
+        public Task<Channel> PutChannelAsync(string channelId, string channelName, string description)
         {
-            if (!Room.IsValidId(roomId))
+            if (!Channel.IsValidId(channelId))
             {
-                return new ArgumentException($"Invalid {nameof(roomId)}.").ToTask<Room>();
+                return new ArgumentException($"Invalid {nameof(channelId)}.").ToTask<Channel>();
             }
 
-            var r = new HttpRequestMessage(HttpMethod.Put, EndPoint + $"/v1/rooms/" + roomId);
+            var r = new HttpRequestMessage(HttpMethod.Put, EndPoint + $"/v1/channels/" + channelId);
 
             var d = new[]
             {
-                new KeyValuePair<string, string>("room[channel_name]", channelName),
-                new KeyValuePair<string, string>("room[description]", description)
+                new KeyValuePair<string, string>("channel[channel_name]", channelName),
+                new KeyValuePair<string, string>("channel[description]", description)
             };
 
             r.Content = new FormUrlEncodedContent(d);
 
-            return SendAsync<Room>(r);
+            return SendAsync<Channel>(r);
         }
 
-        public Task<Room> ArchiveRoomAsync(string roomId)
+        public Task<Channel> ArchiveChannelAsync(string channelId)
         {
-            if (!Room.IsValidId(roomId))
+            if (!Channel.IsValidId(channelId))
             {
-                return new ArgumentException($"Invalid {nameof(roomId)}.").ToTask<Room>();
+                return new ArgumentException($"Invalid {nameof(channelId)}.").ToTask<Channel>();
             }
 
-            var r = new HttpRequestMessage(HttpMethod.Delete, EndPoint + $"/v1/rooms/" + roomId + "/archive");
+            var r = new HttpRequestMessage(HttpMethod.Delete, EndPoint + $"/v1/channels/" + channelId + "/archive");
 
-            return SendAsync<Room>(r);
+            return SendAsync<Channel>(r);
         }
 
-        public Task<Room> UnarchiveRoomAsync(string roomId)
+        public Task<Channel> UnarchiveChannelAsync(string channelId)
         {
-            if (!Room.IsValidId(roomId))
+            if (!Channel.IsValidId(channelId))
             {
-                return new ArgumentException($"Invalid {nameof(roomId)}.").ToTask<Room>();
+                return new ArgumentException($"Invalid {nameof(channelId)}.").ToTask<Channel>();
             }
 
-            var r = new HttpRequestMessage(HttpMethod.Put, EndPoint + $"/v1/rooms/" + roomId + "/unarchive");
+            var r = new HttpRequestMessage(HttpMethod.Put, EndPoint + $"/v1/channels/" + channelId + "/unarchive");
 
-            return SendAsync<Room>(r);
+            return SendAsync<Channel>(r);
         }
 
-        public Task<Room> GetRoomMembershipsAsync(string roomId)
+        public Task<Channel> GetChannelMembershipsAsync(string channelId)
         {
-            if (!Room.IsValidId(roomId))
+            if (!Channel.IsValidId(channelId))
             {
-                return new ArgumentException($"Invalid {nameof(roomId)}.").ToTask<Room>();
+                return new ArgumentException($"Invalid {nameof(channelId)}.").ToTask<Channel>();
             }
 
-            var r = new HttpRequestMessage(HttpMethod.Get, EndPoint + $"/v1/rooms/" + roomId + "/memberships");
+            var r = new HttpRequestMessage(HttpMethod.Get, EndPoint + $"/v1/channels/" + channelId + "/memberships");
 
-            return SendAsync<Room>(r);
+            return SendAsync<Channel>(r);
         }
 
-        public Task ManageMemberAsync(string roomId, int memberId, Authority authority)
+        public Task ManageMemberAsync(string channelId, int memberId, Authority authority)
         {
-            if (!Room.IsValidId(roomId))
+            if (!Channel.IsValidId(channelId))
             {
-                return new ArgumentException($"Invalid {nameof(roomId)}.").ToTask<Room>();
+                return new ArgumentException($"Invalid {nameof(channelId)}.").ToTask<Channel>();
             }
 
-            var r = new HttpRequestMessage(HttpMethod.Put, EndPoint + $"/v1/rooms/" + roomId + "/manage_members/" + memberId);
+            var r = new HttpRequestMessage(HttpMethod.Put, EndPoint + $"/v1/channels/" + channelId + "/manage_members/" + memberId);
 
             var d = new[]
             {
@@ -356,18 +356,18 @@ namespace KokoroIO
             return SendAsync(r).ContinueWith(t => t.Result.EnsureSuccessStatusCode());
         }
 
-        #endregion Room
+        #endregion Channel
 
         #region Message
 
-        public Task<Message[]> GetMessagesAsync(string roomId, int? limit = null, int? beforeId = null, int? afterId = null)
+        public Task<Message[]> GetMessagesAsync(string channelId, int? limit = null, int? beforeId = null, int? afterId = null)
         {
-            if (!Room.IsValidId(roomId))
+            if (!Channel.IsValidId(channelId))
             {
-                return new ArgumentException($"Invalid {nameof(roomId)}.").ToTask<Message[]>();
+                return new ArgumentException($"Invalid {nameof(channelId)}.").ToTask<Message[]>();
             }
 
-            var u = new StringBuilder(EndPoint).Append("/v1/rooms/").Append(roomId).Append("/messages");
+            var u = new StringBuilder(EndPoint).Append("/v1/channels/").Append(channelId).Append("/messages");
 
             var ol = u.Length;
 
@@ -388,14 +388,14 @@ namespace KokoroIO
             return SendAsync<Message[]>(new HttpRequestMessage(HttpMethod.Get, u.ToString()));
         }
 
-        public Task<Message> PostMessageAsync(string roomId, string message, bool isNsfw, Guid idempotentKey = default(Guid))
+        public Task<Message> PostMessageAsync(string channelId, string message, bool isNsfw, Guid idempotentKey = default(Guid))
         {
-            if (!Room.IsValidId(roomId))
+            if (!Channel.IsValidId(channelId))
             {
-                return new ArgumentException($"Invalid {nameof(roomId)}.").ToTask<Message>();
+                return new ArgumentException($"Invalid {nameof(channelId)}.").ToTask<Message>();
             }
 
-            var r = new HttpRequestMessage(HttpMethod.Post, EndPoint + $"/v1/rooms/" + roomId + "/messages");
+            var r = new HttpRequestMessage(HttpMethod.Post, EndPoint + $"/v1/channels/" + channelId + "/messages");
 
             var d = new List<KeyValuePair<string, string>>(3)
             {
@@ -492,13 +492,13 @@ namespace KokoroIO
             return _Connected.Task;
         }
 
-        public Task SubscribeAsync(params Room[] rooms)
-            => SubscribeAsync((IEnumerable<Room>)rooms);
+        public Task SubscribeAsync(params Channel[] channels)
+            => SubscribeAsync((IEnumerable<Channel>)channels);
 
-        public Task SubscribeAsync(IEnumerable<Room> rooms)
-            => SubscribeAsync(rooms.Select(r => r.Id));
+        public Task SubscribeAsync(IEnumerable<Channel> channels)
+            => SubscribeAsync(channels.Select(r => r.Id));
 
-        public Task SubscribeAsync(IEnumerable<string> roomIds)
+        public Task SubscribeAsync(IEnumerable<string> channelIds)
         {
             var ws = _WebSocket;
             var ct = _WebSocketCancellationTokenSource?.Token;
@@ -527,9 +527,9 @@ namespace KokoroIO
                 {
                     jtw2.WriteStartObject();
 
-                    jtw2.WritePropertyName("rooms");
+                    jtw2.WritePropertyName("channels");
                     jtw2.WriteStartArray();
-                    foreach (var id in roomIds)
+                    foreach (var id in channelIds)
                     {
                         jtw2.WriteValue(id);
                     }
