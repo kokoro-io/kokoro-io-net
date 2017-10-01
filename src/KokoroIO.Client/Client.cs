@@ -429,6 +429,8 @@ namespace KokoroIO
 
         public event EventHandler<EventArgs<Profile>> ProfileUpdated;
 
+        public event EventHandler<EventArgs<Channel[]>> ChannelsUpdated;
+
         public event EventHandler<EventArgs<Exception>> SocketError;
 
         public event EventHandler Disconnected;
@@ -630,48 +632,23 @@ namespace KokoroIO
                                 try
                                 {
                                     var msg = jo?.Property("message")?.Value?.Value<JObject>();
-                                    switch (msg?.Property("event")?.Value?.Value<string>())
+                                    var eventName = msg?.Property("event")?.Value?.Value<string>();
+                                    switch (eventName)
                                     {
                                         case "message_created":
-                                            {
-                                                var h = MessageCreated;
-                                                if (h != null)
-                                                {
-                                                    var mo = msg.Property("data")?.Value?.ToObject<Message>();
-                                                    if (mo != null)
-                                                    {
-                                                        h(this, new EventArgs<Message>(mo));
-                                                    }
-                                                }
-                                            }
+                                            DispatchEvent<Message>(msg, MessageCreated);
                                             break;
 
                                         case "message_updated":
-                                            {
-                                                var h = MessageUpdated;
-                                                if (h != null)
-                                                {
-                                                    var mo = msg.Property("data")?.Value?.ToObject<Message>();
-                                                    if (mo != null)
-                                                    {
-                                                        h(this, new EventArgs<Message>(mo));
-                                                    }
-                                                }
-                                            }
+                                            DispatchEvent<Message>(msg, MessageUpdated);
                                             break;
 
                                         case "profile_updated":
-                                            {
-                                                var h = ProfileUpdated;
-                                                if (h != null)
-                                                {
-                                                    var mo = msg.Property("data")?.Value?.ToObject<Profile>();
-                                                    if (mo != null)
-                                                    {
-                                                        h(this, new EventArgs<Profile>(mo));
-                                                    }
-                                                }
-                                            }
+                                            DispatchEvent<Profile>(msg, ProfileUpdated);
+                                            break;
+
+                                        case "channels_updated":
+                                            DispatchEvent<Channel[]>(msg, ChannelsUpdated);
                                             break;
                                     }
                                 }
@@ -699,6 +676,19 @@ namespace KokoroIO
                 DisposeWebSocket();
             }
             Disconnected?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void DispatchEvent<T>(JObject msg, EventHandler<EventArgs<T>> handler)
+            where T : class
+        {
+            if (handler != null)
+            {
+                var mo = msg.Property("data")?.Value?.ToObject<T>();
+                if (mo != null)
+                {
+                    handler(this, new EventArgs<T>(mo));
+                }
+            }
         }
 
         private Task SendSubscribeAsync(ClientWebSocket ws, CancellationToken ct)

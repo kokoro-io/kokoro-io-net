@@ -133,14 +133,9 @@ namespace KokoroIO
 
                 var dev = memberships
                                 .Select(ms => ms.Channel)
-                                .FirstOrDefault(r => r.Kind == ChannelKind.PrivateChannel
-                                                    && !r.IsArchived
-                                                    && r.ChannelName == "private/dev");
-
-                if (dev == null)
-                {
-                    return;
-                }
+                                .Single(r => r.Kind == ChannelKind.PrivateChannel
+                                            && !r.IsArchived
+                                            && r.ChannelName == "private/dev");
 
                 var p = await c.GetProfileAsync();
 
@@ -207,14 +202,9 @@ namespace KokoroIO
 
                 var dev = memberships
                                 .Select(ms => ms.Channel)
-                                .FirstOrDefault(r => r.Kind == ChannelKind.PrivateChannel
-                                                    && !r.IsArchived
-                                                    && r.ChannelName == "private/dev");
-
-                if (dev == null)
-                {
-                    return;
-                }
+                                .Single(r => r.Kind == ChannelKind.PrivateChannel
+                                            && !r.IsArchived
+                                            && r.ChannelName == "private/dev");
 
                 var m = await c.GetMessagesAsync(dev.Id);
 
@@ -231,13 +221,9 @@ namespace KokoroIO
 
                 var dev = memberships
                                 .Select(ms => ms.Channel)
-                                .FirstOrDefault(r => r.Kind == ChannelKind.PrivateChannel
-                                                    && !r.IsArchived
-                                                    && r.ChannelName == "private/dev");
-                if (dev == null)
-                {
-                    return;
-                }
+                                .Single(r => r.Kind == ChannelKind.PrivateChannel
+                                            && !r.IsArchived
+                                            && r.ChannelName == "private/dev");
 
                 var m = await c.PostMessageAsync(dev.Id, GetTestMessage(), false);
 
@@ -271,13 +257,9 @@ namespace KokoroIO
 
                 var dev = memberships
                                 .Select(ms => ms.Channel)
-                                .FirstOrDefault(r => r.Kind == ChannelKind.PrivateChannel
-                                                    && !r.IsArchived
-                                                    && r.ChannelName == "private/dev");
-                if (dev == null)
-                {
-                    return;
-                }
+                                .Single(r => r.Kind == ChannelKind.PrivateChannel
+                                            && !r.IsArchived
+                                            && r.ChannelName == "private/dev");
 
                 await c.ConnectAsync().ConfigureAwait(false);
 
@@ -300,6 +282,143 @@ namespace KokoroIO
                 }
                 while (!received);
 
+                await c.CloseAsync().ConfigureAwait(false);
+            }
+        }
+
+        [Fact]
+        public async Task MessageUpdatedTest()
+        {
+            using (var c = GetClient())
+            {
+                var memberships = await c.GetMembershipsAsync();
+
+                var dev = memberships
+                                .Select(ms => ms.Channel)
+                                .Single(r => r.Kind == ChannelKind.PrivateChannel
+                                            && !r.IsArchived
+                                            && r.ChannelName == "private/dev");
+
+                await c.ConnectAsync().ConfigureAwait(false);
+
+                await c.SubscribeAsync(dev).ConfigureAwait(false);
+
+                var msg = $"{nameof(MessageUpdatedTest)}見てるぅ～？ https://github.com/kokoro-io/kokoro-io-net";
+
+                var received = false;
+                c.MessageUpdated += (s2, e2) =>
+                {
+                    Assert.Equal(msg, e2.Data.RawContent);
+                    received = true;
+                };
+
+                do
+                {
+                    await Task.Delay(1000).ConfigureAwait(false);
+
+                    await c.PostMessageAsync(dev.Id, msg, false);
+                }
+                while (!received);
+
+                await c.CloseAsync().ConfigureAwait(false);
+            }
+        }
+
+        // TODO: [Fact]
+        public async Task ProfileUpdatedTest()
+        {
+            using (var c = GetClient())
+            {
+                var memberships = await c.GetMembershipsAsync();
+
+                var dev = memberships
+                                .Select(ms => ms.Channel)
+                                .Single(r => r.Kind == ChannelKind.PrivateChannel
+                                            && !r.IsArchived
+                                            && r.ChannelName == "private/dev");
+
+                var profile = await c.GetProfileAsync().ConfigureAwait(false);
+
+                await c.ConnectAsync().ConfigureAwait(false);
+
+                await c.SubscribeAsync(dev).ConfigureAwait(false);
+
+                var msg = $"{nameof(ProfileUpdatedTest)}見てるぅ～？";
+                try
+                {
+
+                    var received = false;
+                    c.ProfileUpdated += (s2, e2) =>
+                    {
+                        received = true;
+                    };
+
+                    var i = 0;
+                    do
+                    {
+                        Assert.True(i < 10, "Timeouted");
+
+                        await Task.Delay(1000).ConfigureAwait(false);
+
+                        await c.PutProfileAsync(profile.ScreenName, "ProfileUpdatedTest" + i++);
+                        await c.PostMessageAsync(dev.Id, msg, false);
+                    }
+                    while (!received);
+
+                }
+                finally
+                {
+                    await c.PutProfileAsync(profile.ScreenName, profile.DisplayName);
+                }
+                await c.CloseAsync().ConfigureAwait(false);
+            }
+        }
+
+        [Fact]
+        public async Task ChannelsUpdatedTest()
+        {
+            using (var c = GetClient())
+            {
+                var memberships = await c.GetMembershipsAsync();
+
+                var dev = memberships
+                                .Select(ms => ms.Channel)
+                                .Single(r => r.Kind == ChannelKind.PrivateChannel
+                                            && !r.IsArchived
+                                            && r.ChannelName == "private/dev");
+
+                var profile = await c.GetProfileAsync().ConfigureAwait(false);
+
+                await c.ConnectAsync().ConfigureAwait(false);
+
+                await c.SubscribeAsync(dev).ConfigureAwait(false);
+
+                var msg = $"{nameof(ChannelsUpdatedTest)}見てるぅ～？";
+                try
+                {
+
+                    var received = false;
+                    c.ChannelsUpdated += (s2, e2) =>
+                    {
+                        received = true;
+                    };
+
+                    var i = 0;
+                    do
+                    {
+                        Assert.True(i < 10, "Timeouted");
+
+                        await Task.Delay(1000).ConfigureAwait(false);
+
+                        await c.PutChannelAsync(dev.Id, dev.ChannelName, $"{nameof(ChannelsUpdatedTest)}見てるぅ～？");
+                    }
+                    while (!received);
+
+                }
+                finally
+                {
+                    await c.PutChannelAsync(dev.Id, dev.ChannelName, dev.Description);
+                }
                 await c.CloseAsync().ConfigureAwait(false);
             }
         }
