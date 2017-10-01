@@ -1,7 +1,7 @@
 {
   "info": {
     "title": "kokoro.io API document",
-    "description": "X-Access-Token ヘッダーにあなたのアカウントのAPIトークンを含めることでAPIへのアクセスを行うことが出来ます。APIトークンはウェブ管理画面の右上メニュー「アカウント情報 \u003e API情報」から確認可能です。\n\nただし、 POST /api/v1/devices/ APIへのリクエスト時のみ、APIトークンではなくあなたのアカウント情報を用いて認証を行うことが出来ます。この場合、X-Access-TokenではなくX-Account-Token ヘッダーを使用し、その値にはアカウントのメールアドレスとパスワードをコロンで連結した文字列 \"[email]:[password]\" を Base64 エンコードしたものを指定してください。\n\nまた、このページ右上の「Your API token here」の欄にAPIトークンを入力し「Explore」ボタンをクリックすることで、このページの各API説明部分にある「Try it out!」ボタンから実際にAPIを呼び出すことが可能になります。この時、通常のAPI呼び出しと同様、アカウントへの操作が実際に行われますのでご注意ください。\n",
+    "description": "X-Access-Token ヘッダーにあなたのアカウントのAPIトークンを含めることでAPIへのアクセスを行うことが出来ます。APIトークンはウェブ管理画面の右上メニュー「アカウント情報 > API情報」から確認可能です。\n\nただし、 POST /api/v1/devices/ APIへのリクエスト時のみ、APIトークンではなくあなたのアカウント情報を用いて認証を行うことが出来ます。この場合、X-Access-TokenではなくX-Account-Token ヘッダーを使用し、その値にはアカウントのメールアドレスとパスワードをコロンで連結した文字列 \"[email]:[password]\" を Base64 エンコードしたものを指定してください。\n\nまた、このページ右上の「Your API token here」の欄にAPIトークンを入力し「Explore」ボタンをクリックすることで、このページの各API説明部分にある「Try it out!」ボタンから実際にAPIを呼び出すことが可能になります。この時、通常のAPI呼び出しと同様、アカウントへの操作が実際に行われますのでご注意ください。\n",
     "version": "1.0.0"
   },
   "swagger": "2.0",
@@ -10,8 +10,8 @@
   "basePath": "/api",
   "tags": [
     {
-      "name": "rooms",
-      "description": "Operations about rooms"
+      "name": "channels",
+      "description": "Operations about channels"
     },
     {
       "name": "profiles",
@@ -35,10 +35,10 @@
     }
   ],
   "paths": {
-    "/v1/rooms": {
+    "/v1/channels": {
       "get": {
-        "summary": "Returns public rooms.",
-        "description": "Returns public rooms.",
+        "summary": "Returns public channels.",
+        "description": "Returns public channels.",
         "produces": [ "application/json" ],
         "parameters": [
           {
@@ -50,34 +50,34 @@
         ],
         "responses": {
           "200": {
-            "description": "Returns public rooms.",
-            "schema": { "$ref": "#/definitions/RoomEntity" }
+            "description": "Returns public channels.",
+            "schema": { "$ref": "#/definitions/ChannelEntity" }
           }
         },
-        "tags": [ "rooms" ],
-        "operationId": "getV1Rooms"
+        "tags": [ "channels" ],
+        "operationId": "getV1Channels"
       },
       "post": {
-        "summary": "Creates a new room.",
-        "description": "Creates a new room.",
+        "summary": "Creates a new channel.",
+        "description": "Creates a new channel.",
         "produces": [ "application/json" ],
         "consumes": [ "application/json" ],
         "parameters": [
           {
             "in": "formData",
-            "name": "room[channel_name]",
+            "name": "channel[channel_name]",
             "type": "string",
             "required": true
           },
           {
             "in": "formData",
-            "name": "room[description]",
+            "name": "channel[description]",
             "type": "string",
             "required": true
           },
           {
             "in": "formData",
-            "name": "room[kind]",
+            "name": "channel[kind]",
             "type": "string",
             "default": "public_channel",
             "enum": [ "public_channel", "private_channel" ],
@@ -86,15 +86,15 @@
         ],
         "responses": {
           "201": {
-            "description": "Creates a new room.",
-            "schema": { "$ref": "#/definitions/RoomEntity" }
+            "description": "Creates a new channel.",
+            "schema": { "$ref": "#/definitions/ChannelEntity" }
           }
         },
-        "tags": [ "rooms" ],
-        "operationId": "postV1Rooms"
+        "tags": [ "channels" ],
+        "operationId": "postV1Channels"
       }
     },
-    "/v1/rooms/direct_message": {
+    "/v1/channels/direct_message": {
       "post": {
         "summary": "Creates a new direct message.",
         "description": "Creates a new direct message.",
@@ -111,120 +111,120 @@
         "responses": {
           "201": {
             "description": "Creates a new direct message.",
-            "schema": { "$ref": "#/definitions/RoomEntity" }
+            "schema": { "$ref": "#/definitions/ChannelEntity" }
           }
         },
-        "tags": [ "rooms" ],
-        "operationId": "postV1RoomsDirectMessage"
+        "tags": [ "channels" ],
+        "operationId": "postV1ChannelsDirectMessage"
       }
     },
-    "/v1/rooms/{room_id}": {
+    "/v1/channels/{channel_id}": {
       "put": {
-        "summary": "Updates a room.",
-        "description": "Updates a room.",
+        "summary": "Updates a channel.",
+        "description": "Updates a channel.",
         "produces": [ "application/json" ],
         "consumes": [ "application/json" ],
         "parameters": [
           {
             "in": "path",
-            "name": "room_id",
+            "name": "channel_id",
             "type": "string",
             "required": true
           },
           {
             "in": "formData",
-            "name": "room[channel_name]",
+            "name": "channel[channel_name]",
             "type": "string",
             "required": false
           },
           {
             "in": "formData",
-            "name": "room[description]",
+            "name": "channel[description]",
             "type": "string",
             "required": false
           }
         ],
         "responses": {
           "200": {
-            "description": "Updates a room.",
-            "schema": { "$ref": "#/definitions/RoomEntity" }
+            "description": "Updates a channel.",
+            "schema": { "$ref": "#/definitions/ChannelEntity" }
           }
         },
-        "tags": [ "rooms" ],
-        "operationId": "putV1RoomsRoomId"
+        "tags": [ "channels" ],
+        "operationId": "putV1ChannelsChannelId"
       }
     },
-    "/v1/rooms/{room_id}/archive": {
+    "/v1/channels/{channel_id}/archive": {
       "delete": {
-        "summary": "Archive a room.",
-        "description": "Archive a room.",
+        "summary": "Archive a channel.",
+        "description": "Archive a channel.",
         "produces": [ "application/json" ],
         "parameters": [
           {
             "in": "path",
-            "name": "room_id",
+            "name": "channel_id",
             "type": "string",
             "required": true
           }
         ],
         "responses": {
           "200": {
-            "description": "Archive a room.",
-            "schema": { "$ref": "#/definitions/RoomEntity" }
+            "description": "Archive a channel.",
+            "schema": { "$ref": "#/definitions/ChannelEntity" }
           }
         },
-        "tags": [ "rooms" ],
-        "operationId": "deleteV1RoomsRoomIdArchive"
+        "tags": [ "channels" ],
+        "operationId": "deleteV1ChannelsChannelIdArchive"
       }
     },
-    "/v1/rooms/{room_id}/unarchive": {
+    "/v1/channels/{channel_id}/unarchive": {
       "put": {
-        "summary": "Unarchive a room.",
-        "description": "Unarchive a room.",
+        "summary": "Unarchive a channel.",
+        "description": "Unarchive a channel.",
         "produces": [ "application/json" ],
         "consumes": [ "application/json" ],
         "parameters": [
           {
             "in": "path",
-            "name": "room_id",
+            "name": "channel_id",
             "type": "string",
             "required": true
           }
         ],
         "responses": {
           "200": {
-            "description": "Unarchive a room.",
-            "schema": { "$ref": "#/definitions/RoomEntity" }
+            "description": "Unarchive a channel.",
+            "schema": { "$ref": "#/definitions/ChannelEntity" }
           }
         },
-        "tags": [ "rooms" ],
-        "operationId": "putV1RoomsRoomIdUnarchive"
+        "tags": [ "channels" ],
+        "operationId": "putV1ChannelsChannelIdUnarchive"
       }
     },
-    "/v1/rooms/{room_id}/memberships": {
+    "/v1/channels/{channel_id}/memberships": {
       "get": {
-        "summary": "Returns all of members in this room",
-        "description": "Returns all of members in this room",
+        "summary": "Returns all of members in this channel",
+        "description": "Returns all of members in this channel",
         "produces": [ "application/json" ],
         "parameters": [
           {
             "in": "path",
-            "name": "room_id",
+            "name": "channel_id",
             "type": "string",
             "required": true
           }
         ],
         "responses": {
           "200": {
-            "description": "Returns all of members in this room",
-            "schema": { "$ref": "#/definitions/RoomWithMembershipsEntity" }
+            "description": "Returns all of members in this channel",
+            "schema": { "$ref": "#/definitions/ChannelWithMembershipsEntity" }
           }
         },
-        "tags": [ "rooms" ],
-        "operationId": "getV1RoomsRoomIdMemberships"
+        "tags": [ "channels" ],
+        "operationId": "getV1ChannelsChannelIdMemberships"
       }
     },
-    "/v1/rooms/{room_id}/manage_members/{member_id}": {
+    "/v1/channels/{channel_id}/manage_members/{member_id}": {
       "put": {
         "summary": "Changes the authority of member",
         "description": "Changes the authority of member",
@@ -233,7 +233,7 @@
         "parameters": [
           {
             "in": "path",
-            "name": "room_id",
+            "name": "channel_id",
             "type": "string",
             "required": true
           },
@@ -252,19 +252,19 @@
           }
         ],
         "responses": { "200": { "description": "Changes the authority of member" } },
-        "tags": [ "rooms" ],
-        "operationId": "putV1RoomsRoomIdManageMembersMemberId"
+        "tags": [ "channels" ],
+        "operationId": "putV1ChannelsChannelIdManageMembersMemberId"
       }
     },
-    "/v1/rooms/{room_id}/messages": {
+    "/v1/channels/{channel_id}/messages": {
       "get": {
-        "summary": "Returns recent messages in the room.",
-        "description": "Returns recent messages in the room.",
+        "summary": "Returns recent messages in the channel.",
+        "description": "Returns recent messages in the channel.",
         "produces": [ "application/json" ],
         "parameters": [
           {
             "in": "path",
-            "name": "room_id",
+            "name": "channel_id",
             "type": "string",
             "required": true
           },
@@ -293,12 +293,12 @@
         ],
         "responses": {
           "200": {
-            "description": "Returns recent messages in the room.",
+            "description": "Returns recent messages in the channel.",
             "schema": { "$ref": "#/definitions/MessageEntity" }
           }
         },
-        "tags": [ "rooms" ],
-        "operationId": "getV1RoomsRoomIdMessages"
+        "tags": [ "channels" ],
+        "operationId": "getV1ChannelsChannelIdMessages"
       },
       "post": {
         "summary": "Creates a new message.",
@@ -308,7 +308,7 @@
         "parameters": [
           {
             "in": "path",
-            "name": "room_id",
+            "name": "channel_id",
             "type": "string",
             "required": true
           },
@@ -337,8 +337,8 @@
             "schema": { "$ref": "#/definitions/MessageEntity" }
           }
         },
-        "tags": [ "rooms" ],
-        "operationId": "postV1RoomsRoomIdMessages"
+        "tags": [ "channels" ],
+        "operationId": "postV1ChannelsChannelIdMessages"
       }
     },
     "/v1/profiles": {
@@ -405,7 +405,7 @@
         "operationId": "putV1ProfilesMe"
       }
     },
-    "/v1/bot/rooms/{room_id}/messages": {
+    "/v1/bot/channels/{channel_id}/messages": {
       "post": {
         "summary": "Creates a new message.",
         "description": "Creates a new message.",
@@ -414,7 +414,7 @@
         "parameters": [
           {
             "in": "path",
-            "name": "room_id",
+            "name": "channel_id",
             "type": "string",
             "required": true
           },
@@ -444,7 +444,7 @@
           }
         },
         "tags": [ "bot" ],
-        "operationId": "postV1BotRoomsRoomIdMessages"
+        "operationId": "postV1BotChannelsChannelIdMessages"
       }
     },
     "/v1/access_tokens": {
@@ -544,7 +544,7 @@
         "parameters": [
           {
             "in": "formData",
-            "name": "room_id",
+            "name": "channel_id",
             "type": "string",
             "required": true
           },
@@ -704,12 +704,12 @@
     }
   },
   "definitions": {
-    "RoomEntity": {
+    "ChannelEntity": {
       "type": "object",
       "properties": {
         "id": {
           "type": "string",
-          "description": "ルームID"
+          "description": "チャンネルID"
         },
         "channel_name": {
           "type": "string",
@@ -726,14 +726,14 @@
         },
         "description": {
           "type": "string",
-          "description": "ルーム説明"
+          "description": "チャンネル説明"
         },
         "membership": {
           "$ref": "#/definitions/MembershipEntity",
           "description": "メンバーシップ情報"
         }
       },
-      "description": "Unarchive a room."
+      "description": "Unarchive a channel."
     },
     "MembershipEntity": {
       "type": "object",
@@ -742,8 +742,8 @@
           "type": "string",
           "description": "メンバーシップID"
         },
-        "room": {
-          "$ref": "#/definitions/RoomWithoutMembershipEntity",
+        "channel": {
+          "$ref": "#/definitions/ChannelWithoutMembershipEntity",
           "description": "チャンネル情報"
         },
         "authority": {
@@ -767,12 +767,12 @@
       },
       "description": "Delete a membership."
     },
-    "RoomWithoutMembershipEntity": {
+    "ChannelWithoutMembershipEntity": {
       "type": "object",
       "properties": {
         "id": {
           "type": "string",
-          "description": "ルームID"
+          "description": "チャンネルID"
         },
         "channel_name": {
           "type": "string",
@@ -789,7 +789,7 @@
         },
         "description": {
           "type": "string",
-          "description": "ルーム説明"
+          "description": "チャンネル説明"
         }
       }
     },
@@ -820,20 +820,20 @@
           "type": "boolean",
           "description": "アーカイブ済か"
         },
-        "invited_rooms_count": {
+        "invited_channels_count": {
           "type": "integer",
           "format": "int32",
-          "description": "招待されている部屋の数"
+          "description": "招待されているチャンネルの数"
         }
       },
       "description": "Updates your profile."
     },
-    "RoomWithMembershipsEntity": {
+    "ChannelWithMembershipsEntity": {
       "type": "object",
       "properties": {
         "id": {
           "type": "string",
-          "description": "ルームID"
+          "description": "チャンネルID"
         },
         "channel_name": {
           "type": "string",
@@ -850,17 +850,17 @@
         },
         "description": {
           "type": "string",
-          "description": "ルーム説明"
+          "description": "チャンネル説明"
         },
         "membership": {
           "$ref": "#/definitions/MembershipEntity",
           "description": "メンバーシップ情報"
         },
-        "memberships": { "$ref": "#/definitions/MembershipWithoutRoomEntity" }
+        "memberships": { "$ref": "#/definitions/MembershipWithoutChannelEntity" }
       },
-      "description": "Returns all of members in this room"
+      "description": "Returns all of members in this channel"
     },
-    "MembershipWithoutRoomEntity": {
+    "MembershipWithoutChannelEntity": {
       "type": "object",
       "properties": {
         "id": {
@@ -934,9 +934,9 @@
           "type": "boolean",
           "description": "NSFW(Not suitable for work)かどうか"
         },
-        "room": {
-          "$ref": "#/definitions/RoomEntity",
-          "description": "発言があったルーム"
+        "channel": {
+          "$ref": "#/definitions/ChannelEntity",
+          "description": "発言があったチャンネル"
         },
         "profile": {
           "$ref": "#/definitions/ProfileEntity",
