@@ -431,6 +431,10 @@ namespace KokoroIO
 
         public event EventHandler<EventArgs<Channel[]>> ChannelsUpdated;
 
+        public event EventHandler<EventArgs<Membership>> MemberJoined;
+
+        public event EventHandler<EventArgs<Membership>> MemberLeaved;
+
         public event EventHandler<EventArgs<Exception>> SocketError;
 
         public event EventHandler Disconnected;
@@ -636,19 +640,27 @@ namespace KokoroIO
                                     switch (eventName)
                                     {
                                         case "message_created":
-                                            DispatchEvent<Message>(msg, MessageCreated);
+                                            DispatchEvent(msg, MessageCreated);
                                             break;
 
                                         case "message_updated":
-                                            DispatchEvent<Message>(msg, MessageUpdated);
+                                            DispatchEvent(msg, MessageUpdated);
                                             break;
 
                                         case "profile_updated":
-                                            DispatchEvent<Profile>(msg, ProfileUpdated);
+                                            DispatchEvent(msg, ProfileUpdated);
                                             break;
 
                                         case "channels_updated":
-                                            DispatchEvent<Channel[]>(msg, ChannelsUpdated);
+                                            DispatchEvent(msg, ChannelsUpdated);
+                                            break;
+
+                                        case "member_joined":
+                                            DispatchEvent(msg, MemberJoined);
+                                            break;
+
+                                        case "member_leaved":
+                                            DispatchEvent(msg, MemberLeaved);
                                             break;
                                     }
                                 }
