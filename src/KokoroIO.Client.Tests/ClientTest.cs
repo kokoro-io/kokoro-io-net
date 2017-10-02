@@ -324,7 +324,7 @@ namespace KokoroIO
             }
         }
 
-        // TODO: [Fact]
+        [Fact]
         public async Task ProfileUpdatedTest()
         {
             using (var c = GetClient())
@@ -396,7 +396,6 @@ namespace KokoroIO
                 var msg = $"{nameof(ChannelsUpdatedTest)}見てるぅ～？";
                 try
                 {
-
                     var received = false;
                     c.ChannelsUpdated += (s2, e2) =>
                     {
@@ -410,7 +409,7 @@ namespace KokoroIO
 
                         await Task.Delay(1000).ConfigureAwait(false);
 
-                        await c.PutChannelAsync(dev.Id, dev.ChannelName, $"{nameof(ChannelsUpdatedTest)}見てるぅ～？");
+                        await c.PutChannelAsync(dev.Id, dev.ChannelName, $"{nameof(ChannelsUpdatedTest)}見てるぅ～？" + i++).ConfigureAwait(false);
                     }
                     while (!received);
 
