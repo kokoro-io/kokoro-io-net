@@ -47,7 +47,7 @@ namespace KokoroIO
         {
             using (var c = GetClient())
             {
-                var n = nameof(PostDeviceAsyncTest) + DateTime.Now.Ticks;
+                var n = nameof(PostDeviceAsyncTest) + "/" + DateTime.Now.Ticks + "==";
 
                 var devs = await c.GetDevicesAsync();
                 Assert.False(devs.Any(d => d.DeviceIdentifier == n));

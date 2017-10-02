@@ -109,7 +109,7 @@ namespace KokoroIO
 
         public Task DeleteDeviceAsync(string deviceIdentifier)
         {
-            var r = new HttpRequestMessage(HttpMethod.Delete, EndPoint + $"/v1/devices/" + deviceIdentifier);
+            var r = new HttpRequestMessage(HttpMethod.Delete, EndPoint + $"/v1/devices/" + Uri.EscapeDataString(deviceIdentifier));
 
             return SendAsync(r).ContinueWith(t => t.Result.EnsureSuccessStatusCode());
         }
