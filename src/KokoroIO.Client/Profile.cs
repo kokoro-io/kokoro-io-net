@@ -30,6 +30,10 @@ namespace KokoroIO
         [DataMember, JsonProperty("avatar")]
         public string Avatar { get; set; }
 
+        [DefaultValue(null)]
+        [DataMember, JsonProperty("avatars")]
+        public Avatar[] Avatars { get; set; }
+
         [DefaultValue(false)]
         [DataMember, JsonProperty("archived")]
         public bool IsArchived { get; set; }

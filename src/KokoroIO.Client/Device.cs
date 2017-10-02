@@ -26,13 +26,17 @@ namespace KokoroIO
         [DataMember, JsonProperty("notification_identifier")]
         public string NotificationIdentifier { get; set; }
 
-        [DefaultValue(null)]
+        [DefaultValue(false)]
         [DataMember, JsonProperty("subscribe_notification")]
-        public string SubscribeNotification { get; set; }
+        public bool SubscribeNotification { get; set; }
 
         [DefaultValue(null)]
         [DataMember, JsonProperty("last_activity_at")]
         public DateTime? LastActivityAt { get; set; }
+
+        [DefaultValue(false)]
+        [DataMember, JsonProperty("push_registered")]
+        public bool PushRegistered { get; set; }
 
         [DefaultValue(null)]
         [DataMember, JsonProperty("access_token")]

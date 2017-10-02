@@ -142,7 +142,7 @@ namespace KokoroIO
                 byte[] originalAvatar;
                 using (var hc = new HttpClient())
                 {
-                    originalAvatar = await hc.GetByteArrayAsync(p.Avatar);
+                    originalAvatar = await hc.GetByteArrayAsync(p.Avatars?.OrderByDescending(a => a.Size).FirstOrDefault()?.Url ?? p.Avatar);
                 }
 
                 var rd = new Random();
@@ -346,7 +346,6 @@ namespace KokoroIO
                 var msg = $"{nameof(ProfileUpdatedTest)}見てるぅ～？";
                 try
                 {
-
                     var received = false;
                     c.ProfileUpdated += (s2, e2) =>
                     {
@@ -364,7 +363,6 @@ namespace KokoroIO
                         await c.PostMessageAsync(dev.Id, msg, false);
                     }
                     while (!received);
-
                 }
                 finally
                 {
@@ -412,7 +410,6 @@ namespace KokoroIO
                         await c.PutChannelAsync(dev.Id, dev.ChannelName, $"{nameof(ChannelsUpdatedTest)}見てるぅ～？" + i++).ConfigureAwait(false);
                     }
                     while (!received);
-
                 }
                 finally
                 {

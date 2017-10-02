@@ -26,6 +26,10 @@ namespace KokoroIO
         public string Avatar { get; set; }
 
         [DefaultValue(null)]
+        [DataMember, JsonProperty("avatars")]
+        public Avatar[] Avatars { get; set; }
+
+        [DefaultValue(null)]
         [DataMember, JsonProperty("content")]
         public string Content { get; set; }
 
