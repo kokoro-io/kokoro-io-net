@@ -35,90 +35,29 @@
     }
   ],
   "paths": {
-    "/v1/channels": {
+    "/v1/channels/{channel_id}": {
       "get": {
-        "summary": "Returns public channels.",
-        "description": "Returns public channels.",
+        "summary": "Returns a channel",
+        "description": "Returns a channel",
         "produces": [ "application/json" ],
         "parameters": [
           {
-            "in": "query",
-            "name": "archived",
-            "type": "boolean",
-            "required": false
+            "in": "path",
+            "name": "channel_id",
+            "type": "integer",
+            "format": "int32",
+            "required": true
           }
         ],
         "responses": {
           "200": {
-            "description": "Returns public channels.",
-            "schema": { "$ref": "#/definitions/ChannelEntity" }
+            "description": "Returns a channel",
+            "schema": { "$ref": "#/definitions/ChannelWithMembershipsEntity" }
           }
         },
         "tags": [ "channels" ],
-        "operationId": "getV1Channels"
+        "operationId": "getV1ChannelsChannelId"
       },
-      "post": {
-        "summary": "Creates a new channel.",
-        "description": "Creates a new channel.",
-        "produces": [ "application/json" ],
-        "consumes": [ "application/json" ],
-        "parameters": [
-          {
-            "in": "formData",
-            "name": "channel[channel_name]",
-            "type": "string",
-            "required": true
-          },
-          {
-            "in": "formData",
-            "name": "channel[description]",
-            "type": "string",
-            "required": true
-          },
-          {
-            "in": "formData",
-            "name": "channel[kind]",
-            "type": "string",
-            "default": "public_channel",
-            "enum": [ "public_channel", "private_channel" ],
-            "required": false
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Creates a new channel.",
-            "schema": { "$ref": "#/definitions/ChannelEntity" }
-          }
-        },
-        "tags": [ "channels" ],
-        "operationId": "postV1Channels"
-      }
-    },
-    "/v1/channels/direct_message": {
-      "post": {
-        "summary": "Creates a new direct message.",
-        "description": "Creates a new direct message.",
-        "produces": [ "application/json" ],
-        "consumes": [ "application/json" ],
-        "parameters": [
-          {
-            "in": "formData",
-            "name": "target_user_profile_id",
-            "type": "string",
-            "required": true
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Creates a new direct message.",
-            "schema": { "$ref": "#/definitions/ChannelEntity" }
-          }
-        },
-        "tags": [ "channels" ],
-        "operationId": "postV1ChannelsDirectMessage"
-      }
-    },
-    "/v1/channels/{channel_id}": {
       "put": {
         "summary": "Updates a channel.",
         "description": "Updates a channel.",
@@ -222,6 +161,89 @@
         },
         "tags": [ "channels" ],
         "operationId": "getV1ChannelsChannelIdMemberships"
+      }
+    },
+    "/v1/channels": {
+      "get": {
+        "summary": "Returns public channels.",
+        "description": "Returns public channels.",
+        "produces": [ "application/json" ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "archived",
+            "type": "boolean",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns public channels.",
+            "schema": { "$ref": "#/definitions/ChannelEntity" }
+          }
+        },
+        "tags": [ "channels" ],
+        "operationId": "getV1Channels"
+      },
+      "post": {
+        "summary": "Creates a new channel.",
+        "description": "Creates a new channel.",
+        "produces": [ "application/json" ],
+        "consumes": [ "application/json" ],
+        "parameters": [
+          {
+            "in": "formData",
+            "name": "channel[channel_name]",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "formData",
+            "name": "channel[description]",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "formData",
+            "name": "channel[kind]",
+            "type": "string",
+            "default": "public_channel",
+            "enum": [ "public_channel", "private_channel" ],
+            "required": false
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Creates a new channel.",
+            "schema": { "$ref": "#/definitions/ChannelEntity" }
+          }
+        },
+        "tags": [ "channels" ],
+        "operationId": "postV1Channels"
+      }
+    },
+    "/v1/channels/direct_message": {
+      "post": {
+        "summary": "Creates a new direct message.",
+        "description": "Creates a new direct message.",
+        "produces": [ "application/json" ],
+        "consumes": [ "application/json" ],
+        "parameters": [
+          {
+            "in": "formData",
+            "name": "target_user_profile_id",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Creates a new direct message.",
+            "schema": { "$ref": "#/definitions/ChannelEntity" }
+          }
+        },
+        "tags": [ "channels" ],
+        "operationId": "postV1ChannelsDirectMessage"
       }
     },
     "/v1/channels/{channel_id}/manage_members/{member_id}": {
@@ -704,7 +726,7 @@
     }
   },
   "definitions": {
-    "ChannelEntity": {
+    "ChannelWithMembershipsEntity": {
       "type": "object",
       "properties": {
         "id": {
@@ -731,9 +753,10 @@
         "membership": {
           "$ref": "#/definitions/MembershipEntity",
           "description": "メンバーシップ情報"
-        }
+        },
+        "memberships": { "$ref": "#/definitions/MembershipWithoutChannelEntity" }
       },
-      "description": "Unarchive a channel."
+      "description": "Returns all of members in this channel"
     },
     "MembershipEntity": {
       "type": "object",
@@ -851,38 +874,6 @@
         }
       }
     },
-    "ChannelWithMembershipsEntity": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "チャンネルID"
-        },
-        "channel_name": {
-          "type": "string",
-          "description": "チャンネル名"
-        },
-        "kind": {
-          "type": "string",
-          "enum": [ "public_channel", "private_channel", "direct_message" ],
-          "description": "チャンネルタイプ"
-        },
-        "archived": {
-          "type": "boolean",
-          "description": "アーカイブ済か"
-        },
-        "description": {
-          "type": "string",
-          "description": "チャンネル説明"
-        },
-        "membership": {
-          "$ref": "#/definitions/MembershipEntity",
-          "description": "メンバーシップ情報"
-        },
-        "memberships": { "$ref": "#/definitions/MembershipWithoutChannelEntity" }
-      },
-      "description": "Returns all of members in this channel"
-    },
     "MembershipWithoutChannelEntity": {
       "type": "object",
       "properties": {
@@ -909,6 +900,37 @@
           "description": "プロフィール情報"
         }
       }
+    },
+    "ChannelEntity": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "チャンネルID"
+        },
+        "channel_name": {
+          "type": "string",
+          "description": "チャンネル名"
+        },
+        "kind": {
+          "type": "string",
+          "enum": [ "public_channel", "private_channel", "direct_message" ],
+          "description": "チャンネルタイプ"
+        },
+        "archived": {
+          "type": "boolean",
+          "description": "アーカイブ済か"
+        },
+        "description": {
+          "type": "string",
+          "description": "チャンネル説明"
+        },
+        "membership": {
+          "$ref": "#/definitions/MembershipEntity",
+          "description": "メンバーシップ情報"
+        }
+      },
+      "description": "Creates a new channel."
     },
     "MessageEntity": {
       "type": "object",

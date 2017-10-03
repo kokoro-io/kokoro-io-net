@@ -244,6 +244,18 @@ namespace KokoroIO
 
         #region Channel
 
+        public Task<Channel> GetChannelAsync(string channelId)
+        {
+            if (!Channel.IsValidId(channelId))
+            {
+                return new ArgumentException($"Invalid {nameof(channelId)}.").ToTask<Channel>();
+            }
+
+            var r = new HttpRequestMessage(HttpMethod.Get, EndPoint + $"/v1/channels/" + channelId);
+
+            return SendAsync<Channel>(r);
+        }
+
         public Task<Channel[]> GetChannelsAsync(bool? archived = null)
             => SendAsync<Channel[]>(
                     new HttpRequestMessage(
@@ -687,7 +699,10 @@ namespace KokoroIO
 
                 DisposeWebSocket();
             }
-            Disconnected?.Invoke(this, EventArgs.Empty);
+            finally
+            {
+                Disconnected?.Invoke(this, EventArgs.Empty);
+            }
         }
 
         private void DispatchEvent<T>(JObject msg, EventHandler<EventArgs<T>> handler)

@@ -172,6 +172,10 @@ namespace KokoroIO
                 var channels = await c.GetChannelsAsync();
 
                 Assert.NotNull(channels);
+
+                var ch = channels.First();
+
+                Assert.NotNull(await c.GetChannelAsync(ch.Id));
             }
         }
 
