@@ -474,6 +474,8 @@ namespace KokoroIO
             }
         }
 
+        public DateTime? LastPingAt { get; private set; }
+
         public Task ConnectAsync()
         {
             _WebSocketCancellationTokenSource?.Cancel();
@@ -637,6 +639,7 @@ namespace KokoroIO
                                         continue;
 
                                     case "ping":
+                                        LastPingAt = DateTime.Now;
                                         continue;
 
                                     case "confirm_subscription":
@@ -701,6 +704,7 @@ namespace KokoroIO
             }
             finally
             {
+                LastPingAt = null;
                 Disconnected?.Invoke(this, EventArgs.Empty);
             }
         }
@@ -758,6 +762,7 @@ namespace KokoroIO
         {
             try
             {
+                LastPingAt = null;
                 _Connected?.TrySetCanceled();
                 _WebSocket?.Dispose();
                 _WebSocket = null;
