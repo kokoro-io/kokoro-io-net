@@ -90,7 +90,7 @@ namespace KokoroIO
 
                 Assert.NotNull(p);
 
-                var ms = p.Single(m => m.Channel.ChannelName == "private/dev");
+                var ms = p.Single(m => m.Channel.ChannelName == "private/unit-test");
 
                 await c.PutMembershipAsync(ms.Id, true);
                 await c.PutMembershipAsync(ms.Id, false);
@@ -135,7 +135,7 @@ namespace KokoroIO
                                 .Select(ms => ms.Channel)
                                 .Single(r => r.Kind == ChannelKind.PrivateChannel
                                             && !r.IsArchived
-                                            && r.ChannelName == "private/dev");
+                                            && r.ChannelName == "private/unit-test");
 
                 var p = await c.GetProfileAsync();
 
@@ -208,7 +208,7 @@ namespace KokoroIO
                                 .Select(ms => ms.Channel)
                                 .Single(r => r.Kind == ChannelKind.PrivateChannel
                                             && !r.IsArchived
-                                            && r.ChannelName == "private/dev");
+                                            && r.ChannelName == "private/unit-test");
 
                 var m = await c.GetMessagesAsync(dev.Id);
 
@@ -227,7 +227,7 @@ namespace KokoroIO
                                 .Select(ms => ms.Channel)
                                 .Single(r => r.Kind == ChannelKind.PrivateChannel
                                             && !r.IsArchived
-                                            && r.ChannelName == "private/dev");
+                                            && r.ChannelName == "private/unit-test");
 
                 var m = await c.PostMessageAsync(dev.Id, GetTestMessage(), false);
 
@@ -263,7 +263,7 @@ namespace KokoroIO
                                 .Select(ms => ms.Channel)
                                 .Single(r => r.Kind == ChannelKind.PrivateChannel
                                             && !r.IsArchived
-                                            && r.ChannelName == "private/dev");
+                                            && r.ChannelName == "private/unit-test");
 
                 await c.ConnectAsync().ConfigureAwait(false);
 
@@ -301,7 +301,7 @@ namespace KokoroIO
                                 .Select(ms => ms.Channel)
                                 .Single(r => r.Kind == ChannelKind.PrivateChannel
                                             && !r.IsArchived
-                                            && r.ChannelName == "private/dev");
+                                            && r.ChannelName == "private/unit-test");
 
                 await c.ConnectAsync().ConfigureAwait(false);
 
@@ -339,7 +339,7 @@ namespace KokoroIO
                                 .Select(ms => ms.Channel)
                                 .Single(r => r.Kind == ChannelKind.PrivateChannel
                                             && !r.IsArchived
-                                            && r.ChannelName == "private/dev");
+                                            && r.ChannelName == "private/unit-test");
 
                 var profile = await c.GetProfileAsync().ConfigureAwait(false);
 
@@ -387,7 +387,7 @@ namespace KokoroIO
                                 .Select(ms => ms.Channel)
                                 .Single(r => r.Kind == ChannelKind.PrivateChannel
                                             && !r.IsArchived
-                                            && r.ChannelName == "private/dev");
+                                            && r.ChannelName == "private/unit-test");
 
                 var profile = await c.GetProfileAsync().ConfigureAwait(false);
 

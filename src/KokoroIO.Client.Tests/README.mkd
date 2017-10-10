@@ -1,5 +1,19 @@
-﻿```
+﻿## Configuration
+
+Store access tokenes before running tests.
+
+```
 dotnet restore
 dotnet user-secrets set UserAccessToken *******************
 dotnet user-secrets set BotAccessToken *******************
 ```
+
+Or you can configure tests by following environment variables.
+
+- `USER_ACCESS_TOKEN`
+- `BOT_ACCESS_TOKEN`
+- `END_POINT`
+- `WEB_SOCKET_END_POINT`
+
+Specified user and bot must be a member of the channel named *#private/unit-test*.
+User's avatar will be changed in a test.

@@ -18,7 +18,7 @@ namespace KokoroIO
                             .Select(ms => ms.Channel)
                             .FirstOrDefault(r => r.Kind == ChannelKind.PrivateChannel
                                                 && !r.IsArchived
-                                                && r.ChannelName == "private/dev");
+                                                && r.ChannelName == "private/unit-test");
 
                 if (dev == null)
                 {
