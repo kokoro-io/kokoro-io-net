@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace KokoroIO
 {
@@ -28,6 +29,11 @@ namespace KokoroIO
         [DefaultValue(null)]
         [DataMember, JsonProperty("avatars")]
         public Avatar[] Avatars { get; set; }
+
+        [DefaultValue(default(MessageStatus))]
+        [DataMember, JsonProperty("status")]
+        [JsonConverter(typeof(StringEnumConverter))]
+        public MessageStatus Status { get; set; }
 
         [DefaultValue(null)]
         [DataMember, JsonProperty("content")]

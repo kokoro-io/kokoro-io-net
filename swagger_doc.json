@@ -18,6 +18,10 @@
       "description": "Operations about profiles"
     },
     {
+      "name": "messages",
+      "description": "Operations about messages"
+    },
+    {
       "name": "bot",
       "description": "Operations about bots"
     },
@@ -425,6 +429,30 @@
         },
         "tags": [ "profiles" ],
         "operationId": "putV1ProfilesMe"
+      }
+    },
+    "/v1/messages": {
+      "delete": {
+        "summary": "Delete a message.",
+        "description": "Delete a message.",
+        "produces": [ "application/json" ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "message_id",
+            "type": "integer",
+            "format": "int32",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Delete a message.",
+            "schema": { "$ref": "#/definitions/MessageEntity" }
+          }
+        },
+        "tags": [ "messages" ],
+        "operationId": "deleteV1Messages"
       }
     },
     "/v1/bot/channels/{channel_id}/messages": {
@@ -956,6 +984,11 @@
           "type": "array",
           "items": { "$ref": "#/definitions/AvatarEntity" },
           "description": ""
+        },
+        "status": {
+          "type": "string",
+          "enum": [ "active", "deleted_by_publisher", "deleted_by_another_member" ],
+          "description": "発言の状態"
         },
         "content": {
           "type": "string",

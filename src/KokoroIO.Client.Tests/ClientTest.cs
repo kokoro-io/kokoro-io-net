@@ -235,6 +235,27 @@ namespace KokoroIO
             }
         }
 
+        [Fact]
+        public async Task DeleteMessageAsyncTest()
+        {
+            using (var c = GetClient())
+            {
+                var memberships = await c.GetMembershipsAsync();
+
+                var dev = memberships
+                                .Select(ms => ms.Channel)
+                                .Single(r => r.Kind == ChannelKind.PrivateChannel
+                                            && !r.IsArchived
+                                            && r.ChannelName == "private/unit-test");
+
+                var m = await c.PostMessageAsync(dev.Id, GetTestMessage(), false);
+
+                Assert.NotNull(m);
+
+                await c.DeleteMessageAsync(m.Id);
+            }
+        }
+
         #endregion Message
 
         #endregion Rest API

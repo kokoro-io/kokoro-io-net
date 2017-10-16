@@ -425,6 +425,13 @@ namespace KokoroIO
             return SendAsync<Message>(r);
         }
 
+        public Task<Message> DeleteMessageAsync(int messageId)
+        {
+            var r = new HttpRequestMessage(HttpMethod.Delete, EndPoint + $"/v1/messages/" + messageId);
+
+            return SendAsync<Message>(r);
+        }
+
         #endregion Message
 
         #endregion Rest API
