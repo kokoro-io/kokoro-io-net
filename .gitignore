@@ -260,3 +260,4 @@ paket-files/
 __pycache__/
 *.pyc
 /src/KokoroIO.SampleBot/Properties/PublishProfiles/*
+/src/KokoroIO.Proxy/Properties/PublishProfiles
