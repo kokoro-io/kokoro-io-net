@@ -6,12 +6,16 @@ Store access tokenes before running tests.
 dotnet restore
 dotnet user-secrets set UserAccessToken *******************
 dotnet user-secrets set BotAccessToken *******************
+dotnet user-secrets set MailAddress *******************
+dotnet user-secrets set Password *******************
 ```
 
 Or you can configure tests by following environment variables.
 
 - `USER_ACCESS_TOKEN`
 - `BOT_ACCESS_TOKEN`
+- `MAIL_ADDRESS`
+- `PASSWORD`
 - `END_POINT`
 - `WEB_SOCKET_END_POINT`
 

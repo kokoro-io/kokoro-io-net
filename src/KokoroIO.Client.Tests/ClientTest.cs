@@ -39,8 +39,32 @@ namespace KokoroIO
 
         #region Device
 
-        // TODO: GetDevicesAsync(X-Account-Token)
-        // TODO: PostAccessTokenAsync(X-Account-Token)
+        [Fact]
+        public async Task PostAccessTokenAsyncTest_ByAccount()
+        {
+            using (var c = GetClient())
+            {
+                c.AccessToken = null;
+                var em = Configuration["MailAddress"] ?? Environment.GetEnvironmentVariable("MAIL_ADDRESS");
+                var pw = Configuration["Password"] ?? Environment.GetEnvironmentVariable("PASSWORD");
+
+                var n = nameof(PostAccessTokenAsyncTest_ByAccount) + "/" + DateTime.Now.Ticks + "==";
+
+                var p = await c.PostDeviceAsync(em, pw, n, DeviceKind.Unknown, n);
+
+                c.AccessToken = p.AccessToken.Token;
+
+                var devs = await c.GetDevicesAsync();
+                Assert.True(devs.Any(d => d.DeviceIdentifier == n));
+
+                c.AccessToken = (await c.PostAccessTokenAsync("unit-test")).Token;
+
+                await c.DeleteDeviceAsync(p.DeviceIdentifier);
+
+                devs = await c.GetDevicesAsync();
+                Assert.False(devs.Any(d => d.DeviceIdentifier == n));
+            }
+        }
 
         [Fact]
         public async Task PostDeviceAsyncTest()
