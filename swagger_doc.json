@@ -431,14 +431,14 @@
         "operationId": "putV1ProfilesMe"
       }
     },
-    "/v1/messages": {
+    "/v1/messages/{message_id}": {
       "delete": {
         "summary": "Delete a message.",
         "description": "Delete a message.",
         "produces": [ "application/json" ],
         "parameters": [
           {
-            "in": "query",
+            "in": "path",
             "name": "message_id",
             "type": "integer",
             "format": "int32",
@@ -452,7 +452,7 @@
           }
         },
         "tags": [ "messages" ],
-        "operationId": "deleteV1Messages"
+        "operationId": "deleteV1MessagesMessageId"
       }
     },
     "/v1/bot/channels/{channel_id}/messages": {
@@ -1034,6 +1034,11 @@
         "url": {
           "type": "string",
           "description": "対象のURL"
+        },
+        "position": {
+          "type": "integer",
+          "format": "int32",
+          "description": "並び順（昇順）"
         },
         "data": {
           "$ref": "#/definitions/EmbedDataEntity",

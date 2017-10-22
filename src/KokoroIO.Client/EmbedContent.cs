@@ -12,6 +12,10 @@ namespace KokoroIO
         [DataMember, JsonProperty("url")]
         public string Url { get; set; }
 
+        [DefaultValue(0)]
+        [DataMember, JsonProperty("position")]
+        public int Position { get; set; }
+
         [DefaultValue(null)]
         [DataMember, JsonProperty("data")]
         public EmbedData Data { get; set; }
