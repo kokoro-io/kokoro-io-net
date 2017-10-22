@@ -117,7 +117,16 @@ namespace KokoroIO
                 var ms = p.Single(m => m.Channel.ChannelName == "private/unit-test");
 
                 await c.PutMembershipAsync(ms.Id, true);
+
+                var ch = await c.GetChannelAsync(ms.Channel.Id);
+
+                Assert.True(ch.Membership.DisableNotification);
+
                 await c.PutMembershipAsync(ms.Id, false);
+
+                ch = await c.GetChannelAsync(ms.Channel.Id);
+
+                Assert.False(ch.Membership.DisableNotification);
             }
         }
 
