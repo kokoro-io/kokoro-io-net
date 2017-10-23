@@ -22,6 +22,12 @@ namespace KokoroIO
             AccessToken = DefaultAccessToken ?? ClientBase.DefaultAccessToken;
         }
 
+        public Client(HttpClient httpClient)
+            : base(httpClient)
+        {
+            AccessToken = DefaultAccessToken ?? ClientBase.DefaultAccessToken;
+        }
+
         #region Rest API
 
         #region Token

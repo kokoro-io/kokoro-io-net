@@ -20,6 +20,11 @@ namespace KokoroIO
                 => (int?)base.ReadAsDouble();
         }
 
+        internal ClientBase(HttpClient httpClient = null)
+        {
+            _HttpClient = httpClient;
+        }
+
         private HttpClient _HttpClient;
 
         private HttpClient HttpClient

@@ -14,6 +14,12 @@ namespace KokoroIO
             AccessToken = DefaultAccessToken ?? ClientBase.DefaultAccessToken;
         }
 
+        public BotClient(HttpClient httpClient)
+            : base(httpClient)
+        {
+            AccessToken = DefaultAccessToken ?? ClientBase.DefaultAccessToken;
+        }
+
         public Task<Message> PostMessageAsync(string channelId, string message, string displayName = null, bool? isNsfw = null)
         {
             if (!Channel.IsValidId(channelId))
