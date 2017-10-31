@@ -92,6 +92,13 @@ namespace KokoroIO
 
         #region Membership
 
+        private async Task<Membership> GetTestChannelMembershipAsync(Client c)
+        {
+            var mss = await c.GetMembershipsAsync().ConfigureAwait(false);
+            var ms = mss.FirstOrDefault(m => m.Channel.Id == TestChannelId);
+            return ms;
+        }
+
         [Fact]
         public async Task GetMembershipsAsync()
         {
@@ -110,11 +117,7 @@ namespace KokoroIO
         {
             using (var c = GetClient())
             {
-                var p = await c.GetMembershipsAsync();
-
-                Assert.NotNull(p);
-
-                var ms = p.Single(m => m.Channel.ChannelName == "private/unit-test");
+                var ms = await GetTestChannelMembershipAsync(c);
 
                 await c.PutMembershipAsync(ms.Id, true);
 
@@ -162,13 +165,7 @@ namespace KokoroIO
         {
             using (var c = GetClient())
             {
-                var memberships = await c.GetMembershipsAsync();
-
-                var dev = memberships
-                                .Select(ms => ms.Channel)
-                                .Single(r => r.Kind == ChannelKind.PrivateChannel
-                                            && !r.IsArchived
-                                            && r.ChannelName == "private/unit-test");
+                var dev = await GetTestChannelAsync(c);
 
                 var p = await c.GetProfileAsync();
 
@@ -235,13 +232,7 @@ namespace KokoroIO
         {
             using (var c = GetClient())
             {
-                var memberships = await c.GetMembershipsAsync();
-
-                var dev = memberships
-                                .Select(ms => ms.Channel)
-                                .Single(r => r.Kind == ChannelKind.PrivateChannel
-                                            && !r.IsArchived
-                                            && r.ChannelName == "private/unit-test");
+                var dev = await GetTestChannelAsync(c);
 
                 var m = await c.GetMessagesAsync(dev.Id);
 
@@ -254,13 +245,7 @@ namespace KokoroIO
         {
             using (var c = GetClient())
             {
-                var memberships = await c.GetMembershipsAsync();
-
-                var dev = memberships
-                                .Select(ms => ms.Channel)
-                                .Single(r => r.Kind == ChannelKind.PrivateChannel
-                                            && !r.IsArchived
-                                            && r.ChannelName == "private/unit-test");
+                var dev = await GetTestChannelAsync(c);
 
                 var m = await c.PostMessageAsync(dev.Id, GetTestMessage(), false);
 
@@ -273,13 +258,7 @@ namespace KokoroIO
         {
             using (var c = GetClient())
             {
-                var memberships = await c.GetMembershipsAsync();
-
-                var dev = memberships
-                                .Select(ms => ms.Channel)
-                                .Single(r => r.Kind == ChannelKind.PrivateChannel
-                                            && !r.IsArchived
-                                            && r.ChannelName == "private/unit-test");
+                var dev = await GetTestChannelAsync(c);
 
                 var m = await c.PostMessageAsync(dev.Id, GetTestMessage(), false);
 
@@ -311,13 +290,7 @@ namespace KokoroIO
         {
             using (var c = GetClient())
             {
-                var memberships = await c.GetMembershipsAsync();
-
-                var dev = memberships
-                                .Select(ms => ms.Channel)
-                                .Single(r => r.Kind == ChannelKind.PrivateChannel
-                                            && !r.IsArchived
-                                            && r.ChannelName == "private/unit-test");
+                var dev = await GetTestChannelAsync(c);
 
                 await c.ConnectAsync().ConfigureAwait(false);
 
@@ -349,13 +322,7 @@ namespace KokoroIO
         {
             using (var c = GetClient())
             {
-                var memberships = await c.GetMembershipsAsync();
-
-                var dev = memberships
-                                .Select(ms => ms.Channel)
-                                .Single(r => r.Kind == ChannelKind.PrivateChannel
-                                            && !r.IsArchived
-                                            && r.ChannelName == "private/unit-test");
+                var dev = await GetTestChannelAsync(c);
 
                 await c.ConnectAsync().ConfigureAwait(false);
 
@@ -387,13 +354,7 @@ namespace KokoroIO
         {
             using (var c = GetClient())
             {
-                var memberships = await c.GetMembershipsAsync();
-
-                var dev = memberships
-                                .Select(ms => ms.Channel)
-                                .Single(r => r.Kind == ChannelKind.PrivateChannel
-                                            && !r.IsArchived
-                                            && r.ChannelName == "private/unit-test");
+                var dev = await GetTestChannelAsync(c);
 
                 var profile = await c.GetProfileAsync().ConfigureAwait(false);
 
@@ -435,13 +396,7 @@ namespace KokoroIO
         {
             using (var c = GetClient())
             {
-                var memberships = await c.GetMembershipsAsync();
-
-                var dev = memberships
-                                .Select(ms => ms.Channel)
-                                .Single(r => r.Kind == ChannelKind.PrivateChannel
-                                            && !r.IsArchived
-                                            && r.ChannelName == "private/unit-test");
+                var dev = await GetTestChannelAsync(c);
 
                 var profile = await c.GetProfileAsync().ConfigureAwait(false);
 

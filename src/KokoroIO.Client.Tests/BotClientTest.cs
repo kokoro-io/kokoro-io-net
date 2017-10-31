@@ -9,22 +9,7 @@ namespace KokoroIO
         [Fact]
         public async Task PostMessageAsyncTest()
         {
-            Channel dev;
-            using (var c = GetClient())
-            {
-                var memberships = await c.GetMembershipsAsync();
-
-                dev = memberships
-                            .Select(ms => ms.Channel)
-                            .FirstOrDefault(r => r.Kind == ChannelKind.PrivateChannel
-                                                && !r.IsArchived
-                                                && r.ChannelName == "private/unit-test");
-
-                if (dev == null)
-                {
-                    return;
-                }
-            }
+            var dev = await GetTestChannelAsync();
 
             using (var c = GetBotClient())
             {

@@ -1,5 +1,7 @@
 using System;
+using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 
 namespace KokoroIO
@@ -48,6 +50,37 @@ namespace KokoroIO
 
             return c;
         }
+
+        protected string OtherUserId => Configuration["OtherUserId"] ?? Environment.GetEnvironmentVariable("OTHER_USER_ID");
+
+        private string _TestChannelId;
+
+        protected string TestChannelId
+        {
+            get
+            {
+                if (_TestChannelId == null)
+                {
+                    using (var c = GetClient())
+                    {
+                        var mss = c.GetMembershipsAsync().GetAwaiter().GetResult();
+                        _TestChannelId = mss.Single(m => m.Channel.ChannelName == "private/unit-test").Channel.Id;
+                    }
+                }
+                return _TestChannelId;
+            }
+        }
+
+        protected async Task<Channel> GetTestChannelAsync()
+        {
+            using (var c = GetClient())
+            {
+                return await GetTestChannelAsync(c).ConfigureAwait(false);
+            }
+        }
+
+        protected Task<Channel> GetTestChannelAsync(Client client)
+            => client.GetChannelAsync(TestChannelId);
 
         public string GetTestMessage([CallerMemberName] string memberName = null)
             => $"{GetType().FullName}#{memberName} posted this message from {Environment.MachineName} at {DateTime.Now:u}";
