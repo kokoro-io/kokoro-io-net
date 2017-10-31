@@ -666,6 +666,30 @@
         "operationId": "deleteV1MembershipsMembershipId"
       }
     },
+    "/v1/memberships/{membership_id}/join": {
+      "put": {
+        "summary": "Join to invited room",
+        "description": "Join to invited room",
+        "produces": [ "application/json" ],
+        "consumes": [ "application/json" ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "membership_id",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Join to invited room",
+            "schema": { "$ref": "#/definitions/MembershipEntity" }
+          }
+        },
+        "tags": [ "memberships" ],
+        "operationId": "putV1MembershipsMembershipIdJoin"
+      }
+    },
     "/v1/devices": {
       "get": {
         "summary": "Returns user's devices",
@@ -816,7 +840,7 @@
           "description": "プロフィール情報"
         }
       },
-      "description": "Delete a membership."
+      "description": "Join to invited room"
     },
     "ChannelWithoutMembershipEntity": {
       "type": "object",
