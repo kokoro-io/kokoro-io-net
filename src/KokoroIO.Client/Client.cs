@@ -183,6 +183,13 @@ namespace KokoroIO
             return SendAsync<Membership>(r);
         }
 
+        public Task<Membership> JoinMembershipAsync(string membershipId)
+        {
+            var r = new HttpRequestMessage(HttpMethod.Put, EndPoint + $"/v1/memberships/" + membershipId + "/join");
+
+            return SendAsync<Membership>(r);
+        }
+
         #endregion Membership
 
         #region Profile

@@ -8,6 +8,7 @@ dotnet user-secrets set UserAccessToken *******************
 dotnet user-secrets set BotAccessToken *******************
 dotnet user-secrets set MailAddress *******************
 dotnet user-secrets set Password *******************
+dotnet user-secrets set OtherUserId *********
 ```
 
 Or you can configure tests by following environment variables.
@@ -16,6 +17,7 @@ Or you can configure tests by following environment variables.
 - `BOT_ACCESS_TOKEN`
 - `MAIL_ADDRESS`
 - `PASSWORD`
+- `OTHER_USER_ID`
 - `END_POINT`
 - `WEB_SOCKET_END_POINT`
 
