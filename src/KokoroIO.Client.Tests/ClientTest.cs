@@ -237,6 +237,12 @@ namespace KokoroIO
                 var m = await c.GetMessagesAsync(dev.Id);
 
                 Assert.NotNull(m);
+
+                var fm = m.OrderBy(e => e.RawContent.Length).LastOrDefault();
+
+                Assert.NotInRange(fm.HtmlContent.Length, int.MinValue, 0);
+                Assert.NotInRange(fm.PlainTextContent.Length, int.MinValue, 0);
+                Assert.NotInRange(fm.RawContent.Length, int.MinValue, 0);
             }
         }
 

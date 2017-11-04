@@ -1016,7 +1016,15 @@
         },
         "content": {
           "type": "string",
+          "description": "発言内容(Deprecated. Use 'html_content' property instead of this.)"
+        },
+        "html_content": {
+          "type": "string",
           "description": "発言内容"
+        },
+        "plaintext_content": {
+          "type": "string",
+          "description": "プレインテキスト形式に変換した発言内容"
         },
         "raw_content": {
           "type": "string",

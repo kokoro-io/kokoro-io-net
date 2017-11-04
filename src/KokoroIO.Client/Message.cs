@@ -35,13 +35,32 @@ namespace KokoroIO
         [JsonConverter(typeof(StringEnumConverter))]
         public MessageStatus Status { get; set; }
 
+        #region Content
+
+        [Obsolete("Use " + nameof(HtmlContent) + " instead.")]
+        [IgnoreDataMember, JsonProperty("content")]
+        public string Content
+        {
+            get => HtmlContent;
+            set => HtmlContent = value;
+        }
+
+        public bool ShouldSerializeContent()
+            => false;
+
         [DefaultValue(null)]
-        [DataMember, JsonProperty("content")]
-        public string Content { get; set; }
+        [DataMember, JsonProperty("html_content")]
+        public string HtmlContent { get; set; }
+
+        [DefaultValue(null)]
+        [DataMember, JsonProperty("plaintext_content")]
+        public string PlainTextContent { get; set; }
 
         [DefaultValue(null)]
         [DataMember, JsonProperty("raw_content")]
         public string RawContent { get; set; }
+
+        #endregion Content
 
         #region EmbeddedUrls
 
