@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2002
+VisualStudioVersion = 15.0.27004.2005
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KokoroIO.Client", "KokoroIO.Client\KokoroIO.Client.csproj", "{A3FE5AF7-C066-47E7-A8F7-20B7DCD860AC}"
 EndProject
@@ -19,8 +19,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "documents", "documents", "{
 	ProjectSection(SolutionItems) = preProject
 		..\swagger_doc.json = ..\swagger_doc.json
 	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KokoroIO.Proxy", "KokoroIO.Proxy\KokoroIO.Proxy.csproj", "{FEBED4DA-0245-474F-8A94-9C1C532ED345}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -52,10 +50,6 @@ Global
 		{B2A3CE4B-5D0E-467F-8B54-1B02A910E867}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B2A3CE4B-5D0E-467F-8B54-1B02A910E867}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B2A3CE4B-5D0E-467F-8B54-1B02A910E867}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FEBED4DA-0245-474F-8A94-9C1C532ED345}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FEBED4DA-0245-474F-8A94-9C1C532ED345}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FEBED4DA-0245-474F-8A94-9C1C532ED345}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FEBED4DA-0245-474F-8A94-9C1C532ED345}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
