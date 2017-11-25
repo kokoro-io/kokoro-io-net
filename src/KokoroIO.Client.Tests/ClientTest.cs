@@ -119,17 +119,26 @@ namespace KokoroIO
             {
                 var ms = await GetTestChannelMembershipAsync(c);
 
-                await c.PutMembershipAsync(ms.Id, true);
+                await c.PutMembershipAsync(ms.Id, NotificationPolicy.OnlyMentions, ReadStateTrackingPolicy.ConsumeLast);
 
                 var ch = await c.GetChannelAsync(ms.Channel.Id);
 
-                Assert.True(ch.Membership.DisableNotification);
+                Assert.Equal(NotificationPolicy.OnlyMentions, ch.Membership.NotificationPolicy);
+                Assert.Equal(ReadStateTrackingPolicy.ConsumeLast, ch.Membership.ReadStateTrackingPolicy);
 
-                await c.PutMembershipAsync(ms.Id, false);
+                await c.PutMembershipAsync(ms.Id, NotificationPolicy.Nothing, ReadStateTrackingPolicy.ConsumeLatest);
 
                 ch = await c.GetChannelAsync(ms.Channel.Id);
 
-                Assert.False(ch.Membership.DisableNotification);
+                Assert.Equal(NotificationPolicy.Nothing, ch.Membership.NotificationPolicy);
+                Assert.Equal(ReadStateTrackingPolicy.ConsumeLatest, ch.Membership.ReadStateTrackingPolicy);
+
+                await c.PutMembershipAsync(ms.Id, NotificationPolicy.AllMessages, ReadStateTrackingPolicy.KeepLatest);
+
+                ch = await c.GetChannelAsync(ms.Channel.Id);
+
+                Assert.Equal(NotificationPolicy.AllMessages, ch.Membership.NotificationPolicy);
+                Assert.Equal(ReadStateTrackingPolicy.KeepLatest, ch.Membership.ReadStateTrackingPolicy);
             }
         }
 

@@ -28,7 +28,22 @@ namespace KokoroIO
 
         [DefaultValue(false)]
         [DataMember, JsonProperty("disable_notification")]
+        [Obsolete]
         public bool DisableNotification { get; set; }
+
+        [DefaultValue(default(NotificationPolicy))]
+        [DataMember, JsonProperty("notification_policy")]
+        [JsonConverter(typeof(StringEnumConverter))]
+        public NotificationPolicy NotificationPolicy { get; set; }
+
+        [DefaultValue(default(Authority))]
+        [DataMember, JsonProperty("read_state_tracking_policy")]
+        [JsonConverter(typeof(StringEnumConverter))]
+        public ReadStateTrackingPolicy ReadStateTrackingPolicy { get; set; }
+
+        [DefaultValue(null)]
+        [DataMember, JsonProperty("latest_read_message_id")]
+        public int? LatestReadMessageId { get; set; }
 
         [DefaultValue(null)]
         [DataMember, JsonProperty("profile")]

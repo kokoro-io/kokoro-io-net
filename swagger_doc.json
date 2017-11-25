@@ -600,8 +600,16 @@
           },
           {
             "in": "formData",
-            "name": "disable_notification",
-            "type": "boolean",
+            "name": "notification_policy",
+            "type": "string",
+            "enum": [ "all_messages", "only_mentions", "nothing" ],
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "read_state_tracking_policy",
+            "type": "string",
+            "enum": [ "keep_latest", "consume_last", "consume_latest" ],
             "required": false
           }
         ],
@@ -615,7 +623,7 @@
         "operationId": "postV1Memberships"
       }
     },
-    "/v1/memberships/{membership_id}": {
+    "/v1/memberships/{id}": {
       "put": {
         "summary": "Updates a membership.",
         "description": "Updates a membership.",
@@ -624,14 +632,22 @@
         "parameters": [
           {
             "in": "path",
-            "name": "membership_id",
+            "name": "id",
             "type": "string",
             "required": true
           },
           {
             "in": "formData",
-            "name": "disable_notification",
-            "type": "boolean",
+            "name": "notification_policy",
+            "type": "string",
+            "enum": [ "all_messages", "only_mentions", "nothing" ],
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "read_state_tracking_policy",
+            "type": "string",
+            "enum": [ "keep_latest", "consume_last", "consume_latest" ],
             "required": false
           }
         ],
@@ -642,7 +658,7 @@
           }
         },
         "tags": [ "memberships" ],
-        "operationId": "putV1MembershipsMembershipId"
+        "operationId": "putV1MembershipsId"
       },
       "delete": {
         "summary": "Delete a membership.",
@@ -651,7 +667,7 @@
         "parameters": [
           {
             "in": "path",
-            "name": "membership_id",
+            "name": "id",
             "type": "string",
             "required": true
           }
@@ -663,10 +679,10 @@
           }
         },
         "tags": [ "memberships" ],
-        "operationId": "deleteV1MembershipsMembershipId"
+        "operationId": "deleteV1MembershipsId"
       }
     },
-    "/v1/memberships/{membership_id}/join": {
+    "/v1/memberships/{id}/join": {
       "put": {
         "summary": "Join to invited room",
         "description": "Join to invited room",
@@ -675,7 +691,7 @@
         "parameters": [
           {
             "in": "path",
-            "name": "membership_id",
+            "name": "id",
             "type": "string",
             "required": true
           }
@@ -687,7 +703,7 @@
           }
         },
         "tags": [ "memberships" ],
-        "operationId": "putV1MembershipsMembershipIdJoin"
+        "operationId": "putV1MembershipsIdJoin"
       }
     },
     "/v1/devices": {
@@ -828,7 +844,22 @@
         },
         "disable_notification": {
           "type": "boolean",
-          "description": "通知をオフにしているか"
+          "description": "通知をオフにしているか（deprecated: use \"notification_policy\" instead.）"
+        },
+        "notification_policy": {
+          "type": "string",
+          "enum": [ "all_messages", "only_mentions", "nothing" ],
+          "description": "通知ポリシー"
+        },
+        "read_state_tracking_policy": {
+          "type": "string",
+          "enum": [ "keep_latest", "consume_last", "consume_latest" ],
+          "description": "未読メッセージ表示ポリシー"
+        },
+        "latest_read_message_id": {
+          "type": "integer",
+          "format": "int32",
+          "description": "一番新しい既読メッセージ"
         },
         "unread_count": {
           "type": "integer",
@@ -940,7 +971,22 @@
         },
         "disable_notification": {
           "type": "boolean",
-          "description": "通知をオフにしているか"
+          "description": "通知をオフにしているか（deprecated: use \"notification_policy\" instead.）"
+        },
+        "notification_policy": {
+          "type": "string",
+          "enum": [ "all_messages", "only_mentions", "nothing" ],
+          "description": "通知ポリシー"
+        },
+        "read_state_tracking_policy": {
+          "type": "string",
+          "enum": [ "keep_latest", "consume_last", "consume_latest" ],
+          "description": "未読メッセージ表示ポリシー"
+        },
+        "latest_read_message_id": {
+          "type": "integer",
+          "format": "int32",
+          "description": "一番新しい既読メッセージ"
         },
         "unread_count": {
           "type": "integer",

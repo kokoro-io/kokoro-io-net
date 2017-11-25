@@ -3,12 +3,12 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard1.3;net45</TargetFrameworks>
     <RootNamespace>KokoroIO</RootNamespace>
-    <Version>0.0.12-pre</Version>
+    <Version>0.0.13-pre</Version>
     <Authors>kokoro.io</Authors>
     <Company></Company>
     <Description>kokoro.io client classes</Description>
-    <AssemblyVersion>0.0.12.0</AssemblyVersion>
-    <FileVersion>0.0.12.0</FileVersion>
+    <AssemblyVersion>0.0.13.0</AssemblyVersion>
+    <FileVersion>0.0.13.0</FileVersion>
     <PackageProjectUrl>https://github.com/kokoro-io/kokoro-io-net</PackageProjectUrl>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>

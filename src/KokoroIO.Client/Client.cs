@@ -141,7 +141,7 @@ namespace KokoroIO
             return SendAsync<Membership[]>(new HttpRequestMessage(HttpMethod.Get, u.ToString()));
         }
 
-        public Task<Membership> PostMembershipAsync(string channelId, bool? disableNotification = null)
+        public Task<Membership> PostMembershipAsync(string channelId, NotificationPolicy? notificationPolicy = null, ReadStateTrackingPolicy? trackingPolicy = null)
         {
             var r = new HttpRequestMessage(HttpMethod.Post, EndPoint + $"/v1/memberships");
 
@@ -150,9 +150,35 @@ namespace KokoroIO
                 new KeyValuePair<string, string>("channel_id", channelId),
             };
 
-            if (disableNotification != null)
+            if (notificationPolicy != null)
             {
-                d.Add(new KeyValuePair<string, string>("disable_notification", disableNotification.Value ? "true" : "false"));
+                d.Add(new KeyValuePair<string, string>("notification_policy", notificationPolicy.Value.ToApiString()));
+            }
+
+            if (trackingPolicy != null)
+            {
+                d.Add(new KeyValuePair<string, string>("read_state_tracking_policy", trackingPolicy.Value.ToApiString()));
+            }
+
+            r.Content = new FormUrlEncodedContent(d);
+
+            return SendAsync<Membership>(r);
+        }
+
+        public Task<Membership> PutMembershipAsync(string membershipId, NotificationPolicy? notificationPolicy = null, ReadStateTrackingPolicy? trackingPolicy = null)
+        {
+            var r = new HttpRequestMessage(HttpMethod.Put, EndPoint + $"/v1/memberships/" + membershipId);
+
+            var d = new List<KeyValuePair<string, string>>(1);
+
+            if (notificationPolicy != null)
+            {
+                d.Add(new KeyValuePair<string, string>("notification_policy", notificationPolicy.Value.ToApiString()));
+            }
+
+            if (trackingPolicy != null)
+            {
+                d.Add(new KeyValuePair<string, string>("read_state_tracking_policy", trackingPolicy.Value.ToApiString()));
             }
 
             r.Content = new FormUrlEncodedContent(d);
@@ -165,22 +191,6 @@ namespace KokoroIO
             var r = new HttpRequestMessage(HttpMethod.Delete, EndPoint + $"/v1/memberships/" + membershipId);
 
             return SendAsync(r).ContinueWith(t => t.Result.EnsureSuccessStatusCode());
-        }
-
-        public Task<Membership> PutMembershipAsync(string membershipId, bool? disableNotification = null)
-        {
-            var r = new HttpRequestMessage(HttpMethod.Put, EndPoint + $"/v1/memberships/" + membershipId);
-
-            var d = new List<KeyValuePair<string, string>>(1);
-
-            if (disableNotification != null)
-            {
-                d.Add(new KeyValuePair<string, string>("disable_notification", disableNotification.Value ? "true" : "false"));
-            }
-
-            r.Content = new FormUrlEncodedContent(d);
-
-            return SendAsync<Membership>(r);
         }
 
         public Task<Membership> JoinMembershipAsync(string membershipId)
