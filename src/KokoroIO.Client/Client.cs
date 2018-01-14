@@ -343,7 +343,7 @@ namespace KokoroIO
                 return new ArgumentException($"Invalid {nameof(channelId)}.").ToTask<Channel>();
             }
 
-            var r = new HttpRequestMessage(HttpMethod.Delete, EndPoint + $"/v1/channels/" + channelId + "/archive");
+            var r = new HttpRequestMessage(HttpMethod.Put, EndPoint + $"/v1/channels/" + channelId + "/archive");
 
             return SendAsync<Channel>(r);
         }

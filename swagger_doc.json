@@ -98,10 +98,11 @@
       }
     },
     "/v1/channels/{channel_id}/archive": {
-      "delete": {
+      "put": {
         "summary": "Archive a channel.",
         "description": "Archive a channel.",
         "produces": [ "application/json" ],
+        "consumes": [ "application/json" ],
         "parameters": [
           {
             "in": "path",
@@ -117,7 +118,7 @@
           }
         },
         "tags": [ "channels" ],
-        "operationId": "deleteV1ChannelsChannelIdArchive"
+        "operationId": "putV1ChannelsChannelIdArchive"
       }
     },
     "/v1/channels/{channel_id}/unarchive": {
