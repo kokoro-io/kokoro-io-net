@@ -473,6 +473,10 @@ namespace KokoroIO
 
         public event EventHandler<EventArgs<Channel[]>> ChannelsUpdated;
 
+        public event EventHandler<EventArgs<Channel>> ChannelArchived;
+
+        public event EventHandler<EventArgs<Channel>> ChannelUnarchived;
+
         public event EventHandler<EventArgs<Membership>> MemberJoined;
 
         public event EventHandler<EventArgs<Membership>> MemberLeaved;
@@ -698,6 +702,14 @@ namespace KokoroIO
 
                                         case "channels_updated":
                                             DispatchEvent(msg, ChannelsUpdated);
+                                            break;
+
+                                        case "channel_archived":
+                                            DispatchEvent(msg, ChannelArchived);
+                                            break;
+
+                                        case "channel_unarchived":
+                                            DispatchEvent(msg, ChannelUnarchived);
                                             break;
 
                                         case "member_joined":
