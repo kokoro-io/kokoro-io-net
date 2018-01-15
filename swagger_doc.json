@@ -356,6 +356,12 @@
             "name": "idempotent_key",
             "type": "string",
             "required": false
+          },
+          {
+            "in": "formData",
+            "name": "expand_embed_contents",
+            "type": "boolean",
+            "required": false
           }
         ],
         "responses": {
@@ -484,6 +490,12 @@
           {
             "in": "formData",
             "name": "nsfw",
+            "type": "boolean",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "expand_embed_contents",
             "type": "boolean",
             "required": false
           }

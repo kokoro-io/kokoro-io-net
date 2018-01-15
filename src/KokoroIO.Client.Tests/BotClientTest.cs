@@ -13,7 +13,7 @@ namespace KokoroIO
 
             using (var c = GetBotClient())
             {
-                var m = await c.PostMessageAsync(dev.Id, GetTestMessage(), displayName: GetType().FullName);
+                var m = await c.PostMessageAsync(dev.Id, GetTestMessage(), displayName: GetType().FullName, expandEmbedContents: true);
 
                 Assert.NotNull(m);
             }

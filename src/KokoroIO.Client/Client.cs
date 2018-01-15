@@ -423,7 +423,7 @@ namespace KokoroIO
             return SendAsync<Message[]>(new HttpRequestMessage(HttpMethod.Get, u.ToString()));
         }
 
-        public Task<Message> PostMessageAsync(string channelId, string message, bool isNsfw, Guid idempotentKey = default(Guid))
+        public Task<Message> PostMessageAsync(string channelId, string message, bool isNsfw, bool? expandEmbedContents = null, Guid idempotentKey = default(Guid))
         {
             if (!Channel.IsValidId(channelId))
             {
@@ -432,11 +432,16 @@ namespace KokoroIO
 
             var r = new HttpRequestMessage(HttpMethod.Post, EndPoint + $"/v1/channels/" + channelId + "/messages");
 
-            var d = new List<KeyValuePair<string, string>>(3)
+            var d = new List<KeyValuePair<string, string>>(4)
             {
                 new KeyValuePair<string, string>("message", message),
                 new KeyValuePair<string, string>("nsfw", isNsfw ? "true":"false")
             };
+
+            if (expandEmbedContents != null)
+            {
+                d.Add(new KeyValuePair<string, string>("expand_embed_contents", expandEmbedContents.Value ? "true" : "false"));
+            }
 
             if (idempotentKey != Guid.Empty)
             {

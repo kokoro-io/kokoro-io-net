@@ -20,7 +20,7 @@ namespace KokoroIO
             AccessToken = DefaultAccessToken ?? ClientBase.DefaultAccessToken;
         }
 
-        public Task<Message> PostMessageAsync(string channelId, string message, string displayName = null, bool? isNsfw = null)
+        public Task<Message> PostMessageAsync(string channelId, string message, string displayName = null, bool? isNsfw = null, bool? expandEmbedContents = null)
         {
             if (!Channel.IsValidId(channelId))
             {
@@ -29,7 +29,7 @@ namespace KokoroIO
 
             var r = new HttpRequestMessage(HttpMethod.Post, EndPoint + $"/v1/bot/channels/" + channelId + "/messages");
 
-            var d = new List<KeyValuePair<string, string>>(3)
+            var d = new List<KeyValuePair<string, string>>(4)
             {
                 new KeyValuePair<string, string>("message", message),
             };
@@ -42,6 +42,11 @@ namespace KokoroIO
             if (isNsfw != null)
             {
                 d.Add(new KeyValuePair<string, string>("nsfw", isNsfw.Value ? "true" : "false"));
+            }
+
+            if (expandEmbedContents != null)
+            {
+                d.Add(new KeyValuePair<string, string>("expand_embed_contents", expandEmbedContents.Value ? "true" : "false"));
             }
 
             r.Content = new FormUrlEncodedContent(d);

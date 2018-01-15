@@ -262,7 +262,7 @@ namespace KokoroIO
             {
                 var dev = await GetTestChannelAsync(c);
 
-                var m = await c.PostMessageAsync(dev.Id, GetTestMessage(), false);
+                var m = await c.PostMessageAsync(dev.Id, GetTestMessage(), false, expandEmbedContents: true);
 
                 Assert.NotNull(m);
             }
