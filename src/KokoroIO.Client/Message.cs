@@ -30,6 +30,10 @@ namespace KokoroIO
         [DataMember, JsonProperty("avatars")]
         public Avatar[] Avatars { get; set; }
 
+        [DefaultValue(false)]
+        [DataMember, JsonProperty("expand_embed_contents")]
+        public bool ExpandEmbedContents { get; set; }
+
         [DefaultValue(default(MessageStatus))]
         [DataMember, JsonProperty("status")]
         [JsonConverter(typeof(StringEnumConverter))]

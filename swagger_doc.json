@@ -1051,6 +1051,10 @@
           "type": "string",
           "description": "発言時のアバターURL"
         },
+        "expand_embed_contents": {
+          "type": "boolean",
+          "description": "URLが表すコンテンツを展開するかどうか"
+        },
         "avatars": {
           "type": "array",
           "items": { "$ref": "#/definitions/AvatarEntity" },
