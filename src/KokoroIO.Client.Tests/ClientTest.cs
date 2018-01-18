@@ -250,7 +250,7 @@ namespace KokoroIO
                 var fm = m.OrderBy(e => e.RawContent.Length).LastOrDefault();
 
                 Assert.NotInRange(fm.HtmlContent.Length, int.MinValue, 0);
-                Assert.NotInRange(fm.PlainTextContent.Length, int.MinValue, 0);
+                Assert.NotInRange(fm.PlainTextContent.Length, int.MinValue, -1);
                 Assert.NotInRange(fm.RawContent.Length, int.MinValue, 0);
             }
         }
