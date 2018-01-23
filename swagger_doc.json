@@ -855,6 +855,21 @@
           "type": "string",
           "description": "チャンネル説明"
         },
+        "latest_message_id": {
+          "type": "integer",
+          "format": "int32",
+          "description": "最新メッセージ"
+        },
+        "latest_message_published_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "最新メッセージ投稿日時"
+        },
+        "messages_count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "メッセージ数"
+        },
         "membership": {
           "$ref": "#/definitions/MembershipEntity",
           "description": "メンバーシップ情報"
@@ -941,6 +956,21 @@
         "description": {
           "type": "string",
           "description": "チャンネル説明"
+        },
+        "latest_message_id": {
+          "type": "integer",
+          "format": "int32",
+          "description": "最新メッセージ"
+        },
+        "latest_message_published_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "最新メッセージ投稿日時"
+        },
+        "messages_count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "メッセージ数"
         }
       }
     },
@@ -1075,6 +1105,21 @@
         "description": {
           "type": "string",
           "description": "チャンネル説明"
+        },
+        "latest_message_id": {
+          "type": "integer",
+          "format": "int32",
+          "description": "最新メッセージ"
+        },
+        "latest_message_published_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "最新メッセージ投稿日時"
+        },
+        "messages_count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "メッセージ数"
         },
         "membership": {
           "$ref": "#/definitions/MembershipEntity",

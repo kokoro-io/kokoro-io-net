@@ -46,6 +46,27 @@ namespace KokoroIO
         public string Description { get; set; }
 
         /// <summary>
+        /// 最新メッセージのIDを取得または設定します。
+        /// </summary>
+        [DefaultValue(null)]
+        [DataMember, JsonProperty("latest_message_id")]
+        public int? LatestMessageId { get; set; }
+
+        /// <summary>
+        /// 最新メッセージ投稿日時を取得または設定します。
+        /// </summary>
+        [DefaultValue(null)]
+        [DataMember, JsonProperty("latest_message_published_at")]
+        public DateTime? LatestMessagePublishedAt { get; set; }
+
+        /// <summary>
+        /// メッセージ数を取得または設定します。
+        /// </summary>
+        [DefaultValue(0)]
+        [DataMember, JsonProperty("messages_count")]
+        public int MessagesCount { get; set; }
+
+        /// <summary>
         /// メンバーシップ情報を取得または設定します。
         /// </summary>
         [DefaultValue(null)]
