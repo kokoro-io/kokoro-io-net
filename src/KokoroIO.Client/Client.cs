@@ -141,11 +141,16 @@ namespace KokoroIO
             return SendAsync<Membership[]>(new HttpRequestMessage(HttpMethod.Get, u.ToString()));
         }
 
-        public Task<Membership> PostMembershipAsync(string channelId, NotificationPolicy? notificationPolicy = null, ReadStateTrackingPolicy? trackingPolicy = null)
+        public Task<Membership> PostMembershipAsync(
+                                    string channelId,
+                                    NotificationPolicy? notificationPolicy = null,
+                                    ReadStateTrackingPolicy? trackingPolicy = null,
+                                    bool? visible = null,
+                                    bool? muted = null)
         {
             var r = new HttpRequestMessage(HttpMethod.Post, EndPoint + $"/v1/memberships");
 
-            var d = new List<KeyValuePair<string, string>>(2)
+            var d = new List<KeyValuePair<string, string>>(4)
             {
                 new KeyValuePair<string, string>("channel_id", channelId),
             };
@@ -159,17 +164,30 @@ namespace KokoroIO
             {
                 d.Add(new KeyValuePair<string, string>("read_state_tracking_policy", trackingPolicy.Value.ToApiString()));
             }
+            if (visible != null)
+            {
+                d.Add(new KeyValuePair<string, string>("visible", visible.Value ? "true" : "false"));
+            }
+            if (muted != null)
+            {
+                d.Add(new KeyValuePair<string, string>("muted", muted.Value ? "true" : "false"));
+            }
 
             r.Content = new FormUrlEncodedContent(d);
 
             return SendAsync<Membership>(r);
         }
 
-        public Task<Membership> PutMembershipAsync(string membershipId, NotificationPolicy? notificationPolicy = null, ReadStateTrackingPolicy? trackingPolicy = null)
+        public Task<Membership> PutMembershipAsync(
+                                    string membershipId,
+                                    NotificationPolicy? notificationPolicy = null,
+                                    ReadStateTrackingPolicy? trackingPolicy = null,
+                                    bool? visible = null,
+                                    bool? muted = null)
         {
             var r = new HttpRequestMessage(HttpMethod.Put, EndPoint + $"/v1/memberships/" + membershipId);
 
-            var d = new List<KeyValuePair<string, string>>(1);
+            var d = new List<KeyValuePair<string, string>>(4);
 
             if (notificationPolicy != null)
             {
@@ -180,6 +198,15 @@ namespace KokoroIO
             {
                 d.Add(new KeyValuePair<string, string>("read_state_tracking_policy", trackingPolicy.Value.ToApiString()));
             }
+            if (visible != null)
+            {
+                d.Add(new KeyValuePair<string, string>("visible", visible.Value ? "true" : "false"));
+            }
+            if (muted != null)
+            {
+                d.Add(new KeyValuePair<string, string>("muted", muted.Value ? "true" : "false"));
+            }
+
 
             r.Content = new FormUrlEncodedContent(d);
 

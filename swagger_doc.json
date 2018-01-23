@@ -624,6 +624,18 @@
             "type": "string",
             "enum": [ "keep_latest", "consume_last", "consume_latest" ],
             "required": false
+          },
+          {
+            "in": "formData",
+            "name": "visible",
+            "type": "boolean",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "muted",
+            "type": "boolean",
+            "required": false
           }
         ],
         "responses": {
@@ -661,6 +673,18 @@
             "name": "read_state_tracking_policy",
             "type": "string",
             "enum": [ "keep_latest", "consume_last", "consume_latest" ],
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "visible",
+            "type": "boolean",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "muted",
+            "type": "boolean",
             "required": false
           }
         ],
@@ -879,6 +903,14 @@
           "format": "int32",
           "description": "未読数（WIP）"
         },
+        "visible": {
+          "type": "boolean",
+          "description": "チャット画面のチャンネル一覧ペインに表示する"
+        },
+        "muted": {
+          "type": "boolean",
+          "description": "チャット画面のチャンネル一覧ペインにて未読数表示をオフにし、表示を薄くする"
+        },
         "profile": {
           "$ref": "#/definitions/ProfileEntity",
           "description": "プロフィール情報"
@@ -1005,6 +1037,14 @@
           "type": "integer",
           "format": "int32",
           "description": "未読数（WIP）"
+        },
+        "visible": {
+          "type": "boolean",
+          "description": "チャット画面のチャンネル一覧ペインに表示する"
+        },
+        "muted": {
+          "type": "boolean",
+          "description": "チャット画面のチャンネル一覧ペインにて未読数表示をオフにし、表示を薄くする"
         },
         "profile": {
           "$ref": "#/definitions/ProfileEntity",

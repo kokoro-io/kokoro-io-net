@@ -45,6 +45,14 @@ namespace KokoroIO
         [DataMember, JsonProperty("latest_read_message_id")]
         public int? LatestReadMessageId { get; set; }
 
+        [DefaultValue(false)]
+        [DataMember, JsonProperty("visible")]
+        public bool Visible { get; set; }
+
+        [DefaultValue(false)]
+        [DataMember, JsonProperty("muted")]
+        public bool Muted { get; set; }
+
         [DefaultValue(null)]
         [DataMember, JsonProperty("profile")]
         public Profile Profile { get; set; }
