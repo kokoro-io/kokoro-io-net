@@ -179,11 +179,12 @@ namespace KokoroIO
                                     NotificationPolicy? notificationPolicy = null,
                                     ReadStateTrackingPolicy? trackingPolicy = null,
                                     bool? visible = null,
-                                    bool? muted = null)
+                                    bool? muted = null,
+                                    int? latestReadMessageId = null)
         {
             var r = new HttpRequestMessage(HttpMethod.Put, EndPoint + $"/v1/memberships/" + membershipId);
 
-            var d = new List<KeyValuePair<string, string>>(4);
+            var d = new List<KeyValuePair<string, string>>(5);
 
             if (notificationPolicy != null)
             {
@@ -203,6 +204,10 @@ namespace KokoroIO
                 d.Add(new KeyValuePair<string, string>("muted", muted.Value ? "true" : "false"));
             }
 
+            if (latestReadMessageId != null)
+            {
+                d.Add(new KeyValuePair<string, string>("latest_read_message_id", latestReadMessageId.Value.ToString()));
+            }
 
             r.Content = new FormUrlEncodedContent(d);
 

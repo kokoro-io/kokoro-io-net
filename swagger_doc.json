@@ -686,6 +686,13 @@
             "name": "muted",
             "type": "boolean",
             "required": false
+          },
+          {
+            "in": "formData",
+            "name": "latest_read_message_id",
+            "type": "integer",
+            "format": "int32",
+            "required": false
           }
         ],
         "responses": {
