@@ -9,27 +9,45 @@ namespace KokoroIO
     [Serializable, DataContract]
     public class Channel
     {
+        /// <summary>
+        /// チャンネルIDを取得または設定します。
+        /// </summary>
         [DefaultValue(null)]
         [DataMember, JsonProperty("id")]
         public string Id { get; set; }
 
+        /// <summary>
+        /// チャンネル名を取得または設定します。
+        /// </summary>
         [DefaultValue(null)]
         [DataMember, JsonProperty("channel_name")]
         public string ChannelName { get; set; }
 
+        /// <summary>
+        /// チャンネルタイプを取得または設定します。
+        /// </summary>
         [DefaultValue(default(ChannelKind))]
         [DataMember, JsonProperty("kind")]
         [JsonConverter(typeof(StringEnumConverter))]
         public ChannelKind Kind { get; set; }
 
+        /// <summary>
+        /// アーカイブ済かどうかを示す値を取得または設定します。
+        /// </summary>
         [DefaultValue(false)]
         [DataMember, JsonProperty("archived")]
         public bool IsArchived { get; set; }
 
+        /// <summary>
+        /// チャンネル説明を取得または設定します。
+        /// </summary>
         [DefaultValue(null)]
         [DataMember, JsonProperty("description")]
         public string Description { get; set; }
 
+        /// <summary>
+        /// メンバーシップ情報を取得または設定します。
+        /// </summary>
         [DefaultValue(null)]
         [DataMember, JsonProperty("membership")]
         public Membership Membership { get; set; }

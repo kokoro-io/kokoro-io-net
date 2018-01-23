@@ -12,6 +12,8 @@
     <PackageProjectUrl>https://github.com/kokoro-io/kokoro-io-net</PackageProjectUrl>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageReleaseNotes></PackageReleaseNotes>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\KokoroIO.Client.xml</DocumentationFile>
+    <NoWarn>1591;1701;1702;1705</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
