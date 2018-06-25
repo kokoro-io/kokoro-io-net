@@ -26,7 +26,9 @@ namespace KokoroIO.SampleApp.ViewModels
 
         public DateTime PublishedAt => _Model.PublishedAt;
 
+#pragma warning disable 618
         public string Content => _Model.Content;
+#pragma warning restore 618
 
         private bool _IsMerged;
 
@@ -67,7 +69,9 @@ namespace KokoroIO.SampleApp.ViewModels
 
                     try
                     {
+#pragma warning disable 618
                         var html = _Model.Content.Replace("<br>", "<br />");
+#pragma warning restore 618
 
                         using (var sr = new StringReader(html))
                         using (var xr = XmlReader.Create(sr, new XmlReaderSettings() { ConformanceLevel = ConformanceLevel.Fragment }))

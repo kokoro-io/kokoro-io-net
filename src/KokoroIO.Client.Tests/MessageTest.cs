@@ -33,7 +33,9 @@ namespace KokoroIO
 
                 var xd = XDocument.Parse(xml);
                 var NS = xd.Root.Name.Namespace.ToString();
+#pragma warning disable 618
                 Assert.Null(xd.Root.Element(XName.Get(nameof(m.Content), NS)));
+#pragma warning restore 618
                 Assert.NotNull(xd.Root.Element(XName.Get(nameof(m.HtmlContent), NS)));
             }
         }
