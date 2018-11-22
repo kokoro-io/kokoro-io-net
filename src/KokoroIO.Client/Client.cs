@@ -95,18 +95,14 @@ namespace KokoroIO
 
         private Task<Device> PostDeviceAsyncCore(string name, DeviceKind kind, string deviceIdentifier, string notificationIdentifier, bool subscribeNotification, HttpRequestMessage req)
         {
-            var d = new List<KeyValuePair<string, string>>(5)
+            var d = new[]
             {
                 new KeyValuePair<string, string>("name", name),
                 new KeyValuePair<string, string>("kind", kind.ToApiString()),
-                new KeyValuePair<string, string>("device_identifier", deviceIdentifier)
+                new KeyValuePair<string, string>("device_identifier", deviceIdentifier),
+                new KeyValuePair<string, string>("notification_identifier", notificationIdentifier),
+                new KeyValuePair<string, string>("subscribe_notification", subscribeNotification ? "true" : "false")
             };
-
-            if (notificationIdentifier != null)
-            {
-                d.Add(new KeyValuePair<string, string>("notification_identifier", notificationIdentifier));
-                d.Add(new KeyValuePair<string, string>("subscribe_notification", subscribeNotification ? "true" : "false"));
-            }
 
             req.Content = new FormUrlEncodedContent(d);
 
